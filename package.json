@@ -10,7 +10,14 @@
         "build": "rimraf ./dist && tsc",
         "example": "ts-node ./example/index.ts"
     },
-    "keywords": [],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/zyrouge/node-phrasey.git"
+    },
+    "keywords": [
+        "i18n",
+        "transpiler"
+    ],
     "author": "Zyrouge",
     "license": "MIT",
     "devDependencies": {
