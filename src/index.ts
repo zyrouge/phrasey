@@ -12,3 +12,5 @@ export const phrasey = async <Keys extends PhraseyConfigKeys>(
     const client = new Phrasey({ config });
     await client.build();
 };
+
+export default phrasey;
