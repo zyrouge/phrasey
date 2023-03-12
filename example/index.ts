@@ -40,10 +40,17 @@ const start = async () => {
         for (const [key, state] of Object.entries(x.keys.states)) {
             console.log(`    > ${key}: ${state}`);
         }
+        console.log(` > Keys set: ${x.keys.set} (${x.keys.percents.set}%)`);
+        console.log(
+            ` > Keys defaulted: ${x.keys.defaulted} (${x.keys.percents.defaulted}%)`
+        );
+        console.log(
+            ` > Keys unset: ${x.keys.unset} (${x.keys.percents.unset}%)`
+        );
         console.log(` > Keys total: ${x.keys.total}`);
-        console.log(` > Keys set: ${x.keys.set}`);
-        console.log(` > Keys defaulted: ${x.keys.defaulted}`);
-        console.log(` > Keys unset: ${x.keys.unset}`);
+        console.log(
+            ` > % translated: ${summary.keys.percents.setOrDefaulted}%`
+        );
         console.log("");
     }
     console.log("Full Summary:");

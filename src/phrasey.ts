@@ -32,6 +32,12 @@ export interface PhraseyTranslationSummary<Keys extends PhraseyConfigKeys> {
         defaulted: number;
         unset: number;
         total: number;
+        percents: {
+            set: number;
+            defaulted: number;
+            setOrDefaulted: number;
+            unset: number;
+        };
     };
 }
 
@@ -189,6 +195,12 @@ export class Phrasey<Keys extends PhraseyConfigKeys> {
                 defaulted: 0,
                 unset: 0,
                 total: 0,
+                percents: {
+                    set: 0,
+                    defaulted: 0,
+                    setOrDefaulted: 0,
+                    unset: 0,
+                },
             },
         };
         for (const x of this.config.keys) {
@@ -212,6 +224,22 @@ export class Phrasey<Keys extends PhraseyConfigKeys> {
         summary.isBuildable =
             summary.keys.set + summary.keys.defaulted === summary.keys.total;
         summary.isStandaloneBuildable = summary.keys.set === summary.keys.total;
+        summary.keys.percents.set = PhraseyUtils.calculatePercentage(
+            summary.keys.set,
+            summary.keys.total
+        );
+        summary.keys.percents.defaulted = PhraseyUtils.calculatePercentage(
+            summary.keys.defaulted,
+            summary.keys.total
+        );
+        summary.keys.percents.setOrDefaulted = PhraseyUtils.calculatePercentage(
+            summary.keys.set + summary.keys.defaulted,
+            summary.keys.total
+        );
+        summary.keys.percents.unset = PhraseyUtils.calculatePercentage(
+            summary.keys.unset,
+            summary.keys.total
+        );
         return summary;
     }
 
