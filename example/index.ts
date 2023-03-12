@@ -1,7 +1,7 @@
 import fs from "fs-extra";
-import { phrasey, definePhraseyConfig } from "../src";
+import { definePhraseyConfig, PhraseyCircuit } from "../src";
 
-export const config = definePhraseyConfig({
+const config = definePhraseyConfig({
     rootDir: __dirname,
     input: {
         include: ["./i18n/**.yaml"],
@@ -26,4 +26,26 @@ export const config = definePhraseyConfig({
     },
 });
 
-phrasey(config);
+const start = async () => {
+    const circuit = PhraseyCircuit.create(config);
+    await circuit.build();
+    const summary = await circuit.client.getFullSummary();
+    for (const x of Object.values(summary)) {
+        console.log(
+            `Summary of ${x.translation.language} (${x.translation.path})`
+        );
+        console.log(`Buildable: ${x.isBuildable}`);
+        console.log(`Standalone Buildable: ${x.isStandaloneBuildable}`);
+        console.log(`Keys: ${x.isStandaloneBuildable}`);
+        for (const [key, state] of Object.entries(x.keys.states)) {
+            console.log(` - ${key}: ${state}`);
+        }
+        console.log(`Keys total: ${x.keys.total}`);
+        console.log(`Keys set: ${x.keys.set}`);
+        console.log(`Keys defaulted: ${x.keys.defaulted}`);
+        console.log(`Keys unset: ${x.keys.unset}`);
+        console.log("");
+    }
+};
+
+start();

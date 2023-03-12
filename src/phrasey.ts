@@ -22,20 +22,18 @@ export type PhraseyTranslationSummaryTranslationState =
     | "default"
     | "unset";
 
-export interface PhraseyTranslationSummary<Keys extends PhraseyConfigKeys> {
+export type PhraseyTranslationSummary<Keys extends PhraseyConfigKeys> = {
+    translation: PhraseyTranslation<Keys>;
     isBuildable: boolean;
     isStandaloneBuildable: boolean;
-    translations: Record<
-        Keys[number],
-        PhraseyTranslationSummaryTranslationState
-    >;
     keys: {
+        states: Record<Keys[number], PhraseyTranslationSummaryTranslationState>;
         set: number;
-        default: number;
+        defaulted: number;
         unset: number;
         total: number;
     };
-}
+};
 
 export class Phrasey<Keys extends PhraseyConfigKeys> {
     translations = new Map<string, PhraseyTranslation<Keys>>();
@@ -104,7 +102,7 @@ export class Phrasey<Keys extends PhraseyConfigKeys> {
         }
     }
 
-    async processTranslations() {
+    async ensureTranslations() {
         const defaultTranslation = this.getDefaultTranslation();
         if (defaultTranslation) {
             this.ensureTranslationKeys(defaultTranslation);
@@ -141,17 +139,21 @@ export class Phrasey<Keys extends PhraseyConfigKeys> {
         }
     }
 
-    async loadTranslations() {
+    async getInputFiles() {
         const { rootDir, input } = this.config;
         const files = FastGlob.stream(input.include, {
             absolute: true,
             cwd: rootDir,
             ignore: input.exclude,
         });
+        return files;
+    }
+
+    async parseTranslations() {
+        const files = await this.getInputFiles();
         for await (const x of files) {
             await this.parseTranslationFile(x.toString());
         }
-        await this.processTranslations();
     }
 
     async getTranslationSummary(
@@ -159,15 +161,16 @@ export class Phrasey<Keys extends PhraseyConfigKeys> {
         defaultTranslation?: PhraseyTranslation<Keys>
     ) {
         const summary: PhraseyTranslationSummary<Keys> = {
+            translation,
             isBuildable: false,
             isStandaloneBuildable: false,
-            translations: {} as Record<
-                Keys[number],
-                PhraseyTranslationSummaryTranslationState
-            >,
             keys: {
+                states: {} as Record<
+                    Keys[number],
+                    PhraseyTranslationSummaryTranslationState
+                >,
                 set: 0,
-                default: 0,
+                defaulted: 0,
                 unset: 0,
                 total: 0,
             },
@@ -175,24 +178,37 @@ export class Phrasey<Keys extends PhraseyConfigKeys> {
         for (const x of this.config.keys) {
             const key = x as Keys[number];
             if (PhraseyUtils.isNotBlankString(translation.translations[key])) {
-                summary.translations[key] = "set";
+                summary.keys.states[key] = "set";
                 summary.keys.set++;
             } else if (
                 PhraseyUtils.isNotBlankString(
                     defaultTranslation?.translations[key]
                 )
             ) {
-                summary.translations[key] = "default";
-                summary.keys.default++;
+                summary.keys.states[key] = "default";
+                summary.keys.defaulted++;
             } else {
-                summary.translations[key] = "unset";
+                summary.keys.states[key] = "unset";
                 summary.keys.unset++;
             }
             summary.keys.total++;
         }
         summary.isBuildable =
-            summary.keys.set + summary.keys.default === summary.keys.total;
+            summary.keys.set + summary.keys.defaulted === summary.keys.total;
         summary.isStandaloneBuildable = summary.keys.set === summary.keys.total;
         return summary;
+    }
+
+    async getFullSummary() {
+        const defaultTranslation = this.getDefaultTranslation();
+        const fullSummary: Record<string, PhraseyTranslationSummary<Keys>> = {};
+        for (const [, translation] of this.translations) {
+            const summary = await this.getTranslationSummary(
+                translation,
+                defaultTranslation
+            );
+            fullSummary[translation.locale] = summary;
+        }
+        return fullSummary;
     }
 }
