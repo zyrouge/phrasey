@@ -2,4 +2,5 @@ Locale: fr
 Language: French
 Translations:
     HelloThere: Bonjour!
+    HowAreYou: Comment allez-vous?
     # ThankYou: Merci

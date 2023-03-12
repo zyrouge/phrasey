@@ -9,13 +9,13 @@ export class PhraseyCircuit<Keys extends PhraseyConfigKeys> {
 
     async ensureParsed() {
         if (this.parsed) return;
-        await this.client.parseTranslations();
+        await this.client.parseAllInputFiles();
         this.parsed = true;
     }
 
     async ensureEnsured() {
         if (this.ensured) return;
-        await this.client.ensureTranslations();
+        this.client.ensureAllTranslations();
         this.ensured = true;
     }
 
@@ -23,7 +23,7 @@ export class PhraseyCircuit<Keys extends PhraseyConfigKeys> {
         const startedAt = Date.now();
         await this.ensureParsed();
         await this.ensureEnsured();
-        await this.client.buildTranslationFiles(
+        await this.client.buildOutputFiles(
             ({ translation, output, resolvedOutputPath }) => {
                 this.log(
                     "info",
@@ -38,6 +38,12 @@ export class PhraseyCircuit<Keys extends PhraseyConfigKeys> {
                 this.client.translations.size
             } files successfully in ${finishedAt - startedAt}ms!`
         );
+    }
+
+    async getFullSummary() {
+        await this.ensureParsed();
+        const summary = await this.client.prepareFullSummary();
+        return summary;
     }
 
     log(prefix: "info" | "success", text: string) {

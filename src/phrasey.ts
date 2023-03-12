@@ -22,7 +22,7 @@ export type PhraseyTranslationSummaryTranslationState =
     | "default"
     | "unset";
 
-export type PhraseyTranslationSummary<Keys extends PhraseyConfigKeys> = {
+export interface PhraseyTranslationSummary<Keys extends PhraseyConfigKeys> {
     translation: PhraseyTranslation<Keys>;
     isBuildable: boolean;
     isStandaloneBuildable: boolean;
@@ -33,14 +33,30 @@ export type PhraseyTranslationSummary<Keys extends PhraseyConfigKeys> = {
         unset: number;
         total: number;
     };
-};
+}
+
+export interface PhraseyFullSummary<Keys extends PhraseyConfigKeys> {
+    keys: {
+        set: number;
+        defaulted: number;
+        unset: number;
+        total: number;
+        percents: {
+            set: number;
+            defaulted: number;
+            setOrDefaulted: number;
+            unset: number;
+        };
+    };
+    summary: Record<string, PhraseyTranslationSummary<Keys>>;
+}
 
 export class Phrasey<Keys extends PhraseyConfigKeys> {
     translations = new Map<string, PhraseyTranslation<Keys>>();
 
     constructor(public config: PhraseyConfig<Keys>) {}
 
-    async parseTranslationFile(p: string) {
+    async parseInputFile(p: string) {
         const { transpile } = this.config;
         const content = await fs.readFile(p);
         let parsed = yaml.parse(content.toString());
@@ -84,7 +100,7 @@ export class Phrasey<Keys extends PhraseyConfigKeys> {
         return this.translations.get(this.config.defaultLocale);
     }
 
-    ensureTranslationKeys(
+    ensureTranslation(
         translation: PhraseyTranslation<Keys>,
         defaultTranslation?: PhraseyTranslation<Keys>
     ) {
@@ -102,20 +118,20 @@ export class Phrasey<Keys extends PhraseyConfigKeys> {
         }
     }
 
-    async ensureTranslations() {
+    ensureAllTranslations() {
         const defaultTranslation = this.getDefaultTranslation();
         if (defaultTranslation) {
-            this.ensureTranslationKeys(defaultTranslation);
+            this.ensureTranslation(defaultTranslation);
         }
         for (const [, x] of this.translations) {
             if (x.locale === defaultTranslation?.locale) {
                 continue;
             }
-            this.ensureTranslationKeys(x, defaultTranslation);
+            this.ensureTranslation(x, defaultTranslation);
         }
     }
 
-    async buildTranslationFiles(
+    async buildOutputFiles(
         onBuild?: (data: {
             translation: PhraseyTranslation<Keys>;
             output: PhraseyTranspileOutputResult;
@@ -149,14 +165,14 @@ export class Phrasey<Keys extends PhraseyConfigKeys> {
         return files;
     }
 
-    async parseTranslations() {
+    async parseAllInputFiles() {
         const files = await this.getInputFiles();
         for await (const x of files) {
-            await this.parseTranslationFile(x.toString());
+            await this.parseInputFile(x.toString());
         }
     }
 
-    async getTranslationSummary(
+    async prepareSummary(
         translation: PhraseyTranslation<Keys>,
         defaultTranslation?: PhraseyTranslation<Keys>
     ) {
@@ -199,16 +215,51 @@ export class Phrasey<Keys extends PhraseyConfigKeys> {
         return summary;
     }
 
-    async getFullSummary() {
+    async prepareFullSummary() {
         const defaultTranslation = this.getDefaultTranslation();
-        const fullSummary: Record<string, PhraseyTranslationSummary<Keys>> = {};
+        const fullSummary: PhraseyFullSummary<Keys> = {
+            keys: {
+                set: 0,
+                defaulted: 0,
+                unset: 0,
+                total: 0,
+                percents: {
+                    set: 0,
+                    defaulted: 0,
+                    setOrDefaulted: 0,
+                    unset: 0,
+                },
+            },
+            summary: {},
+        };
         for (const [, translation] of this.translations) {
-            const summary = await this.getTranslationSummary(
+            const summary = await this.prepareSummary(
                 translation,
                 defaultTranslation
             );
-            fullSummary[translation.locale] = summary;
+            fullSummary.keys.set += summary.keys.set;
+            fullSummary.keys.defaulted += summary.keys.defaulted;
+            fullSummary.keys.unset += summary.keys.unset;
+            fullSummary.keys.total += summary.keys.total;
+            fullSummary.summary[translation.locale] = summary;
         }
+        fullSummary.keys.percents.set = PhraseyUtils.calculatePercentage(
+            fullSummary.keys.set,
+            fullSummary.keys.total
+        );
+        fullSummary.keys.percents.defaulted = PhraseyUtils.calculatePercentage(
+            fullSummary.keys.defaulted,
+            fullSummary.keys.total
+        );
+        fullSummary.keys.percents.setOrDefaulted =
+            PhraseyUtils.calculatePercentage(
+                fullSummary.keys.set + fullSummary.keys.defaulted,
+                fullSummary.keys.total
+            );
+        fullSummary.keys.percents.unset = PhraseyUtils.calculatePercentage(
+            fullSummary.keys.unset,
+            fullSummary.keys.total
+        );
         return fullSummary;
     }
 }
