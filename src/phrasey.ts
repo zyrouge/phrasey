@@ -2,13 +2,13 @@ import path from "path";
 import fs from "fs-extra";
 import yaml from "yaml";
 import FastGlob from "fast-glob";
-import { PhraseyConfig, PhraseyConfigKeys } from "./config";
+import {
+    PhraseyConfig,
+    PhraseyConfigKeys,
+    PhraseyTranspileOutputResult,
+} from "./config";
 import { PhraseyUtils } from "./utils";
 import { PhraseyError } from "./error";
-
-export interface PhraseyOptions<Keys extends PhraseyConfigKeys> {
-    config: PhraseyConfig<Keys>;
-}
 
 export interface PhraseyTranslation<Keys extends PhraseyConfigKeys> {
     path: string;
@@ -17,10 +17,30 @@ export interface PhraseyTranslation<Keys extends PhraseyConfigKeys> {
     translations: Record<Keys[number], string>;
 }
 
+export type PhraseyTranslationSummaryTranslationState =
+    | "set"
+    | "default"
+    | "unset";
+
+export interface PhraseyTranslationSummary<Keys extends PhraseyConfigKeys> {
+    isBuildable: boolean;
+    isStandaloneBuildable: boolean;
+    translations: Record<
+        Keys[number],
+        PhraseyTranslationSummaryTranslationState
+    >;
+    keys: {
+        set: number;
+        default: number;
+        unset: number;
+        total: number;
+    };
+}
+
 export class Phrasey<Keys extends PhraseyConfigKeys> {
     translations = new Map<string, PhraseyTranslation<Keys>>();
 
-    constructor(public options: PhraseyOptions<Keys>) {}
+    constructor(public config: PhraseyConfig<Keys>) {}
 
     async parseTranslationFile(p: string) {
         const { transpile } = this.config;
@@ -97,7 +117,14 @@ export class Phrasey<Keys extends PhraseyConfigKeys> {
         }
     }
 
-    async buildTranslationFiles() {
+    async buildTranslationFiles(
+        onBuild?: (data: {
+            translation: PhraseyTranslation<Keys>;
+            output: PhraseyTranspileOutputResult;
+            resolvedOutputPath: string;
+        }) => void
+    ) {
+        await this.config.transpile.beforeOutput?.();
         for (const [, x] of this.translations) {
             const output = await this.config.transpile.output(x);
             let resolvedPath = path.resolve(
@@ -106,15 +133,15 @@ export class Phrasey<Keys extends PhraseyConfigKeys> {
             );
             await fs.ensureDir(path.dirname(resolvedPath));
             await fs.writeFile(resolvedPath, output.content);
-            this.log(
-                "success",
-                `Processed "${x.locale}" (${x.path} -> ${resolvedPath})`
-            );
+            onBuild?.({
+                translation: x,
+                output: output,
+                resolvedOutputPath: resolvedPath,
+            });
         }
     }
 
-    async build() {
-        const startedAt = Date.now();
+    async loadTranslations() {
         const { rootDir, input } = this.config;
         const files = FastGlob.stream(input.include, {
             absolute: true,
@@ -125,23 +152,47 @@ export class Phrasey<Keys extends PhraseyConfigKeys> {
             await this.parseTranslationFile(x.toString());
         }
         await this.processTranslations();
-        await this.config.transpile.beforeOutput?.();
-        await this.buildTranslationFiles();
-        const finishedAt = Date.now();
-        this.log(
-            "success",
-            `Finished building ${
-                this.translations.size
-            } files successfully in ${finishedAt - startedAt}ms!`
-        );
     }
 
-    log(prefix: "success", text: string) {
-        const value = `[${prefix}] ${text}`;
-        this.config.log?.(value) ?? console.log(value);
-    }
-
-    get config() {
-        return this.options.config;
+    async getTranslationSummary(
+        translation: PhraseyTranslation<Keys>,
+        defaultTranslation?: PhraseyTranslation<Keys>
+    ) {
+        const summary: PhraseyTranslationSummary<Keys> = {
+            isBuildable: false,
+            isStandaloneBuildable: false,
+            translations: {} as Record<
+                Keys[number],
+                PhraseyTranslationSummaryTranslationState
+            >,
+            keys: {
+                set: 0,
+                default: 0,
+                unset: 0,
+                total: 0,
+            },
+        };
+        for (const x of this.config.keys) {
+            const key = x as Keys[number];
+            if (PhraseyUtils.isNotBlankString(translation.translations[key])) {
+                summary.translations[key] = "set";
+                summary.keys.set++;
+            } else if (
+                PhraseyUtils.isNotBlankString(
+                    defaultTranslation?.translations[key]
+                )
+            ) {
+                summary.translations[key] = "default";
+                summary.keys.default++;
+            } else {
+                summary.translations[key] = "unset";
+                summary.keys.unset++;
+            }
+            summary.keys.total++;
+        }
+        summary.isBuildable =
+            summary.keys.set + summary.keys.default === summary.keys.total;
+        summary.isStandaloneBuildable = summary.keys.set === summary.keys.total;
+        return summary;
     }
 }

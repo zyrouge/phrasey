@@ -2,6 +2,11 @@ import { PhraseyTranslation } from "./phrasey";
 
 export type PhraseyConfigKeys = readonly string[];
 
+export interface PhraseyTranspileOutputResult {
+    path: string;
+    content: string;
+}
+
 export interface PhraseyConfig<Keys extends PhraseyConfigKeys> {
     rootDir?: string;
     input: {
@@ -16,10 +21,9 @@ export interface PhraseyConfig<Keys extends PhraseyConfigKeys> {
             translation: PhraseyTranslation<Keys>
         ): Promise<PhraseyTranslation<Keys>>;
         beforeOutput?(): Promise<void>;
-        output(translation: PhraseyTranslation<Keys>): Promise<{
-            path: string;
-            content: string;
-        }>;
+        output(
+            translation: PhraseyTranslation<Keys>
+        ): Promise<PhraseyTranspileOutputResult>;
     };
     log?(text: string): void;
 }
