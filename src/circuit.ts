@@ -2,12 +2,27 @@ import { PhraseyConfig, PhraseyConfigKeys } from "./config";
 import { Phrasey } from "./phrasey";
 
 export class PhraseyCircuit<Keys extends PhraseyConfigKeys> {
+    parsed = false;
+    ensured = false;
+
     constructor(public client: Phrasey<Keys>) {}
+
+    async ensureParsed() {
+        if (this.parsed) return;
+        await this.client.parseTranslations();
+        this.parsed = true;
+    }
+
+    async ensureEnsured() {
+        if (this.ensured) return;
+        await this.client.ensureTranslations();
+        this.ensured = true;
+    }
 
     async build() {
         const startedAt = Date.now();
-        await this.client.parseTranslations();
-        await this.client.ensureTranslations();
+        await this.ensureParsed();
+        await this.ensureEnsured();
         await this.client.buildTranslationFiles(
             ({ translation, output, resolvedOutputPath }) => {
                 this.log(

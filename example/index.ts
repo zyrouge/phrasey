@@ -28,7 +28,7 @@ const config = definePhraseyConfig({
 
 const start = async () => {
     const circuit = PhraseyCircuit.create(config);
-    await circuit.build();
+    await circuit.ensureParsed();
     const summary = await circuit.client.getFullSummary();
     for (const x of Object.values(summary)) {
         console.log(
@@ -46,6 +46,7 @@ const start = async () => {
         console.log(`Keys unset: ${x.keys.unset}`);
         console.log("");
     }
+    await circuit.build();
 };
 
 start();
