@@ -112,11 +112,14 @@ export class Phrasey<Keys extends PhraseyConfigKeys> {
     ) {
         for (const x of this.config.keys) {
             const key = x as Keys[number];
-            if (defaultTranslation) {
+            if (
+                PhraseyUtils.isBlankString(translation.translations[key]) &&
+                defaultTranslation
+            ) {
                 translation.translations[key] =
                     defaultTranslation.translations[key];
             }
-            if (!PhraseyUtils.isNotBlankString(translation.translations[key])) {
+            if (PhraseyUtils.isBlankString(translation.translations[key])) {
                 throw new PhraseyError(
                     `Missing translation key "${key}" in "${translation.locale}" (${translation.path})`
                 );
