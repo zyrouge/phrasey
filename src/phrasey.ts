@@ -13,6 +13,8 @@ import { PhraseyError } from "./error";
 export interface PhraseyTranslation<Keys extends PhraseyConfigKeys> {
     path: string;
     locale: string;
+    localeCode: string;
+    countryCode?: string;
     language: string;
     translations: Record<Keys[number], string>;
 }
@@ -69,10 +71,16 @@ export class Phrasey<Keys extends PhraseyConfigKeys> {
         if (transpile.beforeTranspilingFile) {
             parsed = await transpile.beforeTranspilingFile(parsed);
         }
-        if (!PhraseyUtils.isNotBlankString(parsed.Locale)) {
-            throw new PhraseyError(`Invalid "Locale" in "${p}"`);
+        if (PhraseyUtils.isBlankString(parsed.LocaleCode)) {
+            throw new PhraseyError(`Invalid "LocaleCode" in "${p}"`);
         }
-        if (!PhraseyUtils.isNotBlankString(parsed.Language)) {
+        if (
+            !PhraseyUtils.isUndefined(parsed.LocaleCode) &&
+            PhraseyUtils.isBlankString(parsed.LocaleCode)
+        ) {
+            throw new PhraseyError(`Invalid "LocaleCode" in "${p}"`);
+        }
+        if (PhraseyUtils.isBlankString(parsed.Language)) {
             throw new PhraseyError(`Invalid "Language" in "${p}"`);
         }
         if (!PhraseyUtils.isObject(parsed.Translations)) {
@@ -80,7 +88,12 @@ export class Phrasey<Keys extends PhraseyConfigKeys> {
         }
         let translation: PhraseyTranslation<Keys> = {
             path: p,
-            locale: parsed.Locale,
+            locale: PhraseyUtils.constructLocale(
+                parsed.localeCode,
+                parsed.countryCode
+            ),
+            localeCode: parsed.localeCode,
+            countryCode: parsed.countryCode,
             language: parsed.Language,
             translations: parsed.Translations,
         };
@@ -162,6 +175,7 @@ export class Phrasey<Keys extends PhraseyConfigKeys> {
                 resolvedOutputPath: resolvedPath,
             });
         }
+        await this.config.transpile.afterOutput?.();
     }
 
     async getInputFiles() {

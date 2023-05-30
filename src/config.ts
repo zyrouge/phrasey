@@ -24,6 +24,7 @@ export interface PhraseyConfig<Keys extends PhraseyConfigKeys> {
         output(
             translation: PhraseyTranslation<Keys>
         ): Promise<PhraseyTranspileOutputResult>;
+        afterOutput?(): Promise<void>;
     };
     log?(text: string): void;
 }
