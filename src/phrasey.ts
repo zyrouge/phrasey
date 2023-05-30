@@ -75,10 +75,10 @@ export class Phrasey<Keys extends PhraseyConfigKeys> {
             throw new PhraseyError(`Invalid "LocaleCode" in "${p}"`);
         }
         if (
-            !PhraseyUtils.isUndefined(parsed.LocaleCode) &&
-            PhraseyUtils.isBlankString(parsed.LocaleCode)
+            !PhraseyUtils.isUndefined(parsed.CountryCode) &&
+            PhraseyUtils.isBlankString(parsed.CountryCode)
         ) {
-            throw new PhraseyError(`Invalid "LocaleCode" in "${p}"`);
+            throw new PhraseyError(`Invalid "CountryCode" in "${p}"`);
         }
         if (PhraseyUtils.isBlankString(parsed.Language)) {
             throw new PhraseyError(`Invalid "Language" in "${p}"`);
@@ -89,11 +89,11 @@ export class Phrasey<Keys extends PhraseyConfigKeys> {
         let translation: PhraseyTranslation<Keys> = {
             path: p,
             locale: PhraseyUtils.constructLocale(
-                parsed.localeCode,
-                parsed.countryCode
+                parsed.LocaleCode,
+                parsed.CountryCode
             ),
-            localeCode: parsed.localeCode,
-            countryCode: parsed.countryCode,
+            localeCode: parsed.LocaleCode,
+            countryCode: parsed.CountryCode,
             language: parsed.Language,
             translations: parsed.Translations,
         };
