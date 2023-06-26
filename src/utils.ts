@@ -1,14 +1,44 @@
-export const PhraseyUtils = {
-    isBlankString: (value: any) =>
-        typeof value !== "string" || value.trim() === "",
-    isNotBlankString: (value: any): value is string =>
-        !PhraseyUtils.isBlankString(value),
-    isUndefined: (value: any): value is undefined => value === undefined,
-    isObject: (value: any): value is object =>
-        typeof value === "object" && !Array.isArray(value),
-    calculatePercentage: (x: number, total: number) => (x / total) * 100,
-    constructLocale: (localeCode: string, countryCode?: string) => {
-        if (!countryCode) return localeCode;
-        return `${localeCode}_${countryCode}`;
+import { PhraseyError } from "./error";
+const { version } = require("../package.json");
+
+export const PhraseyVersion = version;
+
+export interface PhraseyTreeLikeOptions<T> {
+    map?: (value: T) => string;
+    prefix?: string;
+    symbolPostMap?: (symbol: string) => string;
+}
+
+export const PhraseyTreeLike = {
+    LR: "─",
+    TBR: "├",
+    TR: "└",
+    build: <T>(
+        data: T[],
+        { map, prefix = "", symbolPostMap }: PhraseyTreeLikeOptions<T> = {}
+    ) => {
+        const lines: string[] = [];
+        data.forEach((x, i) => {
+            let prefixSymbol =
+                i === data.length - 1
+                    ? PhraseyTreeLike.TR
+                    : PhraseyTreeLike.TBR;
+            prefixSymbol += PhraseyTreeLike.LR;
+            if (symbolPostMap) {
+                prefixSymbol = symbolPostMap(prefixSymbol);
+            }
+            lines.push(`${prefix}${prefixSymbol} ${map?.(x) ?? x}`);
+        });
+        return lines.join("\n");
     },
+};
+
+export const PhraseySafeResolvePackage = (packageName: string) => {
+    try {
+        return require(packageName);
+    } catch (err) {
+        throw new PhraseyError(
+            `Cannot import format package named "${packageName}". Did you install it?`
+        );
+    }
 };

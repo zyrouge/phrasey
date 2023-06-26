@@ -1,310 +1,219 @@
-import path from "path";
-import fs from "fs-extra";
-import yaml from "yaml";
+import p from "path";
 import FastGlob from "fast-glob";
+import { ensureFile, writeFile } from "fs-extra";
+import { PhraseyConfig, PhraseyConfigType } from "./config";
+import { PhraseyTranslation } from "./translation";
+import { PhraseyResult, safeRun } from "./result";
+import { PhraseyTransformer } from "./transformer";
+import { PhraseySchema, PhraseySchemaType } from "./schema";
 import {
-    PhraseyConfig,
-    PhraseyConfigKeys,
-    PhraseyTranspileOutputResult,
-} from "./config";
-import { PhraseyUtils } from "./utils";
-import { PhraseyError } from "./error";
+    PhraseyContentFormatDeserializer,
+    PhraseyContentFormatSerializer,
+    PhraseyContentFormats,
+} from "./contentFormats";
+import { PhraseyError, PhraseyWrappedError } from "./error";
+import { PhraseySummary } from "./summary";
+import { PhraseyHooks } from "./hooks";
+import {
+    PhraseyTranslationStringFormats,
+    PhraseyTranslationStringFormatter,
+} from "./translationStringFormat";
 
-export interface PhraseyTranslation<Keys extends PhraseyConfigKeys> {
-    path: string;
-    locale: string;
-    localeCode: string;
-    countryCode?: string;
-    language: string;
-    translations: Record<Keys[number], string>;
-}
-
-export type PhraseyTranslationSummaryTranslationState =
-    | "set"
-    | "default"
-    | "unset";
-
-export interface PhraseyTranslationSummary<Keys extends PhraseyConfigKeys> {
-    translation: PhraseyTranslation<Keys>;
-    isBuildable: boolean;
-    isStandaloneBuildable: boolean;
-    keys: {
-        states: Record<Keys[number], PhraseyTranslationSummaryTranslationState>;
-        set: number;
-        defaulted: number;
-        unset: number;
-        total: number;
-        percents: {
-            set: number;
-            defaulted: number;
-            setOrDefaulted: number;
-            unset: number;
-        };
+export interface PhraseyCreateOptions {
+    config: {
+        path: string;
+        format: string;
     };
 }
 
-export interface PhraseyFullSummary<Keys extends PhraseyConfigKeys> {
-    keys: {
-        set: number;
-        defaulted: number;
-        unset: number;
-        total: number;
-        percents: {
-            set: number;
-            defaulted: number;
-            setOrDefaulted: number;
-            unset: number;
-        };
-    };
-    summary: Record<string, PhraseyTranslationSummary<Keys>>;
-}
+export class Phrasey {
+    defaultLocale: string | null = null;
+    translations = new Map<string, PhraseyTranslation>();
+    loadErrors: Error[] = [];
+    buildErrors: Error[] = [];
+    hooks = new PhraseyHooks();
 
-export class Phrasey<Keys extends PhraseyConfigKeys> {
-    translations = new Map<string, PhraseyTranslation<Keys>>();
+    constructor(
+        public cwd: string,
+        public config: PhraseyConfigType,
+        public schema: PhraseySchemaType
+    ) {}
 
-    constructor(public config: PhraseyConfig<Keys>) {}
-
-    async parseInputFile(p: string) {
-        const { transpile } = this.config;
-        const content = await fs.readFile(p);
-        let parsed = yaml.parse(content.toString());
-        if (transpile.beforeTranspilingFile) {
-            parsed = await transpile.beforeTranspilingFile(parsed);
-        }
-        if (PhraseyUtils.isBlankString(parsed.LocaleCode)) {
-            throw new PhraseyError(`Invalid "LocaleCode" in "${p}"`);
-        }
-        if (
-            !PhraseyUtils.isUndefined(parsed.CountryCode) &&
-            PhraseyUtils.isBlankString(parsed.CountryCode)
-        ) {
-            throw new PhraseyError(`Invalid "CountryCode" in "${p}"`);
-        }
-        if (PhraseyUtils.isBlankString(parsed.Language)) {
-            throw new PhraseyError(`Invalid "Language" in "${p}"`);
-        }
-        if (!PhraseyUtils.isObject(parsed.Translations)) {
-            throw new PhraseyError(`Invalid "Translations" in "${p}"`);
-        }
-        let translation: PhraseyTranslation<Keys> = {
-            path: p,
-            locale: PhraseyUtils.constructLocale(
-                parsed.LocaleCode,
-                parsed.CountryCode
-            ),
-            localeCode: parsed.LocaleCode,
-            countryCode: parsed.CountryCode,
-            language: parsed.Language,
-            translations: parsed.Translations,
-        };
-        if (transpile.afterTranspilingFile) {
-            translation = await transpile.afterTranspilingFile(translation);
-        }
-        if (this.translations.has(translation.locale)) {
-            const existing = this.translations.get(translation.locale)!;
-            throw new PhraseyError(
-                `Duplicate locales found in "${translation.path}" and "${existing.path}" (${existing.locale})`
+    async init() {
+        if (this.config.hooks?.file) {
+            this.config.hooks.file = p.resolve(
+                this.cwd,
+                this.config.hooks.file
             );
+            await this.hooks.addHandlerFile(this.config.hooks.file);
         }
-        this.translations.set(translation.locale, translation);
+        await this.hooks.dispatch("afterInit", this);
     }
 
-    getDefaultTranslation() {
-        if (!this.config.defaultLocale) return;
-        if (!this.translations.has(this.config.defaultLocale)) {
-            throw new PhraseyError(
-                `Invalid default locale "${this.config.defaultLocale}"`
+    async load(): Promise<boolean> {
+        await this.hooks.dispatch("beforeLoad", this);
+        const defaultTranslationPath = this.config.input.default
+            ? p.resolve(this.cwd, this.config.input.default)
+            : undefined;
+        const deserializer = PhraseyContentFormats.resolveDeserializer(
+            this.config.input.format
+        );
+        let defaultTranslation: PhraseyTranslation | undefined;
+        if (defaultTranslationPath) {
+            const locale = await this.loadTranslation(
+                defaultTranslationPath,
+                deserializer
             );
-        }
-        return this.translations.get(this.config.defaultLocale);
-    }
-
-    ensureTranslation(
-        translation: PhraseyTranslation<Keys>,
-        defaultTranslation?: PhraseyTranslation<Keys>
-    ) {
-        for (const x of this.config.keys) {
-            const key = x as Keys[number];
-            if (
-                PhraseyUtils.isBlankString(translation.translations[key]) &&
-                defaultTranslation
-            ) {
-                translation.translations[key] =
-                    defaultTranslation.translations[key];
-            }
-            if (PhraseyUtils.isBlankString(translation.translations[key])) {
-                throw new PhraseyError(
-                    `Missing translation key "${key}" in "${translation.locale}" (${translation.path})`
-                );
+            if (locale) {
+                this.defaultLocale = locale;
+                defaultTranslation = this.translations.get(locale);
             }
         }
-    }
-
-    ensureAllTranslations() {
-        const defaultTranslation = this.getDefaultTranslation();
-        if (defaultTranslation) {
-            this.ensureTranslation(defaultTranslation);
-        }
-        for (const [, x] of this.translations) {
-            if (x.locale === defaultTranslation?.locale) {
-                continue;
-            }
-            this.ensureTranslation(x, defaultTranslation);
-        }
-    }
-
-    async buildOutputFiles(
-        onBuild?: (data: {
-            translation: PhraseyTranslation<Keys>;
-            output: PhraseyTranspileOutputResult;
-            resolvedOutputPath: string;
-        }) => void
-    ) {
-        await this.config.transpile.beforeOutput?.();
-        for (const [, x] of this.translations) {
-            const output = await this.config.transpile.output(x);
-            let resolvedPath = path.resolve(
-                this.config.rootDir ?? process.cwd(),
-                output.path
-            );
-            await fs.ensureDir(path.dirname(resolvedPath));
-            await fs.writeFile(resolvedPath, output.content);
-            onBuild?.({
-                translation: x,
-                output: output,
-                resolvedOutputPath: resolvedPath,
-            });
-        }
-        await this.config.transpile.afterOutput?.();
-    }
-
-    async getInputFiles() {
-        const { rootDir, input } = this.config;
-        const files = FastGlob.stream(input.include, {
+        const stream = FastGlob.stream(this.config.input.files, {
+            cwd: this.cwd,
             absolute: true,
-            cwd: rootDir,
-            ignore: input.exclude,
+            dot: true,
+            onlyFiles: true,
         });
-        return files;
-    }
-
-    async parseAllInputFiles() {
-        const files = await this.getInputFiles();
-        for await (const x of files) {
-            await this.parseInputFile(x.toString());
+        for await (const x of stream) {
+            const path = x.toString();
+            await this.loadTranslation(path, deserializer, defaultTranslation);
         }
+        await this.hooks.dispatch("afterLoad", this);
+        return !this.hasLoadErrors();
     }
 
-    async prepareSummary(
-        translation: PhraseyTranslation<Keys>,
-        defaultTranslation?: PhraseyTranslation<Keys>
-    ) {
-        const summary: PhraseyTranslationSummary<Keys> = {
-            translation,
-            isBuildable: false,
-            isStandaloneBuildable: false,
-            keys: {
-                states: {} as Record<
-                    Keys[number],
-                    PhraseyTranslationSummaryTranslationState
-                >,
-                set: 0,
-                defaulted: 0,
-                unset: 0,
-                total: 0,
-                percents: {
-                    set: 0,
-                    defaulted: 0,
-                    setOrDefaulted: 0,
-                    unset: 0,
-                },
-            },
-        };
-        for (const x of this.config.keys) {
-            const key = x as Keys[number];
-            if (PhraseyUtils.isNotBlankString(translation.translations[key])) {
-                summary.keys.states[key] = "set";
-                summary.keys.set++;
-            } else if (
-                PhraseyUtils.isNotBlankString(
-                    defaultTranslation?.translations[key]
+    async loadTranslation(
+        path: string,
+        deserializer: PhraseyContentFormatDeserializer,
+        defaultTranslation?: PhraseyTranslation
+    ): Promise<string | null> {
+        await this.hooks.dispatch("beforeLoadTranslation", this);
+        const translation = await PhraseyTranslation.create(
+            path,
+            this.schema,
+            deserializer,
+            defaultTranslation
+        );
+        if (!translation.success) {
+            this.loadErrors.push(translation.error);
+            return null;
+        }
+        this.translations.set(translation.data.locale.code, translation.data);
+        await this.hooks.dispatch(
+            "afterLoadTranslation",
+            this,
+            translation.data.locale.code
+        );
+        return translation.data.locale.code;
+    }
+
+    async build(): Promise<boolean> {
+        await this.hooks.dispatch("beforeBuild", this);
+        if (!this.config.output) {
+            this.loadErrors.push(
+                new PhraseyError(
+                    `Cannot build when "output" is not specified in configuration file`
                 )
-            ) {
-                summary.keys.states[key] = "default";
-                summary.keys.defaulted++;
-            } else {
-                summary.keys.states[key] = "unset";
-                summary.keys.unset++;
-            }
-            summary.keys.total++;
+            );
+            return false;
         }
-        summary.isBuildable =
-            summary.keys.set + summary.keys.defaulted === summary.keys.total;
-        summary.isStandaloneBuildable = summary.keys.set === summary.keys.total;
-        summary.keys.percents.set = PhraseyUtils.calculatePercentage(
-            summary.keys.set,
-            summary.keys.total
+        const serializer = PhraseyContentFormats.resolveSerializer(
+            this.config.output.format
         );
-        summary.keys.percents.defaulted = PhraseyUtils.calculatePercentage(
-            summary.keys.defaulted,
-            summary.keys.total
+        const stringFormatter = PhraseyTranslationStringFormats.resolve(
+            this.config.output.stringFormat
         );
-        summary.keys.percents.setOrDefaulted = PhraseyUtils.calculatePercentage(
-            summary.keys.set + summary.keys.defaulted,
-            summary.keys.total
+        for (const x of this.translations.values()) {
+            const path = p.resolve(
+                this.cwd,
+                this.config.output.dir,
+                `${x.locale.code}.${serializer.extension}`
+            );
+            await this.buildTranslation(path, x, serializer, stringFormatter);
+        }
+        await this.hooks.dispatch("afterBuild", this);
+        return !this.hasBuildErrors();
+    }
+
+    async buildTranslation(
+        path: string,
+        translation: PhraseyTranslation,
+        serializer: PhraseyContentFormatSerializer,
+        stringFormatter: PhraseyTranslationStringFormatter
+    ): Promise<boolean> {
+        await this.hooks.dispatch("beforeBuildTranslation", this);
+        if (!translation.stats.isBuildable) {
+            this.buildErrors.push(
+                new PhraseyError(
+                    `Translation "${translation.locale.code}" is not buildable`
+                )
+            );
+            return false;
+        }
+        await ensureFile(path);
+        const content = safeRun(() =>
+            serializer.serialize(translation.json(stringFormatter))
         );
-        summary.keys.percents.unset = PhraseyUtils.calculatePercentage(
-            summary.keys.unset,
-            summary.keys.total
+        if (!content.success) {
+            this.buildErrors.push(
+                new PhraseyWrappedError(
+                    `Serializing "${translation.locale.code}" failed`,
+                    content.error
+                )
+            );
+            return false;
+        }
+        await writeFile(path, content.data);
+        await this.hooks.dispatch(
+            "afterBuildTranslation",
+            this,
+            translation.locale.code
         );
+        return true;
+    }
+
+    hasLoadErrors() {
+        return this.loadErrors.length > 0;
+    }
+
+    hasBuildErrors() {
+        return this.buildErrors.length > 0;
+    }
+
+    prepareSummary() {
+        const summary = new PhraseySummary();
+        for (const x of this.translations.values()) {
+            summary.add(x);
+        }
         return summary;
     }
 
-    async prepareFullSummary() {
-        const defaultTranslation = this.getDefaultTranslation();
-        const fullSummary: PhraseyFullSummary<Keys> = {
-            keys: {
-                set: 0,
-                defaulted: 0,
-                unset: 0,
-                total: 0,
-                percents: {
-                    set: 0,
-                    defaulted: 0,
-                    setOrDefaulted: 0,
-                    unset: 0,
-                },
-            },
-            summary: {},
+    static async create(
+        options: PhraseyCreateOptions
+    ): Promise<PhraseyResult<Phrasey, Error>> {
+        options.config.path = p.resolve(process.cwd(), options.config.path);
+        const config = await PhraseyTransformer.transform(
+            options.config.path,
+            PhraseyContentFormats.resolveDeserializer(options.config.format),
+            PhraseyConfig
+        );
+        if (!config.success) return config;
+        const cwd = p.dirname(options.config.path);
+        config.data.schema.path = p.resolve(cwd, config.data.schema.path);
+        const schema = await PhraseyTransformer.transform(
+            config.data.schema.path,
+            PhraseyContentFormats.resolveDeserializer(
+                config.data.schema.format
+            ),
+            PhraseySchema
+        );
+        if (!schema.success) return schema;
+        const phrasey = new Phrasey(cwd, config.data, schema.data);
+        await phrasey.init();
+        return {
+            success: true,
+            data: phrasey,
         };
-        for (const [, translation] of this.translations) {
-            const summary = await this.prepareSummary(
-                translation,
-                defaultTranslation
-            );
-            fullSummary.keys.set += summary.keys.set;
-            fullSummary.keys.defaulted += summary.keys.defaulted;
-            fullSummary.keys.unset += summary.keys.unset;
-            fullSummary.keys.total += summary.keys.total;
-            fullSummary.summary[translation.locale] = summary;
-        }
-        fullSummary.keys.percents.set = PhraseyUtils.calculatePercentage(
-            fullSummary.keys.set,
-            fullSummary.keys.total
-        );
-        fullSummary.keys.percents.defaulted = PhraseyUtils.calculatePercentage(
-            fullSummary.keys.defaulted,
-            fullSummary.keys.total
-        );
-        fullSummary.keys.percents.setOrDefaulted =
-            PhraseyUtils.calculatePercentage(
-                fullSummary.keys.set + fullSummary.keys.defaulted,
-                fullSummary.keys.total
-            );
-        fullSummary.keys.percents.unset = PhraseyUtils.calculatePercentage(
-            fullSummary.keys.unset,
-            fullSummary.keys.total
-        );
-        return fullSummary;
     }
 }

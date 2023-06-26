@@ -1,0 +1,16 @@
+schema:
+    path: ./schema.yaml
+    format: yaml
+
+input:
+    files: ./i18n/**.yaml
+    default: ./i18n/en.yaml
+    format: yaml
+
+output:
+    dir: ./dist
+    format: json
+    stringFormat: parts
+
+hooks:
+    file: ./hooks.js

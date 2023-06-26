@@ -1,6 +1,6 @@
-Locale: fr
-Language: French
-Translations:
+locale: fr
+
+keys:
     HelloThere: Bonjour!
     HowAreYou: Comment allez-vous?
     # ThankYou: Merci

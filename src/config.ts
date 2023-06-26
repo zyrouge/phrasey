@@ -1,36 +1,35 @@
-import { PhraseyTranslation } from "./phrasey";
+import { z } from "zod";
 
-export type PhraseyConfigKeys = readonly string[];
+export const PhraseyConfigSchema = z.object({
+    path: z.string(),
+    format: z.string(),
+});
 
-export interface PhraseyTranspileOutputResult {
-    path: string;
-    content: string;
-}
+export const PhraseyConfigInput = z.object({
+    files: z.union([z.string(), z.array(z.string())]),
+    default: z.string().optional(),
+    format: z.string(),
+});
 
-export interface PhraseyConfig<Keys extends PhraseyConfigKeys> {
-    rootDir?: string;
-    input: {
-        include: string[];
-        exclude?: string[];
-    };
-    defaultLocale?: string;
-    keys: Keys;
-    transpile: {
-        beforeTranspilingFile?(content: any): Promise<any>;
-        afterTranspilingFile?(
-            translation: PhraseyTranslation<Keys>
-        ): Promise<PhraseyTranslation<Keys>>;
-        beforeOutput?(): Promise<void>;
-        output(
-            translation: PhraseyTranslation<Keys>
-        ): Promise<PhraseyTranspileOutputResult>;
-        afterOutput?(): Promise<void>;
-    };
-    log?(text: string): void;
-}
+export const PhraseyConfigOutput = z.object({
+    dir: z.string(),
+    format: z.string(),
+    stringFormat: z.string(),
+});
 
-export const definePhraseyConfig = <Keys extends PhraseyConfigKeys>(
-    config: PhraseyConfig<Keys>
-) => {
-    return config;
-};
+export const PhraseyConfigHooks = z.object({
+    file: z.string(),
+});
+
+export const PhraseyConfig = z.object({
+    schema: PhraseyConfigSchema,
+    input: PhraseyConfigInput,
+    output: PhraseyConfigOutput.optional(),
+    hooks: PhraseyConfigHooks.optional(),
+});
+
+export type PhraseyConfigType = z.infer<typeof PhraseyConfig>;
+export type PhraseyConfigSchemaType = z.infer<typeof PhraseyConfigSchema>;
+export type PhraseyConfigInputType = z.infer<typeof PhraseyConfigInput>;
+export type PhraseyConfigOutputType = z.infer<typeof PhraseyConfigOutput>;
+export type PhraseyConfigHooksType = z.infer<typeof PhraseyConfigHooks>;

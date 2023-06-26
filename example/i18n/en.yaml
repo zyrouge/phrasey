@@ -1,6 +1,7 @@
-Locale: en
-Language: English
-Translations:
+locale: en
+
+keys:
     HelloThere: Hello There!
     HowAreYou: How are you?
     ThankYou: Thank You
+    HelloX: Hello, {user}!
