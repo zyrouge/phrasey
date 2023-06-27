@@ -5,7 +5,7 @@ import {
     PhraseyContentFormats,
     PhraseyTranslationStatsJson,
     PhraseyTreeLike,
-    safeRun,
+    PhraseySafeRun,
 } from "../..";
 import { log, pico } from "../utils";
 import { createPhrasey } from "../steps/createPhrasey";
@@ -13,6 +13,7 @@ import { PhraseyConfigOptions } from "../steps/parsePhraseyOptions";
 
 export const SummaryCommand = new Command()
     .name("summary")
+    .description("Generate summary of the project")
     .addOption(PhraseyConfigOptions.configPath)
     .addOption(PhraseyConfigOptions.configFormat)
     .option(`-o --output-format <format>`)
@@ -79,7 +80,7 @@ export const SummaryCommand = new Command()
             default:
                 const serializer =
                     PhraseyContentFormats.resolveSerializer(outputFormat);
-                const serializedResult = safeRun(() => {
+                const serializedResult = PhraseySafeRun(() => {
                     serialized = serializer.serialize(data);
                 });
                 if (!serializedResult.success) {

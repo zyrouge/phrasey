@@ -18,7 +18,7 @@ export type PhraseySchemaType = z.infer<typeof PhraseySchema>;
 
 export const PhraseyUnprocessedTranslation = z.object({
     locale: z.string(),
-    extras: z.record(z.any()).default({}),
+    extras: z.record(z.any()).optional(),
     keys: z.record(z.string()),
 });
 

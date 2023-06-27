@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const PhraseyConfigSchema = z.object({
-    path: z.string(),
+    file: z.string(),
     format: z.string(),
 });
 

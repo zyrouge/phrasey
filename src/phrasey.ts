@@ -3,7 +3,7 @@ import FastGlob from "fast-glob";
 import { ensureFile, writeFile } from "fs-extra";
 import { PhraseyConfig, PhraseyConfigType } from "./config";
 import { PhraseyTranslation } from "./translation";
-import { PhraseyResult, safeRun } from "./result";
+import { PhraseyResult, PhraseySafeRun } from "./result";
 import { PhraseyTransformer } from "./transformer";
 import { PhraseySchema, PhraseySchemaType } from "./schema";
 import {
@@ -152,7 +152,7 @@ export class Phrasey {
             return false;
         }
         await ensureFile(path);
-        const content = safeRun(() =>
+        const content = PhraseySafeRun(() =>
             serializer.serialize(translation.json(stringFormatter))
         );
         if (!content.success) {
@@ -200,9 +200,9 @@ export class Phrasey {
         );
         if (!config.success) return config;
         const cwd = p.dirname(options.config.path);
-        config.data.schema.path = p.resolve(cwd, config.data.schema.path);
+        config.data.schema.file = p.resolve(cwd, config.data.schema.file);
         const schema = await PhraseyTransformer.transform(
-            config.data.schema.path,
+            config.data.schema.file,
             PhraseyContentFormats.resolveDeserializer(
                 config.data.schema.format
             ),

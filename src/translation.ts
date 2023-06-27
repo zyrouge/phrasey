@@ -82,6 +82,7 @@ export class PhraseyTranslation {
                 ),
             };
         }
+        const extras = unprocessed.data.extras ?? {};
         const stats = new PhraseyTranslationStats();
         const parsedKeys: Record<string, PhraseyTranslationStringValue> = {};
         for (const x of schema.keys) {
@@ -116,7 +117,7 @@ export class PhraseyTranslation {
         const translation = new PhraseyTranslation(
             path,
             locale,
-            unprocessed.data.keys,
+            extras,
             parsedKeys,
             stats
         );

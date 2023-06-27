@@ -1,6 +1,8 @@
+![](./media/banner-compact.png)
+
 # Phrasey
 
-An i18n Transpiler.
+A full-blown i18n build system.
 
 ```
 npm install phrasey

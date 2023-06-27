@@ -6,6 +6,7 @@ import { PhraseyConfigOptions } from "../steps/parsePhraseyOptions";
 
 export const BuildCommand = new Command()
     .name("build")
+    .description("Build the project")
     .addOption(PhraseyConfigOptions.configPath)
     .addOption(PhraseyConfigOptions.configFormat)
     .action(async (options) => {

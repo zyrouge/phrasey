@@ -1,6 +1,6 @@
 import { readFile } from "fs-extra";
 import { ZodTypeDef, z } from "zod";
-import { PhraseyResult, safeRun, safeRunAsync } from "./result";
+import { PhraseyResult, PhraseySafeRun, PhraseySafeRunAsync } from "./result";
 import { PhraseyContentFormatDeserializer } from "./contentFormats";
 import { PhraseyValidationError } from "./error";
 
@@ -10,11 +10,13 @@ export class PhraseyTransformer {
         deserializer: PhraseyContentFormatDeserializer,
         schema: z.ZodType<Output, Def, Input>
     ): Promise<PhraseyResult<Output, Error>> {
-        const content = await safeRunAsync(
+        const content = await PhraseySafeRunAsync(
             async () => await readFile(path, { encoding: "utf-8" })
         );
         if (!content.success) return content;
-        const parsed = safeRun(() => deserializer.deserialize(content.data));
+        const parsed = PhraseySafeRun(() =>
+            deserializer.deserialize(content.data)
+        );
         if (!parsed.success) return parsed;
         const transformed = schema.safeParse(parsed.data);
         if (!transformed.success) {
