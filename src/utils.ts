@@ -3,6 +3,8 @@ const { version } = require("../package.json");
 
 export const PhraseyVersion = version;
 
+export const PhraseyIdentifierRegex = /^[A-z][A-z0-9_]*$/;
+
 export interface PhraseyTreeLikeOptions<T> {
     map?: (value: T) => string;
     prefix?: string;

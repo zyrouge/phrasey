@@ -1,12 +1,12 @@
 import { PhraseyError } from "./error";
-import { PhraseySchemaKeyType } from "./schema";
+import { PhraseyZSchemaKeyType } from "./z/schema";
 import { PhraseyTranslationStringParts } from "./translation";
 import { PhraseySafeResolvePackage } from "./utils";
 
 export interface PhraseyTranslationStringFormatter {
     format(
         parts: PhraseyTranslationStringParts,
-        schema: PhraseySchemaKeyType
+        schema: PhraseyZSchemaKeyType
     ): any;
 }
 

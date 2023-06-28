@@ -2,13 +2,13 @@ import p from "path";
 import { Command } from "commander";
 import enquirer, { Prompt } from "enquirer";
 import {
-    PhraseyConfigType,
+    PhraseyZConfigType,
+    PhraseyZSchemaType,
+    PhraseyZTranslationType,
     PhraseyContentFormats,
     PhraseyTranslationStringFormats,
     PhraseyTreeLike,
     PhraseySafeRun,
-    PhraseySchemaType,
-    PhraseyUnprocessedTranslationType,
 } from "../..";
 import { log, pico } from "../utils";
 import { writeFile } from "fs-extra";
@@ -131,7 +131,7 @@ export const InitCommand = new Command()
             message: "Path to hooks file (eg. ./i18n-hooks.js)",
         });
         log.ln();
-        const config: PhraseyConfigType = {
+        const config: PhraseyZConfigType = {
             input: {
                 files: [inputFiles],
                 format: inputFormat,
@@ -170,7 +170,7 @@ export const InitCommand = new Command()
             log.write(JSON.stringify(config, null, 4));
             log.ln();
         }
-        const schema: PhraseySchemaType = {
+        const schema: PhraseyZSchemaType = {
             keys: [
                 {
                     name: "HelloX",
@@ -201,7 +201,7 @@ export const InitCommand = new Command()
             log.write(JSON.stringify(schema, null, 4));
             log.ln();
         }
-        const demoTranslation: PhraseyUnprocessedTranslationType = {
+        const demoTranslation: PhraseyZTranslationType = {
             locale: "en",
             keys: {
                 HelloX: "Hello {user}!",

@@ -2,7 +2,7 @@ import { PhraseyError } from "./error";
 import { Phrasey } from "./phrasey";
 
 export interface PhraseyHooksHandler {
-    afterInit(phrasey: Phrasey): Promise<void>;
+    onCreate(phrasey: Phrasey): Promise<void>;
     beforeLoad(phrasey: Phrasey): Promise<void>;
     afterLoad(phrasey: Phrasey): Promise<void>;
     beforeLoadTranslation(phrasey: Phrasey): Promise<void>;

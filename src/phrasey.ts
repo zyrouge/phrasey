@@ -1,11 +1,8 @@
 import p from "path";
 import FastGlob from "fast-glob";
 import { ensureFile, writeFile } from "fs-extra";
-import { PhraseyConfig, PhraseyConfigType } from "./config";
 import { PhraseyTranslation } from "./translation";
 import { PhraseyResult, PhraseySafeRun } from "./result";
-import { PhraseyTransformer } from "./transformer";
-import { PhraseySchema, PhraseySchemaType } from "./schema";
 import {
     PhraseyContentFormatDeserializer,
     PhraseyContentFormatSerializer,
@@ -18,6 +15,8 @@ import {
     PhraseyTranslationStringFormats,
     PhraseyTranslationStringFormatter,
 } from "./translationStringFormat";
+import { PhraseyConfig } from "./config";
+import { PhraseySchema } from "./schema";
 
 export interface PhraseyCreateOptions {
     config: {
@@ -31,32 +30,21 @@ export class Phrasey {
     translations = new Map<string, PhraseyTranslation>();
     loadErrors: Error[] = [];
     buildErrors: Error[] = [];
-    hooks = new PhraseyHooks();
 
     constructor(
         public cwd: string,
-        public config: PhraseyConfigType,
-        public schema: PhraseySchemaType
+        public config: PhraseyConfig,
+        public schema: PhraseySchema,
+        public hooks: PhraseyHooks
     ) {}
-
-    async init() {
-        if (this.config.hooks) {
-            for (let i = 0; i < this.config.hooks.length; i++) {
-                const hookFilePath = p.resolve(this.cwd, this.config.hooks[i]!);
-                this.config.hooks[i] = hookFilePath;
-                this.hooks.addHandlerFile(hookFilePath);
-            }
-        }
-        await this.hooks.dispatch("afterInit", this);
-    }
 
     async load(): Promise<boolean> {
         await this.hooks.dispatch("beforeLoad", this);
-        const defaultTranslationPath = this.config.input.default
-            ? p.resolve(this.cwd, this.config.input.default)
+        const defaultTranslationPath = this.config.z.input.default
+            ? p.resolve(this.cwd, this.config.z.input.default)
             : undefined;
         const deserializer = PhraseyContentFormats.resolveDeserializer(
-            this.config.input.format
+            this.config.z.input.format
         );
         let defaultTranslation: PhraseyTranslation | undefined;
         if (defaultTranslationPath) {
@@ -69,7 +57,7 @@ export class Phrasey {
                 defaultTranslation = this.translations.get(locale);
             }
         }
-        const stream = FastGlob.stream(this.config.input.files, {
+        const stream = FastGlob.stream(this.config.z.input.files, {
             cwd: this.cwd,
             absolute: true,
             dot: true,
@@ -110,7 +98,7 @@ export class Phrasey {
 
     async build(): Promise<boolean> {
         await this.hooks.dispatch("beforeBuild", this);
-        if (!this.config.output) {
+        if (!this.config.z.output) {
             this.loadErrors.push(
                 new PhraseyError(
                     `Cannot build when "output" is not specified in configuration file`
@@ -119,15 +107,15 @@ export class Phrasey {
             return false;
         }
         const serializer = PhraseyContentFormats.resolveSerializer(
-            this.config.output.format
+            this.config.z.output.format
         );
         const stringFormatter = PhraseyTranslationStringFormats.resolve(
-            this.config.output.stringFormat
+            this.config.z.output.stringFormat
         );
         for (const x of this.translations.values()) {
             const path = p.resolve(
                 this.cwd,
-                this.config.output.dir,
+                this.config.z.output.dir,
                 `${x.locale.code}.${serializer.extension}`
             );
             await this.buildTranslation(path, x, serializer, stringFormatter);
@@ -193,27 +181,28 @@ export class Phrasey {
         options: PhraseyCreateOptions
     ): Promise<PhraseyResult<Phrasey, Error>> {
         options.config.file = p.resolve(process.cwd(), options.config.file);
-        const config = await PhraseyTransformer.transform(
+        const config = await PhraseyConfig.create(
             options.config.file,
-            PhraseyContentFormats.resolveDeserializer(options.config.format),
-            PhraseyConfig
+            options.config.format
         );
         if (!config.success) return config;
         const cwd = p.dirname(options.config.file);
-        config.data.schema.file = p.resolve(cwd, config.data.schema.file);
-        const schema = await PhraseyTransformer.transform(
-            config.data.schema.file,
-            PhraseyContentFormats.resolveDeserializer(
-                config.data.schema.format
-            ),
-            PhraseySchema
+        config.data.z.schema.file = p.resolve(cwd, config.data.z.schema.file);
+        const schema = await PhraseySchema.create(
+            config.data.z.schema.file,
+            config.data.z.schema.format
         );
         if (!schema.success) return schema;
-        const phrasey = new Phrasey(cwd, config.data, schema.data);
-        await phrasey.init();
-        return {
-            success: true,
-            data: phrasey,
-        };
+        const hooks = new PhraseyHooks();
+        if (config.data.z.hooks) {
+            for (let i = 0; i < config.data.z.hooks.length; i++) {
+                const hookFilePath = p.resolve(cwd, config.data.z.hooks[i]!);
+                config.data.z.hooks[i] = hookFilePath;
+                hooks.addHandlerFile(hookFilePath);
+            }
+        }
+        const phrasey = new Phrasey(cwd, config.data, schema.data, hooks);
+        await hooks.dispatch("onCreate", phrasey);
+        return { success: true, data: phrasey };
     }
 }

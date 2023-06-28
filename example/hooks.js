@@ -5,12 +5,11 @@ const pico = require("picocolors");
 const logPrefix = pico.gray("[hooks:afterLoad]");
 
 /**
- * @type {import("../src").PhraseyHooksHandler}
+ * @type {import("../src").PhraseyHooksPartialHandler}
  */
 const handler = {
     afterLoad: async (phrasey) => {
         try {
-            const schema = phrasey.schema;
             const modelPath = p.resolve(__dirname, "dist/model.d.ts");
             const content = `
 export interface ITranslation {
@@ -19,7 +18,7 @@ export interface ITranslation {
         code: string;
     }
 
-${schema.keys
+${phrasey.schema.z.keys
     .map((x) => {
         if (!x.parameters) {
             return `    ${x.name}: string;`;

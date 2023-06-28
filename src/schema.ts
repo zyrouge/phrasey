@@ -1,27 +1,34 @@
-import { z } from "zod";
+import { PhraseyContentFormats } from "./contentFormats";
+import { PhraseyResult } from "./result";
+import { PhraseyTransformer } from "./transformer";
+import { PhraseyZSchema, PhraseyZSchemaKeyType, PhraseyZSchemaType } from "./z";
 
-export const PhraseyIdentifierRegex = /^[A-z][A-z0-9_]*$/;
+export class PhraseySchema {
+    keysMap = new Map<string, PhraseyZSchemaKeyType>();
 
-export const PhraseySchemaKey = z.object({
-    name: z.string().regex(PhraseyIdentifierRegex),
-    description: z.string().optional(),
-    parameters: z.array(z.string().regex(PhraseyIdentifierRegex)).optional(),
-});
+    constructor(public z: PhraseyZSchemaType) {}
 
-export type PhraseySchemaKeyType = z.infer<typeof PhraseySchemaKey>;
+    initMap() {
+        for (const x of this.z.keys) {
+            this.keysMap.set(x.name, x);
+        }
+    }
 
-export const PhraseySchema = z.object({
-    keys: z.array(PhraseySchemaKey),
-});
+    key(name: string) {
+        return this.keysMap.get(name)!;
+    }
 
-export type PhraseySchemaType = z.infer<typeof PhraseySchema>;
-
-export const PhraseyUnprocessedTranslation = z.object({
-    locale: z.string(),
-    extras: z.record(z.any()).optional(),
-    keys: z.record(z.string()),
-});
-
-export type PhraseyUnprocessedTranslationType = z.infer<
-    typeof PhraseyUnprocessedTranslation
->;
+    static async create(
+        path: string,
+        format: string
+    ): Promise<PhraseyResult<PhraseySchema, Error>> {
+        const z = await PhraseyTransformer.transform(
+            path,
+            PhraseyContentFormats.resolveDeserializer(format),
+            PhraseyZSchema
+        );
+        if (!z.success) return z;
+        const schema = new PhraseySchema(z.data);
+        return { success: true, data: schema };
+    }
+}

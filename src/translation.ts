@@ -2,13 +2,10 @@ import { PhraseyError } from "./error";
 import { PhraseyContentFormatDeserializer } from "./contentFormats";
 import { PhraseyLocaleType, PhraseyLocales } from "./locales";
 import { PhraseyResult } from "./result";
-import {
-    PhraseySchemaKeyType,
-    PhraseySchemaType,
-    PhraseyUnprocessedTranslation,
-} from "./schema";
 import { PhraseyTransformer } from "./transformer";
 import { PhraseyTranslationStringFormatter } from "./translationStringFormat";
+import { PhraseySchema } from "./schema";
+import { PhraseyZSchemaKeyType, PhraseyZTranslation } from "./z";
 
 export interface PhraseyTranslationStringPart {
     type: "string" | "parameter";
@@ -39,6 +36,7 @@ export interface PhraseyTranslationJson {
 export class PhraseyTranslation {
     constructor(
         public path: string,
+        public schema: PhraseySchema,
         public locale: PhraseyLocaleType,
         public extras: Record<string, any>,
         public keys: Record<string, PhraseyTranslationStringValue>,
@@ -51,7 +49,8 @@ export class PhraseyTranslation {
         const keys: Record<string, any> = {};
         Object.entries(this.keys).map(([k, v]) => {
             if (v.state === "set" || v.state === "default") {
-                keys[k] = stringFormatter.format(v.parts);
+                const keySchema = this.schema.key(k);
+                keys[k] = stringFormatter.format(v.parts, keySchema);
             }
         });
         return { locale: this.locale, extras: this.extras, keys };
@@ -59,14 +58,14 @@ export class PhraseyTranslation {
 
     static async create(
         path: string,
-        schema: PhraseySchemaType,
+        schema: PhraseySchema,
         deserialize: PhraseyContentFormatDeserializer,
         defaultTranslation?: PhraseyTranslation
     ): Promise<PhraseyResult<PhraseyTranslation, Error>> {
         const unprocessed = await PhraseyTransformer.transform(
             path,
             deserialize,
-            PhraseyUnprocessedTranslation
+            PhraseyZTranslation
         );
         if (!unprocessed.success) {
             return { success: false, error: unprocessed.error };
@@ -85,7 +84,7 @@ export class PhraseyTranslation {
         const extras = unprocessed.data.extras ?? {};
         const stats = new PhraseyTranslationStats();
         const parsedKeys: Record<string, PhraseyTranslationStringValue> = {};
-        for (const x of schema.keys) {
+        for (const x of schema.z.keys) {
             const rawValue = unprocessed.data.keys[x.name];
             if (!rawValue) {
                 const defaultKey = defaultTranslation?.keys[x.name];
@@ -116,6 +115,7 @@ export class PhraseyTranslation {
         }
         const translation = new PhraseyTranslation(
             path,
+            schema,
             locale,
             extras,
             parsedKeys,
@@ -128,7 +128,7 @@ export class PhraseyTranslation {
     }
 
     static parseTranslationKeyValue(
-        key: PhraseySchemaKeyType,
+        key: PhraseyZSchemaKeyType,
         content: string
     ): PhraseyResult<PhraseyTranslationStringPart[], Error> {
         const parts: PhraseyTranslationStringPart[] = [];

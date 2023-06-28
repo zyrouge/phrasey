@@ -1,30 +1,22 @@
-import { z } from "zod";
+import { PhraseyContentFormats } from "./contentFormats";
+import { PhraseyResult } from "./result";
+import { PhraseyTransformer } from "./transformer";
+import { PhraseyZConfig, PhraseyZConfigType } from "./z";
 
-export const PhraseyConfigSchema = z.object({
-    file: z.string(),
-    format: z.string(),
-});
+export class PhraseyConfig {
+    constructor(public z: PhraseyZConfigType) {}
 
-export const PhraseyConfigInput = z.object({
-    files: z.union([z.string(), z.array(z.string())]),
-    default: z.string().optional(),
-    format: z.string(),
-});
-
-export const PhraseyConfigOutput = z.object({
-    dir: z.string(),
-    format: z.string(),
-    stringFormat: z.string(),
-});
-
-export const PhraseyConfig = z.object({
-    schema: PhraseyConfigSchema,
-    input: PhraseyConfigInput,
-    output: PhraseyConfigOutput.optional(),
-    hooks: z.array(z.string()).optional(),
-});
-
-export type PhraseyConfigType = z.infer<typeof PhraseyConfig>;
-export type PhraseyConfigSchemaType = z.infer<typeof PhraseyConfigSchema>;
-export type PhraseyConfigInputType = z.infer<typeof PhraseyConfigInput>;
-export type PhraseyConfigOutputType = z.infer<typeof PhraseyConfigOutput>;
+    static async create(
+        path: string,
+        format: string
+    ): Promise<PhraseyResult<PhraseyConfig, Error>> {
+        const z = await PhraseyTransformer.transform(
+            path,
+            PhraseyContentFormats.resolveDeserializer(format),
+            PhraseyZConfig
+        );
+        if (!z.success) return z;
+        const config = new PhraseyConfig(z.data);
+        return { success: true, data: config };
+    }
+}
