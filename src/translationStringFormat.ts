@@ -1,5 +1,5 @@
 import { PhraseyError } from "./error";
-import { PhraseyZSchemaKeyType } from "./z/schema";
+import { PhraseyZSchemaKeyType } from "./z";
 import { PhraseyTranslationStringParts } from "./translation";
 import { PhraseySafeResolvePackage } from "./utils";
 
