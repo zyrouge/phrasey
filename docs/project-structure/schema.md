@@ -5,7 +5,7 @@ The schema file defines the structure of a [translation file](./translation.md).
 ## Representation
 
 ```ts
-interface PhraseySchemaType {
+interface PhraseyZSchemaType {
     keys: {
         name: string;
         description?: string;
