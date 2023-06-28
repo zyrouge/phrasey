@@ -7,6 +7,7 @@ export default defineConfig({
     description: "A full-blown i18n build system.",
     base: "/phrasey/",
     outDir: "../docs-dist",
+    mpa: true,
     lastUpdated: true,
     head: [
         ["link", { rel: "icon", href: "/icon.png" }],
