@@ -22,7 +22,7 @@ export type PhraseyHooksEventParameters<
 export class PhraseyHooks {
     handlers: PhraseyHooksPartialHandler[] = [];
 
-    async addHandlerFile(packagePath: string) {
+    addHandlerFile(packagePath: string) {
         try {
             const handler: PhraseyHooksPartialHandler = require(packagePath);
             this.addHandler(handler);

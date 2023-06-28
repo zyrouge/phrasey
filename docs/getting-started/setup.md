@@ -21,8 +21,10 @@ npm install --save-dev @zyrouge/phrasey-xml
 
 ## Setting up a project
 
-Use the `init` command to create and initialize a Phrasey project.
+Use the `init` command to create and initialize a new project.
 
 ```bash
 npx phrasey init
 ```
+
+This prompts a set of question which are used to create the config and schema file.

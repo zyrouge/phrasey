@@ -40,12 +40,12 @@ export class Phrasey {
     ) {}
 
     async init() {
-        if (this.config.hooks?.file) {
-            this.config.hooks.file = p.resolve(
-                this.cwd,
-                this.config.hooks.file
-            );
-            await this.hooks.addHandlerFile(this.config.hooks.file);
+        if (this.config.hooks) {
+            for (let i = 0; i < this.config.hooks.length; i++) {
+                const hookFilePath = p.resolve(this.cwd, this.config.hooks[i]!);
+                this.config.hooks[i] = hookFilePath;
+                this.hooks.addHandlerFile(hookFilePath);
+            }
         }
         await this.hooks.dispatch("afterInit", this);
     }

@@ -9,7 +9,7 @@ export default defineConfig({
     outDir: "../docs-dist",
     lastUpdated: true,
     head: [
-        ["link", { rel: "icon", href: "/public/icon.png" }],
+        ["link", { rel: "icon", href: "/icon.png" }],
         [
             "style",
             {},
@@ -23,17 +23,37 @@ export default defineConfig({
         ],
     ],
     themeConfig: {
-        logo: "/public/icon.png",
+        logo: "/icon.png",
         nav: [
-            { text: "Guide", link: "/" },
+            { text: "Guide", link: "/", activeMatch: ".*" },
             { text: "API Documentation", link: "/api/" },
         ],
         sidebar: [
             {
                 text: "Getting Started",
                 items: [
-                    { text: "What is Phrasey?", link: "/what-is" },
-                    { text: "Setup", link: "/setup" },
+                    {
+                        text: "What is Phrasey?",
+                        link: "/getting-started/",
+                    },
+                    { text: "Setup", link: "/getting-started/setup" },
+                ],
+            },
+            {
+                text: "Project Files",
+                items: [
+                    {
+                        text: "Configuration",
+                        link: "/project-files/configuration",
+                    },
+                    {
+                        text: "Schema",
+                        link: "/project-files/schema",
+                    },
+                    {
+                        text: "Translation",
+                        link: "/project-files/translation",
+                    },
                 ],
             },
         ],

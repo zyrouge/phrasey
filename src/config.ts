@@ -17,19 +17,14 @@ export const PhraseyConfigOutput = z.object({
     stringFormat: z.string(),
 });
 
-export const PhraseyConfigHooks = z.object({
-    file: z.string(),
-});
-
 export const PhraseyConfig = z.object({
     schema: PhraseyConfigSchema,
     input: PhraseyConfigInput,
     output: PhraseyConfigOutput.optional(),
-    hooks: PhraseyConfigHooks.optional(),
+    hooks: z.array(z.string()).optional(),
 });
 
 export type PhraseyConfigType = z.infer<typeof PhraseyConfig>;
 export type PhraseyConfigSchemaType = z.infer<typeof PhraseyConfigSchema>;
 export type PhraseyConfigInputType = z.infer<typeof PhraseyConfigInput>;
 export type PhraseyConfigOutputType = z.infer<typeof PhraseyConfigOutput>;
-export type PhraseyConfigHooksType = z.infer<typeof PhraseyConfigHooks>;
