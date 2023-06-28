@@ -100,4 +100,5 @@ export default defineConfig({
             message: "Made with ❤️ by Zyrouge.",
         },
     },
+    ignoreDeadLinks: [/\/api\//],
 });
