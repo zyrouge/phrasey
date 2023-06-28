@@ -1,6 +1,4 @@
-import type {
-    PhraseyContentFormatDeserializer,
-} from "phrasey/formats";
+import type { PhraseyContentFormatDeserializer } from "phrasey";
 import toml from "toml";
 
 export const deserializer: PhraseyContentFormatDeserializer = {

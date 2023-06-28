@@ -1,7 +1,7 @@
 import type {
     PhraseyContentFormatSerializer,
     PhraseyContentFormatDeserializer,
-} from "phrasey/formats";
+} from "phrasey";
 
 export const serializer: PhraseyContentFormatSerializer = {
     extension: "json",

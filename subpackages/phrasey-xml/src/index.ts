@@ -1,7 +1,7 @@
 import type {
     PhraseyContentFormatSerializer,
     PhraseyContentFormatDeserializer,
-} from "phrasey/formats";
+} from "phrasey";
 import xml from "xml-js";
 
 export const serializer: PhraseyContentFormatSerializer = {
