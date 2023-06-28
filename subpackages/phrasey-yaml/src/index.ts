@@ -1,7 +1,7 @@
 import type {
     PhraseyContentFormatSerializer,
     PhraseyContentFormatDeserializer,
-} from "phrasey/formats";
+} from "phrasey";
 import yaml from "yaml";
 
 export const serializer: PhraseyContentFormatSerializer = {
