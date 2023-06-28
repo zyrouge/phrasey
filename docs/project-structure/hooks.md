@@ -13,7 +13,7 @@ Read the [API documentation](https://zyrouge.github.io/phrasey/api/) for more in
 ## Representation
 
 ```ts
-interface PhraseyHooks {
+interface PhraseyHooksPartialHandler {
     afterInit?(phrasey: Phrasey): Promise<void>;
     beforeLoad?(phrasey: Phrasey): Promise<void>;
     afterLoad?(phrasey: Phrasey): Promise<void>;
@@ -29,6 +29,9 @@ interface PhraseyHooks {
 ## Example
 
 ```js
+/**
+ * @type {import("phrasey").PhraseyHooksPartialHandler}
+ */
 module.exports = {
     afterInit: (phrasey) => {
         console.log("event: afterInit");

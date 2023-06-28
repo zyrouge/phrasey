@@ -5,7 +5,7 @@ The configuration file helps the CLI to build the project.
 ## Representation
 
 ```ts
-interface PhraseyConfig {
+interface PhraseyConfigType {
     input: {
         files: string | string[];
         format: string;

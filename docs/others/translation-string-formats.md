@@ -1,14 +1,41 @@
 # Translation String Formats
 
 Translation string formats transform the parsed translation string into desirable output string.
-They implement a formatter (converts `PhraseyTranslationStringParts` to a `string`).
+They implement a formatter (converts `PhraseyTranslationStringParts` to any serializable `object`).
 
 ## Representation
 
 ```ts
 interface PhraseyTranslationStringFormatter {
-    format(parts: PhraseyTranslationStringParts): any;
+    format(
+        parts: PhraseyTranslationStringParts,
+        schema: PhraseySchemaKeyType
+    ): any;
 }
+```
+
+## Example
+
+```js
+import type { PhraseyTranslationStringFormatter } from "phrasey";
+
+export const formatter: PhraseyTranslationStringFormatter = {
+    format: (parts) => {
+        let out = "";
+        parts.forEach((x) => {
+            switch (x.type) {
+                case "string":
+                    out += this.escapeCharacter(x.value, "{");
+                    break;
+
+                case "parameter":
+                    out += `{${x.value}}`;
+                    break;
+            }
+        });
+        return out;
+    },
+};
 ```
 
 ## Pre-existing Formats

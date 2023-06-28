@@ -7,7 +7,7 @@ If `input.default` is specified in the [configuration file](./configuration.md),
 ## Representation
 
 ```ts
-interface PhraseyTranslationFile {
+interface PhraseyUnprocessedTranslationType {
     locale: string;
     extras?: Map<string, any>;
     keys: Record<string, string>;
