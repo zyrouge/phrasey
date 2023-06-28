@@ -40,19 +40,52 @@ export default defineConfig({
                 ],
             },
             {
-                text: "Project Files",
+                text: "CLI",
                 items: [
                     {
+                        text: "Overview",
+                        link: "/cli/",
+                    },
+                    { text: "Init Command", link: "/cli/init" },
+                    { text: "Build Command", link: "/cli/build" },
+                    { text: "Summary Command", link: "/cli/summary" },
+                ],
+            },
+            {
+                text: "Project Structure",
+                items: [
+                    {
+                        text: "Overview",
+                        link: "/project-structure/",
+                    },
+                    {
                         text: "Configuration",
-                        link: "/project-files/configuration",
+                        link: "/project-structure/configuration",
                     },
                     {
                         text: "Schema",
-                        link: "/project-files/schema",
+                        link: "/project-structure/schema",
                     },
                     {
                         text: "Translation",
-                        link: "/project-files/translation",
+                        link: "/project-structure/translation",
+                    },
+                    {
+                        text: "Hooks",
+                        link: "/project-structure/hooks",
+                    },
+                ],
+            },
+            {
+                text: "Others",
+                items: [
+                    {
+                        text: "Content Formats",
+                        link: "/others/content-formats",
+                    },
+                    {
+                        text: "Translation String Formats",
+                        link: "/others/translation-string-formats",
                     },
                 ],
             },

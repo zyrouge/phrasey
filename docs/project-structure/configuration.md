@@ -1,5 +1,7 @@
 # Configuration File
 
+The configuration file helps the CLI to build the project.
+
 ## Representation
 
 ```ts
@@ -26,7 +28,7 @@ interface PhraseyConfig {
 
 ```yaml
 schema:
-    path: ./i18n-schema.yaml
+    file: ./i18n-schema.yaml
     format: yaml
 
 input:

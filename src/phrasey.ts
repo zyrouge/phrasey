@@ -21,7 +21,7 @@ import {
 
 export interface PhraseyCreateOptions {
     config: {
-        path: string;
+        file: string;
         format: string;
     };
 }
@@ -192,14 +192,14 @@ export class Phrasey {
     static async create(
         options: PhraseyCreateOptions
     ): Promise<PhraseyResult<Phrasey, Error>> {
-        options.config.path = p.resolve(process.cwd(), options.config.path);
+        options.config.file = p.resolve(process.cwd(), options.config.file);
         const config = await PhraseyTransformer.transform(
-            options.config.path,
+            options.config.file,
             PhraseyContentFormats.resolveDeserializer(options.config.format),
             PhraseyConfig
         );
         if (!config.success) return config;
-        const cwd = p.dirname(options.config.path);
+        const cwd = p.dirname(options.config.file);
         config.data.schema.file = p.resolve(cwd, config.data.schema.file);
         const schema = await PhraseyTransformer.transform(
             config.data.schema.file,

@@ -3,7 +3,7 @@ import { PhraseyCreateOptions } from "../../phrasey";
 import { log, pico } from "../utils";
 
 export const PhraseyConfigOptions = {
-    configPath: new Option("-p --config-path <path>", "Path to config file"),
+    configFile: new Option("-p --config-file <path>", "Path to config file"),
     configFormat: new Option(
         "-f --config-format <format>",
         "Config file format"
@@ -11,9 +11,9 @@ export const PhraseyConfigOptions = {
 };
 
 export const parsePhraseyOptions = (options: any): PhraseyCreateOptions => {
-    const configPath = options.configPath;
-    if (!configPath) {
-        log.error(`Missing argument: ${pico.bold("config-path")}.`);
+    const configFile = options.configFile;
+    if (!configFile) {
+        log.error(`Missing argument: ${pico.bold("config-file")}.`);
         log.ln();
         process.exit(1);
     }
@@ -25,7 +25,7 @@ export const parsePhraseyOptions = (options: any): PhraseyCreateOptions => {
     }
     return {
         config: {
-            path: configPath,
+            file: configFile,
             format: configFormat,
         },
     };

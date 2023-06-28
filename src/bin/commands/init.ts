@@ -15,7 +15,7 @@ import { writeFile } from "fs-extra";
 
 export const InitCommand = new Command()
     .name("init")
-    .description("Initialize a new project")
+    .description("Initialize a new project.")
     .action(async () => {
         log.write(pico.bold(`Thank you for choosing ${pico.cyan("Phrasey")}!`));
         log.write(
@@ -146,7 +146,7 @@ export const InitCommand = new Command()
                 format: outputFormat,
                 stringFormat: outputStringFormat,
             },
-            hooks: hooksFile ? { files: [hooksFile] } : undefined,
+            hooks: hooksFile ? [hooksFile] : undefined,
         };
         const configSerializer = PhraseySafeRun(() =>
             PhraseyContentFormats.resolveSerializer(configFormat)

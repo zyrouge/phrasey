@@ -1,5 +1,5 @@
 schema:
-    path: ./schema.yaml
+    file: ./schema.yaml
     format: yaml
 
 input:
@@ -13,4 +13,4 @@ output:
     stringFormat: parts
 
 hooks:
-    file: ./hooks.js
+    - ./hooks.js

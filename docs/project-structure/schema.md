@@ -1,5 +1,7 @@
 # Schema File
 
+The schema file defines the structure of a [translation file](./translation.md).
+
 ## Representation
 
 ```ts

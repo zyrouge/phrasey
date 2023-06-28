@@ -13,14 +13,14 @@ import { PhraseyConfigOptions } from "../steps/parsePhraseyOptions";
 
 export const SummaryCommand = new Command()
     .name("summary")
-    .description("Generate summary of the project")
-    .addOption(PhraseyConfigOptions.configPath)
+    .description("Generate summary of the project.")
+    .addOption(PhraseyConfigOptions.configFile)
     .addOption(PhraseyConfigOptions.configFormat)
-    .option(`-o --output-format <format>`)
     .option(`-s --output-file <path>`)
+    .option(`-o --output-format <format>`)
     .action(async (options) => {
-        const outputFormat: string = options.outputFormat ?? "console";
         const outputFile: string = options.outputFile;
+        const outputFormat: string = options.outputFormat ?? "console";
         const phrasey = await createPhrasey(options);
         await phrasey.load();
         if (phrasey.hasLoadErrors()) {
