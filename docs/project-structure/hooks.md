@@ -6,7 +6,7 @@ Only javascript files can be specified since they are imported using `require`.
 
 ::: tip
 
-Read the [API documentation](/api/) for more information.
+Read the [API documentation](https://zyrouge.github.io/phrasey/api/) for more information.
 
 :::
 

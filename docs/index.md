@@ -12,7 +12,7 @@ hero:
           link: /getting-started/
         - theme: alt
           text: API Documentation
-          link: /api/
+          link: https://zyrouge.github.io/phrasey/api/
 
 features:
     - icon: 💜

@@ -7,7 +7,6 @@ export default defineConfig({
     description: "A full-blown i18n build system.",
     base: "/phrasey/",
     outDir: "../docs-dist",
-    mpa: true,
     lastUpdated: true,
     head: [
         ["link", { rel: "icon", href: "/icon.png" }],
@@ -27,7 +26,10 @@ export default defineConfig({
         logo: "/icon.png",
         nav: [
             { text: "Guide", link: "/", activeMatch: ".*" },
-            { text: "API Documentation", link: "/api/" },
+            {
+                text: "API Documentation",
+                link: "https://zyrouge.github.io/phrasey/api/",
+            },
         ],
         sidebar: [
             {
@@ -101,5 +103,4 @@ export default defineConfig({
             message: "Made with ❤️ by Zyrouge.",
         },
     },
-    ignoreDeadLinks: [/\/api\//],
 });
