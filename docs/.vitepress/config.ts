@@ -1,5 +1,4 @@
-import p from "path";
-import { defineConfig } from "vitepress";
+import { defineConfig, HeadConfig } from "vitepress";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -10,6 +9,8 @@ export default defineConfig({
     lastUpdated: true,
     head: [
         ["link", { rel: "icon", href: "/icon.png" }],
+        _metaTag("og:image", "/banner.png"),
+        _metaTag("theme-color", "#f59e0b"),
         [
             "style",
             {},
@@ -104,3 +105,7 @@ export default defineConfig({
         },
     },
 });
+
+function _metaTag(name: string, content: string): HeadConfig {
+    return ["meta", { name, property: name, content }];
+}
