@@ -58,6 +58,17 @@ Example of output string:
 
 ### `format-string`
 
+Serializes the parsed string as to a equivalent of `printf()` supported string.
+The output string uses positional argument with `%s`.
+
+Example of output string:
+
+```
+Hello, %1$s!
+```
+
+### `python-format-string`
+
 Serializes the parsed string as to a equivalent of Python's `.format()` supported string.
 
 Example of output string:

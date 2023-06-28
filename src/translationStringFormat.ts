@@ -16,16 +16,39 @@ export class PhraseyTranslationStringFormats {
             format: (parts) => parts,
         },
         "format-string": {
+            format: (parts, schema) => {
+                const parameters = schema.parameters ?? [];
+                let out = "";
+                for (const x of parts) {
+                    switch (x.type) {
+                        case "parameter":
+                            const index = parameters.indexOf(x.value);
+                            out += `%${index}\$s`;
+                            break;
+
+                        case "string":
+                            out += this.replaceCharacter(x.value, "%", "%%");
+                            break;
+                    }
+                }
+            },
+        },
+        "python-format-string": {
             format: (parts) => {
                 let out = "";
                 parts.forEach((x) => {
                     switch (x.type) {
-                        case "string":
-                            out += this.escapeCharacter(x.value, "{");
-                            break;
-
                         case "parameter":
                             out += `{${x.value}}`;
+                            break;
+
+                        case "string":
+                            let escaped = this.replaceCharacters(x.value, {
+                                "{": "{{",
+                                "}": "}}",
+                            });
+                            escaped = this.replaceCharacter(escaped, "}", "}}");
+                            out += escaped;
                             break;
                     }
                 });
@@ -51,14 +74,23 @@ export class PhraseyTranslationStringFormats {
         );
     }
 
-    static escapeCharacter(value: string, escapeChar: string) {
+    static replaceCharacter(value: string, from: string, to: string) {
         let out = "";
         for (let i = 0; i < value.length; i++) {
             const char = value[i]!;
-            if (char === escapeChar) {
-                out += "\\";
+            if (char === from) {
+                out += to;
             }
             out += char;
+        }
+        return out;
+    }
+
+    static replaceCharacters(value: string, replacers: Record<string, string>) {
+        let out = "";
+        for (let i = 0; i < value.length; i++) {
+            const char = value[i]!;
+            out += replacers[char] ?? char;
         }
         return out;
     }
