@@ -14,7 +14,7 @@
         "docs:base:build": "vitepress build docs",
         "docs:api:build": "typedoc",
         "docs:build": "rimraf ./docs-dist && npm run docs:base:build && npm run docs:api:build",
-        "docs:deploy": "gh run workflow docs.yml"
+        "docs:deploy": "gh workflow run docs.yml"
     },
     "repository": {
         "type": "git",
