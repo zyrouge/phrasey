@@ -3,19 +3,19 @@ import { PhraseyZSchemaKeyType } from "./z";
 import { PhraseyTranslationStringParts } from "./translation";
 import { PhraseySafeResolvePackage } from "./utils";
 
-export interface PhraseyTranslationStringFormatter {
+export interface PhraseyTranslationStringFormatter<T = any> {
     format(
         parts: PhraseyTranslationStringParts,
         schema: PhraseyZSchemaKeyType
-    ): any;
+    ): T;
 }
 
 export class PhraseyTranslationStringFormats {
     static defaultFormats: Record<string, PhraseyTranslationStringFormatter> = {
-        parts: {
+        parts: this.construct<PhraseyTranslationStringParts>({
             format: (parts) => parts,
-        },
-        "format-string": {
+        }),
+        "format-string": this.construct<string>({
             format: (parts, schema) => {
                 const parameters = schema.parameters ?? [];
                 let out = "";
@@ -31,9 +31,10 @@ export class PhraseyTranslationStringFormats {
                             break;
                     }
                 }
+                return out;
             },
-        },
-        "python-format-string": {
+        }),
+        "python-format-string": this.construct<string>({
             format: (parts) => {
                 let out = "";
                 parts.forEach((x) => {
@@ -54,7 +55,7 @@ export class PhraseyTranslationStringFormats {
                 });
                 return out;
             },
-        },
+        }),
     };
 
     static resolve(name: string): PhraseyTranslationStringFormatter {
@@ -94,6 +95,8 @@ export class PhraseyTranslationStringFormats {
         }
         return out;
     }
-}
 
-export class PhraseyTranslationDefaultStringFormatters {}
+    static construct<T>(formatter: PhraseyTranslationStringFormatter<T>) {
+        return formatter;
+    }
+}

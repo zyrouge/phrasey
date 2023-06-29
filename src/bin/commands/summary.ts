@@ -46,7 +46,7 @@ export const SummaryCommand = new Command()
                         { symbolPostMap }
                     );
                     log.write(titleTree);
-                    printIndividualStatsTree(v, tab(1));
+                    printIndividualStatsTree(v, PhraseyTreeLike.tab(1));
                 });
                 log.ln();
                 if (outputFile) {
@@ -81,10 +81,6 @@ export const SummaryCommand = new Command()
             log.ln();
         }
     });
-
-function tab(count: number) {
-    return "   ".repeat(count);
-}
 
 export const symbolPostMap = (symbol: string) => pico.gray(symbol);
 

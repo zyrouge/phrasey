@@ -29,10 +29,13 @@ export const PhraseyTreeLike = {
             if (symbolPostMap) {
                 prefixSymbol = symbolPostMap(prefixSymbol);
             }
-            lines.push(`${prefix}${prefixSymbol} ${map?.(x) ?? x}`);
+            const text = PhraseyTreeLike.spacify(map?.(x) ?? `${x}`);
+            lines.push(`${prefix}${prefixSymbol} ${text}`);
         });
         return lines.join("\n");
     },
+    tab: (count: number) => "   ".repeat(count),
+    spacify: (text: string) => `${PhraseyTreeLike.tab(1)}${text}`,
 };
 
 export const PhraseySafeResolvePackage = (packageName: string) => {

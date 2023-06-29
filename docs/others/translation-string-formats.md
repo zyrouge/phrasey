@@ -6,11 +6,11 @@ They implement a formatter (converts `PhraseyTranslationStringParts` to any seri
 ## Representation
 
 ```ts
-interface PhraseyTranslationStringFormatter {
+interface PhraseyTranslationStringFormatter<T = any> {
     format(
         parts: PhraseyTranslationStringParts,
         schema: PhraseyZSchemaKeyType
-    ): any;
+    ): T;
 }
 ```
 
@@ -19,7 +19,7 @@ interface PhraseyTranslationStringFormatter {
 ```js
 import type { PhraseyTranslationStringFormatter } from "phrasey";
 
-export const formatter: PhraseyTranslationStringFormatter = {
+export const formatter: PhraseyTranslationStringFormatter<string> = {
     format: (parts) => {
         let out = "";
         parts.forEach((x) => {

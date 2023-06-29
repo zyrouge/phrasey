@@ -1,4 +1,4 @@
-import { PhraseyError } from "./error";
+import { PhraseyError, PhraseyWrappedError } from "./error";
 import { PhraseyContentFormatDeserializer } from "./contentFormats";
 import { PhraseyLocaleType, PhraseyLocales } from "./locales";
 import { PhraseyResult } from "./result";
@@ -50,7 +50,14 @@ export class PhraseyTranslation {
         Object.entries(this.keys).map(([k, v]) => {
             if (v.state === "set" || v.state === "default") {
                 const keySchema = this.schema.key(k);
-                keys[k] = stringFormatter.format(v.parts, keySchema);
+                try {
+                    keys[k] = stringFormatter.format(v.parts, keySchema);
+                } catch (err) {
+                    throw new PhraseyWrappedError(
+                        "Formatting translation string failed",
+                        err
+                    );
+                }
             }
         });
         return { locale: this.locale, extras: this.extras, keys };
@@ -155,7 +162,7 @@ export class PhraseyTranslation {
                 current = "";
                 mode = "parameter";
             } else if (char === "}" && mode === "parameter") {
-                if (!key.parameters?.includes(current) ?? true) {
+                if (!(key.parameters?.includes(current) ?? false)) {
                     return {
                         success: false,
                         error: new PhraseyError(
