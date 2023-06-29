@@ -205,10 +205,13 @@ export class Phrasey {
         );
         if (!schema.success) return schema;
         const hooks = new PhraseyHooks();
-        if (config.data.z.hooks) {
-            for (let i = 0; i < config.data.z.hooks.length; i++) {
-                const hookFilePath = p.resolve(cwd, config.data.z.hooks[i]!);
-                config.data.z.hooks[i] = hookFilePath;
+        if (config.data.z.hooks?.files) {
+            for (let i = 0; i < config.data.z.hooks.files.length; i++) {
+                const hookFilePath = p.resolve(
+                    cwd,
+                    config.data.z.hooks.files[i]!
+                );
+                config.data.z.hooks.files[i] = hookFilePath;
                 hooks.addHandlerFile(hookFilePath);
             }
         }

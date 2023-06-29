@@ -7,6 +7,7 @@ The configuration file helps the CLI to build the project.
 ```ts
 interface PhraseyZConfigType {
     input: {
+        // supports globs
         files: string | string[];
         format: string;
         default?: string;
@@ -20,7 +21,9 @@ interface PhraseyZConfigType {
         format: string;
         stringFormat: string;
     };
-    hooks?: string[];
+    hooks?: {
+        files: string[];
+    };
 }
 ```
 
@@ -42,5 +45,6 @@ output:
     stringFormat: parts
 
 hooks:
-    - ./hooks.js
+    files:
+        - ./hooks.js
 ```

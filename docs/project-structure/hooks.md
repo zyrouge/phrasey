@@ -33,8 +33,8 @@ interface PhraseyHooksPartialHandler {
  * @type {import("phrasey").PhraseyHooksPartialHandler}
  */
 module.exports = {
-    afterInit: (phrasey) => {
-        console.log("event: afterInit");
+    onCreate: (phrasey) => {
+        console.log("event: onCreate");
     },
     beforeLoad: (phrasey) => {
         console.log("event: beforeLoad");
