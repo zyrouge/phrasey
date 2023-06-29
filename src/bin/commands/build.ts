@@ -10,7 +10,7 @@ export const BuildCommand = new Command()
     .addOption(PhraseyConfigOptions.configFile)
     .addOption(PhraseyConfigOptions.configFormat)
     .action(async (options) => {
-        const phrasey = await createPhrasey(options);
+        const phrasey = await createPhrasey("build", options);
         await phrasey.load();
         if (phrasey.hasLoadErrors()) {
             log.error(`Build failed due to load error(s).`);

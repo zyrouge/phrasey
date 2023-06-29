@@ -2,7 +2,12 @@
 
 import { program } from "commander";
 import { PhraseyVersion } from "..";
-import { BuildCommand, InitCommand, SummaryCommand } from "./commands";
+import {
+    BuildCommand,
+    InitCommand,
+    StatusCommand,
+    SummaryCommand,
+} from "./commands";
 
 program
     .name("phrasey")
@@ -10,6 +15,7 @@ program
     .version(PhraseyVersion)
     .addCommand(BuildCommand)
     .addCommand(SummaryCommand)
-    .addCommand(InitCommand);
+    .addCommand(InitCommand)
+    .addCommand(StatusCommand);
 
 program.parseAsync();

@@ -10,7 +10,10 @@ export const PhraseyConfigOptions = {
     ),
 };
 
-export const parsePhraseyOptions = (options: any): PhraseyCreateOptions => {
+export const parsePhraseyOptions = (
+    source: string,
+    options: any
+): PhraseyCreateOptions => {
     const configFile = options.configFile;
     if (!configFile) {
         log.error(`Missing argument: ${pico.bold("config-file")}.`);
@@ -28,5 +31,6 @@ export const parsePhraseyOptions = (options: any): PhraseyCreateOptions => {
             file: configFile,
             format: configFormat,
         },
+        source,
     };
 };

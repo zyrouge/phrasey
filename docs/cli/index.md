@@ -7,6 +7,7 @@ The following commands can be used to interact with the project,
 -   [Init](./init.md)
 -   [Build](./init.md)
 -   [Summary](./init.md)
+-   [Status](./status.md)
 
 ::: tip
 

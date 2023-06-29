@@ -3,8 +3,11 @@ import { PhraseyTreeLike } from "../../utils";
 import { log } from "../utils";
 import { parsePhraseyOptions } from "./parsePhraseyOptions";
 
-export const createPhrasey = async (options: any): Promise<Phrasey> => {
-    const phraseyOptions = parsePhraseyOptions(options);
+export const createPhrasey = async (
+    source: string,
+    options: any
+): Promise<Phrasey> => {
+    const phraseyOptions = parsePhraseyOptions(source, options);
     const pharseyResult = await Phrasey.create(phraseyOptions);
     if (!pharseyResult.success) {
         log.error(`Could not create phrasey client.`);

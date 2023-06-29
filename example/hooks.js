@@ -9,6 +9,7 @@ const logPrefix = pico.gray("[hooks:afterLoad]");
  */
 const handler = {
     afterLoad: async (phrasey) => {
+        if (phrasey.additional.source !== "build") return;
         try {
             const modelPath = p.resolve(__dirname, "dist/model.d.ts");
             const content = `

@@ -53,6 +53,7 @@ export default defineConfig({
                     { text: "Init Command", link: "/cli/init" },
                     { text: "Build Command", link: "/cli/build" },
                     { text: "Summary Command", link: "/cli/summary" },
+                    { text: "Status Command", link: "/cli/status" },
                 ],
             },
             {

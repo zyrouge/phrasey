@@ -23,6 +23,15 @@ export interface PhraseyCreateOptions {
         file: string;
         format: string;
     };
+    source?: string;
+}
+
+export interface PhraseyLoadOptions {
+    filter?(path: string): boolean;
+}
+
+export interface PhraseyAdditional {
+    source?: string;
 }
 
 export class Phrasey {
@@ -35,10 +44,11 @@ export class Phrasey {
         public cwd: string,
         public config: PhraseyConfig,
         public schema: PhraseySchema,
-        public hooks: PhraseyHooks
+        public hooks: PhraseyHooks,
+        public additional: PhraseyAdditional
     ) {}
 
-    async load(): Promise<boolean> {
+    async load(options: PhraseyLoadOptions = {}): Promise<boolean> {
         await this.hooks.dispatch("beforeLoad", this);
         const defaultTranslationPath = this.config.z.input.default
             ? p.resolve(this.cwd, this.config.z.input.default)
@@ -65,6 +75,7 @@ export class Phrasey {
         });
         for await (const x of stream) {
             const path = x.toString();
+            if (options.filter && !options.filter(path)) continue;
             await this.loadTranslation(path, deserializer, defaultTranslation);
         }
         await this.hooks.dispatch("afterLoad", this);
@@ -201,7 +212,16 @@ export class Phrasey {
                 hooks.addHandlerFile(hookFilePath);
             }
         }
-        const phrasey = new Phrasey(cwd, config.data, schema.data, hooks);
+        const additional: PhraseyAdditional = {
+            source: options.source,
+        };
+        const phrasey = new Phrasey(
+            cwd,
+            config.data,
+            schema.data,
+            hooks,
+            additional
+        );
         await hooks.dispatch("onCreate", phrasey);
         return { success: true, data: phrasey };
     }

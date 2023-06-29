@@ -89,7 +89,7 @@ export class PhraseyTranslation {
             if (!rawValue) {
                 const defaultKey = defaultTranslation?.keys[x.name];
                 if (!defaultKey || defaultKey.state === "unset") {
-                    stats.incrementUnset();
+                    stats.addUnset(x.name);
                     parsedKeys[x.name] = {
                         state: "unset",
                     };
@@ -99,7 +99,7 @@ export class PhraseyTranslation {
                     state: "default",
                     parts: defaultKey.parts,
                 };
-                stats.incrementDefault();
+                stats.addDefaulted(x.name);
                 continue;
             }
             const parts = PhraseyTranslation.parseTranslationKeyValue(
@@ -111,7 +111,7 @@ export class PhraseyTranslation {
                 state: "set",
                 parts: parts.data,
             };
-            stats.incrementSet();
+            stats.addSet(x.name);
         }
         const translation = new PhraseyTranslation(
             path,
@@ -187,73 +187,94 @@ export class PhraseyTranslation {
     }
 }
 
+export interface PhraseyTranslationStatsJsonExtendedState {
+    keys: string[];
+    count: number;
+    percent: number;
+}
+
 export interface PhraseyTranslationStatsJson {
-    set: number;
-    defaulted: number;
-    unset: number;
+    set: PhraseyTranslationStatsJsonExtendedState;
+    defaulted: PhraseyTranslationStatsJsonExtendedState;
+    unset: PhraseyTranslationStatsJsonExtendedState;
     total: number;
-    setPercent: number;
-    defaultedPercent: number;
-    unsetPercent: number;
+    isBuildable: boolean;
+    isStandaloneBuildable: boolean;
 }
 
 export class PhraseyTranslationStats {
-    set = 0;
-    defaulted = 0;
-    unset = 0;
+    set: string[] = [];
+    defaulted: string[] = [];
+    unset: string[] = [];
     total = 0;
 
-    incrementSet() {
-        this.set++;
+    addSet(key: string) {
+        this.set.push(key);
         this.total++;
     }
 
-    incrementDefault() {
-        this.defaulted++;
+    addDefaulted(key: string) {
+        this.defaulted.push(key);
         this.total++;
     }
 
-    incrementUnset() {
-        this.unset++;
+    addUnset(key: string) {
+        this.unset.push(key);
         this.total++;
-    }
-
-    incrementWith(stats: PhraseyTranslationStats) {
-        this.set += stats.set;
-        this.defaulted += stats.defaulted;
-        this.unset += stats.unset;
-        this.total += stats.total;
     }
 
     json(): PhraseyTranslationStatsJson {
         return {
-            set: this.set,
-            defaulted: this.defaulted,
-            unset: this.unset,
+            set: {
+                keys: this.set,
+                count: this.setCount,
+                percent: this.setPercent,
+            },
+            defaulted: {
+                keys: this.defaulted,
+                count: this.defaultedCount,
+                percent: this.defaultedPercent,
+            },
+            unset: {
+                keys: this.unset,
+                count: this.unsetCount,
+                percent: this.unsetPercent,
+            },
             total: this.total,
-            setPercent: this.setPercent,
-            defaultedPercent: this.defaultedPercent,
-            unsetPercent: this.unsetPercent,
+            isBuildable: this.isBuildable,
+            isStandaloneBuildable: this.isStandaloneBuildable,
         };
     }
 
     get isBuildable() {
-        return this.set + this.defaulted === this.total;
+        return this.setCount + this.defaultedCount === this.total;
     }
 
     get isStandaloneBuildable() {
-        return this.set === this.total;
+        return this.setCount === this.total;
+    }
+
+    get setCount() {
+        return this.set.length;
+    }
+
+    get defaultedCount() {
+        return this.defaulted.length;
+    }
+
+    get unsetCount() {
+        return this.unset.length;
     }
 
     get setPercent() {
-        return (this.set / this.total) * 100;
+        return (this.setCount / this.total) * 100;
     }
 
     get defaultedPercent() {
-        return (this.defaulted / this.total) * 100;
+        return (this.setCount / this.total) * 100;
     }
 
     get unsetPercent() {
-        return (this.unset / this.total) * 100;
+        return (this.setCount / this.total) * 100;
     }
 }
