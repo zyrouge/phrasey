@@ -17,8 +17,8 @@ export const SummaryCommand = new Command()
     .description("Generate summary of the project.")
     .addOption(PhraseyConfigOptions.configFile)
     .addOption(PhraseyConfigOptions.configFormat)
-    .option(`-s --output-file <path>`)
-    .option(`-o --output-format <format>`)
+    .option(`-o --output-file <path>`, "Path to output file")
+    .option(`-s --output-format <format>`, "Output file format")
     .action(async (options) => {
         const outputFile: string = options.outputFile;
         const outputFormat: string = options.outputFormat ?? "console";

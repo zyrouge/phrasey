@@ -17,9 +17,9 @@ export const StatusCommand = new Command()
     .description("View status of a translation.")
     .addOption(PhraseyConfigOptions.configFile)
     .addOption(PhraseyConfigOptions.configFormat)
-    .option(`-i --input-file <path>`)
-    .option(`-s --output-file <path>`)
-    .option(`-o --output-format <format>`)
+    .option(`-i --input-file <path>`, "Path to input translation file")
+    .option(`-o --output-file <path>`, "Path to output file")
+    .option(`-s --output-format <format>`, "Output file format")
     .action(async (options) => {
         const inputFile: string = options.inputFile;
         if (!inputFile) {
