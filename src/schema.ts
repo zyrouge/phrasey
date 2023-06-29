@@ -29,6 +29,7 @@ export class PhraseySchema {
         );
         if (!z.success) return z;
         const schema = new PhraseySchema(z.data);
+        schema.initMap();
         return { success: true, data: schema };
     }
 }
