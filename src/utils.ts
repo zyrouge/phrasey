@@ -29,13 +29,19 @@ export const PhraseyTreeLike = {
             if (symbolPostMap) {
                 prefixSymbol = symbolPostMap(prefixSymbol);
             }
-            const text = PhraseyTreeLike.spacify(map?.(x) ?? `${x}`);
+            const text = PhraseyTreeLike.spacify(`${map?.(x) ?? x}`);
             lines.push(`${prefix}${prefixSymbol} ${text}`);
         });
         return lines.join("\n");
     },
     tab: (count: number) => "   ".repeat(count),
-    spacify: (text: string) => `${PhraseyTreeLike.tab(1)}${text}`,
+    spacify: (text: string) => {
+        const lines = text.split("\n").map((x, i) => {
+            if (i === 0) return x;
+            return `${PhraseyTreeLike.tab(1)}${x}`;
+        });
+        return lines.join("\n");
+    },
 };
 
 export const PhraseySafeResolvePackage = (packageName: string) => {

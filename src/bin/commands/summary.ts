@@ -46,7 +46,7 @@ export const SummaryCommand = new Command()
                         { symbolPostMap }
                     );
                     log.write(titleTree);
-                    printIndividualStatsTree(v, PhraseyTreeLike.tab(1));
+                    printIndividualStatsTree(v);
                 });
                 log.ln();
                 if (outputFile) {
@@ -84,10 +84,7 @@ export const SummaryCommand = new Command()
 
 export const symbolPostMap = (symbol: string) => pico.gray(symbol);
 
-function printTotalStatsTree(
-    stats: PhraseySummaryJsonTotalStats,
-    prefix: string = ""
-) {
+function printTotalStatsTree(stats: PhraseySummaryJsonTotalStats) {
     const data = [
         `Set     : ${stats.set}`,
         `Default : ${stats.defaulted}`,
@@ -95,16 +92,12 @@ function printTotalStatsTree(
         `Total   : ${stats.total}`,
     ];
     const tree = PhraseyTreeLike.build(data, {
-        prefix,
         symbolPostMap,
     });
     log.write(tree);
 }
 
-function printIndividualStatsTree(
-    stats: PhraseyTranslationStatsJson,
-    prefix: string = ""
-) {
+function printIndividualStatsTree(stats: PhraseyTranslationStatsJson) {
     const p = (value: number) => `${value.toPrecision(3)}%`;
     const data = [
         `Set     : ${stats.set.count} (${p(stats.set.percent)})`,
@@ -113,7 +106,7 @@ function printIndividualStatsTree(
         `Total   : ${stats.total}`,
     ];
     const tree = PhraseyTreeLike.build(data, {
-        prefix,
+        prefix: PhraseyTreeLike.tab(1),
         symbolPostMap,
     });
     log.write(tree);
