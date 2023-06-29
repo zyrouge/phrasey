@@ -20,6 +20,7 @@ export const StatusCommand = new Command()
     .option(`-i --input-file <path>`, "Path to input translation file")
     .option(`-o --output-file <path>`, "Path to output file")
     .option(`-s --output-format <format>`, "Output file format")
+    .option(`-d --disable-output-print`, "Disable logging output data")
     .action(async (options) => {
         const inputFile: string = options.inputFile;
         if (!inputFile) {
@@ -29,6 +30,7 @@ export const StatusCommand = new Command()
         }
         const outputFile: string = options.outputFile;
         const outputFormat: string = options.outputFormat ?? "console";
+        const disableOutputPrint: string = options.disableOutputPrint || true;
         const phrasey = await createPhrasey("status", options);
         const inputFilePath = p.resolve(process.cwd(), inputFile);
         await phrasey.load({
@@ -86,8 +88,10 @@ export const StatusCommand = new Command()
                     log.ln();
                     process.exit(1);
                 }
-                log.write(serialized);
-                log.ln();
+                if (!disableOutputPrint) {
+                    log.write(serialized);
+                    log.ln();
+                }
         }
         if (outputFile) {
             const outputFilePath = p.resolve(process.cwd(), outputFile);

@@ -20,6 +20,7 @@ npx phrasey status \
 -   `--input-file`, `-i` - Path to output file.
 -   `--output-file`, `-o` - Path to output file.
 -   `--output-format`, `-s` - Format of the output file.
+-   `-d --disable-output-print` - Disable logging output data.
 -   `--help`, `-h` - Displays help message.
 
 ## Example
