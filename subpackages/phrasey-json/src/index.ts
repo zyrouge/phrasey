@@ -1,13 +1,7 @@
-import type {
-    PhraseyContentFormatSerializer,
-    PhraseyContentFormatDeserializer,
-} from "phrasey";
+import type { PhraseyContentFormatter } from "phrasey";
 
-export const serializer: PhraseyContentFormatSerializer = {
+export const contentFormatter: PhraseyContentFormatter = {
     extension: "json",
     serialize: (content: any) => JSON.stringify(content),
-};
-
-export const deserializer: PhraseyContentFormatDeserializer = {
     deserialize: (content: string) => JSON.parse(content),
 };

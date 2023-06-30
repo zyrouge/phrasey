@@ -4,8 +4,7 @@ import { ensureFile, writeFile } from "fs-extra";
 import { PhraseyTranslation } from "./translation";
 import { PhraseyResult, PhraseySafeRun } from "./result";
 import {
-    PhraseyContentFormatDeserializer,
-    PhraseyContentFormatSerializer,
+    PhraseyContentFormatter,
     PhraseyContentFormats,
 } from "./contentFormats";
 import { PhraseyError, PhraseyWrappedError } from "./error";
@@ -53,7 +52,7 @@ export class Phrasey {
         const defaultTranslationPath = this.config.z.input.default
             ? p.resolve(this.cwd, this.config.z.input.default)
             : undefined;
-        const deserializer = PhraseyContentFormats.resolveDeserializer(
+        const deserializer = PhraseyContentFormats.resolve(
             this.config.z.input.format
         );
         let defaultTranslation: PhraseyTranslation | undefined;
@@ -84,14 +83,14 @@ export class Phrasey {
 
     async loadTranslation(
         path: string,
-        deserializer: PhraseyContentFormatDeserializer,
+        formatter: PhraseyContentFormatter,
         defaultTranslation?: PhraseyTranslation
     ): Promise<string | null> {
         await this.hooks.dispatch("beforeLoadTranslation", this);
         const translation = await PhraseyTranslation.create(
             path,
             this.schema,
-            deserializer,
+            formatter,
             defaultTranslation
         );
         if (!translation.success) {
@@ -117,7 +116,7 @@ export class Phrasey {
             );
             return false;
         }
-        const serializer = PhraseyContentFormats.resolveSerializer(
+        const formatter = PhraseyContentFormats.resolve(
             this.config.z.output.format
         );
         const stringFormatter = PhraseyTranslationStringFormats.resolve(
@@ -127,9 +126,9 @@ export class Phrasey {
             const path = p.resolve(
                 this.cwd,
                 this.config.z.output.dir,
-                `${x.locale.code}.${serializer.extension}`
+                `${x.locale.code}.${formatter.extension}`
             );
-            await this.buildTranslation(path, x, serializer, stringFormatter);
+            await this.buildTranslation(path, x, formatter, stringFormatter);
         }
         await this.hooks.dispatch("afterBuild", this);
         return !this.hasBuildErrors();
@@ -138,7 +137,7 @@ export class Phrasey {
     async buildTranslation(
         path: string,
         translation: PhraseyTranslation,
-        serializer: PhraseyContentFormatSerializer,
+        formatter: PhraseyContentFormatter,
         stringFormatter: PhraseyTranslationStringFormatter
     ): Promise<boolean> {
         await this.hooks.dispatch("beforeBuildTranslation", this);
@@ -152,7 +151,7 @@ export class Phrasey {
         }
         await ensureFile(path);
         const content = PhraseySafeRun(() =>
-            serializer.serialize(translation.json(stringFormatter))
+            formatter.serialize(translation.json(stringFormatter))
         );
         if (!content.success) {
             this.buildErrors.push(

@@ -64,15 +64,17 @@ export class PhraseyTranslationStringFormats {
             return defaultFormat;
         }
         const pkg = PhraseySafeResolvePackage(name);
-        if (
-            typeof pkg?.formatter === "object" &&
-            typeof pkg.formatter.format === "function"
-        ) {
-            return pkg.formatter.format;
+        if (typeof pkg?.stringFormatter !== "object") {
+            throw new PhraseyError(
+                `Missing implementation of "stringFormatter" in package "${name}"`
+            );
         }
-        throw new PhraseyError(
-            `Missing implementation of formatter in package "${name}"`
-        );
+        if (typeof pkg.stringFormatter.format !== "function") {
+            throw new PhraseyError(
+                `Missing implementation of "stringFormatter.format" in package "${name}"`
+            );
+        }
+        return pkg.stringFormatter;
     }
 
     static replaceCharacter(value: string, from: string, to: string) {

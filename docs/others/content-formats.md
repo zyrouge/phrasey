@@ -1,17 +1,14 @@
 # Content Formats
 
 Content formats helps to understand the content of a file.
-They implement a serializer (converts content to an `object`) or a deserializer (converts `object` to content) or both to provide functionality.
+They implement serializer (converts content to an `object`) and deserializer (converts `object` to content) to provide functionality.
 
 ## Representation
 
 ```ts
-interface PhraseyContentFormatSerializer {
+interface PhraseyContentFormatter {
     extension: string;
     serialize(content: any): string;
-}
-
-interface PhraseyContentFormatDeserializer {
     deserialize(content: string): any;
 }
 ```
@@ -19,17 +16,11 @@ interface PhraseyContentFormatDeserializer {
 ## Example
 
 ```js
-import type {
-    PhraseyContentFormatSerializer,
-    PhraseyContentFormatDeserializer,
-} from "phrasey";
+import type { PhraseyContentFormatter } from "phrasey";
 
-export const serializer: PhraseyContentFormatSerializer = {
+export const contentFormatter: PhraseyContentFormatter = {
     extension: "json",
     serialize: (content: any) => JSON.stringify(content),
-};
-
-export const deserializer: PhraseyContentFormatDeserializer = {
     deserialize: (content: string) => JSON.parse(content),
 };
 ```
@@ -60,7 +51,7 @@ yarn add --dev @zyrouge/phrasey-yaml
 
 ### TOML
 
-Supports serializing `.toml` files.
+Supports serializing and deserializing `.toml` files.
 
 ```bash
 npm install --save-dev @zyrouge/phrasey-toml
@@ -70,7 +61,7 @@ yarn add --dev @zyrouge/phrasey-toml
 
 ### XML
 
-Supports serializing `.xml` files.
+Supports serializing and deserializing `.xml` files.
 
 ```bash
 npm install --save-dev @zyrouge/phrasey-xml

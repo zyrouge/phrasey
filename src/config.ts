@@ -12,7 +12,7 @@ export class PhraseyConfig {
     ): Promise<PhraseyResult<PhraseyConfig, Error>> {
         const z = await PhraseyTransformer.transform(
             path,
-            PhraseyContentFormats.resolveDeserializer(format),
+            PhraseyContentFormats.resolve(format),
             PhraseyZConfig
         );
         if (!z.success) return z;

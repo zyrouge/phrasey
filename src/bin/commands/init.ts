@@ -36,7 +36,7 @@ export const InitCommand = new Command()
                 "Please enter a valid format"
             ),
         });
-        const configFormatCheck = isDeserializerFormatInstalled(configFormat);
+        const configFormatCheck = isContentFormatInstalled(configFormat);
         if (!configFormatCheck.isInstalled) {
             log.ln();
             logUnableToResolveFormat(configFormatCheck);
@@ -57,7 +57,7 @@ export const InitCommand = new Command()
                 "Please enter a valid format"
             ),
         });
-        const inputFormatCheck = isDeserializerFormatInstalled(inputFormat);
+        const inputFormatCheck = isContentFormatInstalled(inputFormat);
         if (!inputFormatCheck.isInstalled) {
             log.ln();
             logUnableToResolveFormat(inputFormatCheck);
@@ -82,7 +82,7 @@ export const InitCommand = new Command()
                 "Please enter a valid format"
             ),
         });
-        const schemaFormatCheck = isDeserializerFormatInstalled(schemaFormat);
+        const schemaFormatCheck = isContentFormatInstalled(schemaFormat);
         if (!schemaFormatCheck.isInstalled) {
             log.ln();
             logUnableToResolveFormat(schemaFormatCheck);
@@ -103,7 +103,7 @@ export const InitCommand = new Command()
                 "Please enter a valid format"
             ),
         });
-        const outputFormatCheck = isSerializerFormatInstalled(outputFormat);
+        const outputFormatCheck = isContentFormatInstalled(outputFormat);
         if (!outputFormatCheck.isInstalled) {
             log.ln();
             logUnableToResolveFormat(outputFormatCheck);
@@ -148,21 +148,21 @@ export const InitCommand = new Command()
             },
             hooks: hooksFile ? { files: [hooksFile] } : undefined,
         };
-        const configSerializer = PhraseySafeRun(() =>
-            PhraseyContentFormats.resolveSerializer(configFormat)
+        const configFormatter = PhraseySafeRun(() =>
+            PhraseyContentFormats.resolve(configFormat)
         );
-        if (configSerializer.success) {
+        if (configFormatter.success) {
             const configFilePath = p.resolve(process.cwd(), configFile);
             await writeFile(
                 configFilePath,
-                configSerializer.data.serialize(config)
+                configFormatter.data.serialize(config)
             );
             log.success(`Generated config at "${configFilePath}".`);
         } else {
             log.error(
                 `Unable to use specified config format "${configFormat}" due to errors.`
             );
-            log.grayed(PhraseyTreeLike.build([configSerializer.error]));
+            log.grayed(PhraseyTreeLike.build([configFormatter.error]));
             log.ln();
             log.info(
                 `You could try manually creating "${configFile}" using the below generated config.`
@@ -179,21 +179,21 @@ export const InitCommand = new Command()
                 },
             ],
         };
-        const schemaSerializer = PhraseySafeRun(() =>
-            PhraseyContentFormats.resolveSerializer(schemaFormat)
+        const schemaFormatter = PhraseySafeRun(() =>
+            PhraseyContentFormats.resolve(schemaFormat)
         );
-        if (schemaSerializer.success) {
+        if (schemaFormatter.success) {
             const schemaFilePath = p.resolve(process.cwd(), schemaFile);
             await writeFile(
                 schemaFilePath,
-                schemaSerializer.data.serialize(schema)
+                schemaFormatter.data.serialize(schema)
             );
             log.success(`Generated schema at "${schemaFilePath}".`);
         } else {
             log.error(
                 `Unable to use specified schema format "${configFormat}" due to errors.`
             );
-            log.grayed(PhraseyTreeLike.build([schemaSerializer.error]));
+            log.grayed(PhraseyTreeLike.build([schemaFormatter.error]));
             log.ln();
             log.info(
                 `You could try manually creating "${schemaFile}" using the below generated schema.`
@@ -207,12 +207,12 @@ export const InitCommand = new Command()
                 HelloX: "Hello {user}!",
             },
         };
-        const inputSerializer = PhraseySafeRun(() =>
-            PhraseyContentFormats.resolveSerializer(inputFormat)
+        const inputFormatter = PhraseySafeRun(() =>
+            PhraseyContentFormats.resolve(inputFormat)
         );
-        if (inputSerializer.success) {
+        if (inputFormatter.success) {
             const serializedDemoTranslation =
-                inputSerializer.data.serialize(demoTranslation);
+                inputFormatter.data.serialize(demoTranslation);
             if (defaultInputFile) {
                 const defaultInputFilePath = p.resolve(
                     process.cwd(),
@@ -238,7 +238,7 @@ export const InitCommand = new Command()
             log.error(
                 `Unable to use specified input translation format "${inputFormat}" due to errors.`
             );
-            log.grayed(PhraseyTreeLike.build([inputSerializer.error]));
+            log.grayed(PhraseyTreeLike.build([inputFormatter.error]));
             log.ln();
             log.info(
                 `You could try manually creating a translation file using the below generated content.`
@@ -270,24 +270,10 @@ type IsFormatInstalledResult =
     | IsFormatInstalledSuccessResult
     | IsFormatInstalledFailResult;
 
-function isSerializerFormatInstalled(format: string): IsFormatInstalledResult {
-    let packageName =
-        PhraseyContentFormats.serializerPackages[format] ?? format;
+function isContentFormatInstalled(format: string): IsFormatInstalledResult {
+    let packageName = PhraseyContentFormats.defaultPackages[format] ?? format;
     try {
-        PhraseyContentFormats.resolveSerializer(packageName);
-        return { format, isInstalled: true, packageName };
-    } catch (error) {
-        return { format, isInstalled: false, packageName, error };
-    }
-}
-
-function isDeserializerFormatInstalled(
-    format: string
-): IsFormatInstalledResult {
-    let packageName =
-        PhraseyContentFormats.deserializerPackages[format] ?? format;
-    try {
-        PhraseyContentFormats.resolveDeserializer(packageName);
+        PhraseyContentFormats.resolve(packageName);
         return { format, isInstalled: true, packageName };
     } catch (error) {
         return { format, isInstalled: false, packageName, error };

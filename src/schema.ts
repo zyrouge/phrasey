@@ -24,7 +24,7 @@ export class PhraseySchema {
     ): Promise<PhraseyResult<PhraseySchema, Error>> {
         const z = await PhraseyTransformer.transform(
             path,
-            PhraseyContentFormats.resolveDeserializer(format),
+            PhraseyContentFormats.resolve(format),
             PhraseyZSchema
         );
         if (!z.success) return z;

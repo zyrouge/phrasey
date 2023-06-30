@@ -1,14 +1,8 @@
-import type {
-    PhraseyContentFormatSerializer,
-    PhraseyContentFormatDeserializer,
-} from "phrasey";
+import type { PhraseyContentFormatter } from "phrasey";
 import yaml from "yaml";
 
-export const serializer: PhraseyContentFormatSerializer = {
+export const contentFormatter: PhraseyContentFormatter = {
     extension: "yaml",
     serialize: (content: any) => yaml.stringify(content),
-};
-
-export const deserializer: PhraseyContentFormatDeserializer = {
     deserialize: (content: string) => yaml.parse(content),
 };

@@ -61,10 +61,9 @@ export const SummaryCommand = new Command()
                 break;
 
             default:
-                const serializer =
-                    PhraseyContentFormats.resolveSerializer(outputFormat);
+                const formatter = PhraseyContentFormats.resolve(outputFormat);
                 const serializedResult = PhraseySafeRun(() => {
-                    serialized = serializer.serialize(data);
+                    serialized = formatter.serialize(data);
                 });
                 if (!serializedResult.success) {
                     log.error(`Serializing summary failed due to error.`);

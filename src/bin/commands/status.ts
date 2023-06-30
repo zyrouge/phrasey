@@ -77,10 +77,9 @@ export const StatusCommand = new Command()
                 break;
 
             default:
-                const serializer =
-                    PhraseyContentFormats.resolveSerializer(outputFormat);
+                const formatter = PhraseyContentFormats.resolve(outputFormat);
                 const serializedResult = PhraseySafeRun(() => {
-                    serialized = serializer.serialize(stats);
+                    serialized = formatter.serialize(stats);
                 });
                 if (!serializedResult.success) {
                     log.error(`Serializing stats failed due to error.`);

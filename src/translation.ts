@@ -1,5 +1,5 @@
 import { PhraseyError, PhraseyWrappedError } from "./error";
-import { PhraseyContentFormatDeserializer } from "./contentFormats";
+import { PhraseyContentFormatter } from "./contentFormats";
 import { PhraseyLocaleType, PhraseyLocales } from "./locales";
 import { PhraseyResult } from "./result";
 import { PhraseyTransformer } from "./transformer";
@@ -66,12 +66,12 @@ export class PhraseyTranslation {
     static async create(
         path: string,
         schema: PhraseySchema,
-        deserialize: PhraseyContentFormatDeserializer,
+        formatter: PhraseyContentFormatter,
         defaultTranslation?: PhraseyTranslation
     ): Promise<PhraseyResult<PhraseyTranslation, Error>> {
         const unprocessed = await PhraseyTransformer.transform(
             path,
-            deserialize,
+            formatter,
             PhraseyZTranslation
         );
         if (!unprocessed.success) {

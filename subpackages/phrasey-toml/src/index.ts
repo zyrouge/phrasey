@@ -1,6 +1,8 @@
-import type { PhraseyContentFormatDeserializer } from "phrasey";
-import toml from "toml";
+import type { PhraseyContentFormatter } from "phrasey";
+import toml from "@iarna/toml";
 
-export const deserializer: PhraseyContentFormatDeserializer = {
+export const contentFormatter: PhraseyContentFormatter = {
+    extension: "toml",
+    serialize: (content: any) => toml.stringify(content),
     deserialize: (content: string) => toml.parse(content),
 };

@@ -19,7 +19,7 @@ interface PhraseyTranslationStringFormatter<T = any> {
 ```js
 import type { PhraseyTranslationStringFormatter } from "phrasey";
 
-export const formatter: PhraseyTranslationStringFormatter<string> = {
+export const stringFormatter: PhraseyTranslationStringFormatter<string> = {
     format: (parts) => {
         let out = "";
         parts.forEach((x) => {
