@@ -64,9 +64,9 @@ export const InitCommand = new Command()
             log.ln();
             process.exit(1);
         }
-        const defaultInputFile = await inquire<string | undefined>({
+        const fallbackInputFile = await inquire<string | undefined>({
             type: "input",
-            message: "Path to default input files (eg. ./i18n/en.json)",
+            message: "Path to fallback input file (eg. ./i18n/en.json)",
         });
         const schemaFile = await inquire<string>({
             type: "input",
@@ -135,7 +135,7 @@ export const InitCommand = new Command()
             input: {
                 files: [inputFiles],
                 format: inputFormat,
-                default: defaultInputFile,
+                fallback: fallbackInputFile,
             },
             schema: {
                 file: schemaFile,
@@ -213,17 +213,17 @@ export const InitCommand = new Command()
         if (inputFormatter.success) {
             const serializedDemoTranslation =
                 inputFormatter.data.serialize(demoTranslation);
-            if (defaultInputFile) {
-                const defaultInputFilePath = p.resolve(
+            if (fallbackInputFile) {
+                const fallbackInputFilePath = p.resolve(
                     process.cwd(),
-                    defaultInputFile
+                    fallbackInputFile
                 );
                 await writeFile(
-                    defaultInputFilePath,
+                    fallbackInputFilePath,
                     serializedDemoTranslation
                 );
                 log.success(
-                    `Generated default translation file at "${defaultInputFilePath}".`
+                    `Generated fallback translation file at "${fallbackInputFilePath}".`
                 );
             } else {
                 log.info(

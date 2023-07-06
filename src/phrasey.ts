@@ -16,6 +16,8 @@ import {
 } from "./translationStringFormat";
 import { PhraseyConfig } from "./config";
 import { PhraseySchema } from "./schema";
+import { PhraseyTranslations } from "./translations";
+import { PhraseyUtils } from "./utils";
 
 export interface PhraseyCreateOptions {
     config: {
@@ -35,37 +37,27 @@ export interface PhraseyAdditional {
 
 export class Phrasey {
     defaultLocale: string | null = null;
-    translations = new Map<string, PhraseyTranslation>();
     loadErrors: Error[] = [];
+    ensureErrors: Error[] = [];
     buildErrors: Error[] = [];
 
     constructor(
         public cwd: string,
         public config: PhraseyConfig,
         public schema: PhraseySchema,
+        public translations: PhraseyTranslations,
         public hooks: PhraseyHooks,
         public additional: PhraseyAdditional
     ) {}
 
     async load(options: PhraseyLoadOptions = {}): Promise<boolean> {
         await this.hooks.dispatch("beforeLoad", this);
-        const defaultTranslationPath = this.config.z.input.default
-            ? p.resolve(this.cwd, this.config.z.input.default)
-            : undefined;
-        const deserializer = PhraseyContentFormats.resolve(
+        const formatter = PhraseyContentFormats.resolve(
             this.config.z.input.format
         );
-        let defaultTranslation: PhraseyTranslation | undefined;
-        if (defaultTranslationPath) {
-            const locale = await this.loadTranslation(
-                defaultTranslationPath,
-                deserializer
-            );
-            if (locale) {
-                this.defaultLocale = locale;
-                defaultTranslation = this.translations.get(locale);
-            }
-        }
+        const globalFallback = PhraseyUtils.parseStringArrayNullable(
+            this.config.z.input.fallback
+        ).map((x) => this.path(x));
         const stream = FastGlob.stream(this.config.z.input.files, {
             cwd: this.cwd,
             absolute: true,
@@ -75,7 +67,7 @@ export class Phrasey {
         for await (const x of stream) {
             const path = x.toString();
             if (options.filter && !options.filter(path)) continue;
-            await this.loadTranslation(path, deserializer, defaultTranslation);
+            await this.loadTranslation(path, formatter, globalFallback);
         }
         await this.hooks.dispatch("afterLoad", this);
         return !this.hasLoadErrors();
@@ -84,26 +76,41 @@ export class Phrasey {
     async loadTranslation(
         path: string,
         formatter: PhraseyContentFormatter,
-        defaultTranslation?: PhraseyTranslation
+        globalFallback: string[]
     ): Promise<string | null> {
         await this.hooks.dispatch("beforeLoadTranslation", this);
-        const translation = await PhraseyTranslation.create(
+        const result = await this.translations.load(
             path,
-            this.schema,
             formatter,
-            defaultTranslation
+            globalFallback
         );
-        if (!translation.success) {
-            this.loadErrors.push(translation.error);
+        if (!result.success) {
+            this.loadErrors.push(result.error);
             return null;
         }
-        this.translations.set(translation.data.locale.code, translation.data);
-        await this.hooks.dispatch(
-            "afterLoadTranslation",
-            this,
-            translation.data.locale.code
-        );
-        return translation.data.locale.code;
+        await this.hooks.dispatch("afterLoadTranslation", this, result.data);
+        return result.data;
+    }
+
+    async ensure(): Promise<boolean> {
+        await this.hooks.dispatch("beforeEnsure", this);
+        for (const x of this.translations.values()) {
+            await this.ensureTranslation(x);
+        }
+        await this.hooks.dispatch("afterEnsure", this);
+        return !this.hasEnsureErrors();
+    }
+
+    async ensureTranslation(translation: PhraseyTranslation): Promise<boolean> {
+        const localeCode = translation.locale.code;
+        await this.hooks.dispatch("beforeEnsureTranslation", this, localeCode);
+        const result = this.translations.ensure(translation);
+        if (!result.success) {
+            this.ensureErrors.push(result.error);
+            return false;
+        }
+        await this.hooks.dispatch("afterEnsureTranslation", this, localeCode);
+        return true;
     }
 
     async build(): Promise<boolean> {
@@ -123,8 +130,7 @@ export class Phrasey {
             this.config.z.output.stringFormat
         );
         for (const x of this.translations.values()) {
-            const path = p.resolve(
-                this.cwd,
+            const path = this.path(
                 this.config.z.output.dir,
                 `${x.locale.code}.${formatter.extension}`
             );
@@ -140,12 +146,11 @@ export class Phrasey {
         formatter: PhraseyContentFormatter,
         stringFormatter: PhraseyTranslationStringFormatter
     ): Promise<boolean> {
-        await this.hooks.dispatch("beforeBuildTranslation", this);
+        const localeCode = translation.locale.code;
+        await this.hooks.dispatch("beforeBuildTranslation", this, localeCode);
         if (!translation.stats.isBuildable) {
             this.buildErrors.push(
-                new PhraseyError(
-                    `Translation "${translation.locale.code}" is not buildable`
-                )
+                new PhraseyError(`Translation "${localeCode}" is not buildable`)
             );
             return false;
         }
@@ -156,23 +161,23 @@ export class Phrasey {
         if (!content.success) {
             this.buildErrors.push(
                 new PhraseyWrappedError(
-                    `Serializing "${translation.locale.code}" failed`,
+                    `Serializing "${localeCode}" failed`,
                     content.error
                 )
             );
             return false;
         }
         await writeFile(path, content.data);
-        await this.hooks.dispatch(
-            "afterBuildTranslation",
-            this,
-            translation.locale.code
-        );
+        await this.hooks.dispatch("afterBuildTranslation", this, localeCode);
         return true;
     }
 
     hasLoadErrors() {
         return this.loadErrors.length > 0;
+    }
+
+    hasEnsureErrors() {
+        return this.ensureErrors.length > 0;
     }
 
     hasBuildErrors() {
@@ -185,6 +190,10 @@ export class Phrasey {
             summary.add(x);
         }
         return summary;
+    }
+
+    path(...parts: string[]) {
+        return p.resolve(this.cwd, ...parts);
     }
 
     static async create(
@@ -203,6 +212,7 @@ export class Phrasey {
             config.data.z.schema.format
         );
         if (!schema.success) return schema;
+        const translations = new PhraseyTranslations(schema.data);
         const hooks = new PhraseyHooks();
         if (config.data.z.hooks?.files) {
             for (let i = 0; i < config.data.z.hooks.files.length; i++) {
@@ -221,6 +231,7 @@ export class Phrasey {
             cwd,
             config.data,
             schema.data,
+            translations,
             hooks,
             additional
         );

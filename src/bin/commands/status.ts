@@ -59,7 +59,7 @@ export const StatusCommand = new Command()
                 printKV("Locale", translation.locale.code);
                 log.ln();
                 printStateStats("Set Keys", stats.set, stats.total);
-                printStateStats("Defaulted Keys", stats.defaulted, stats.total);
+                printStateStats("Fallback Keys", stats.fallback, stats.total);
                 printStateStats("Unset Keys", stats.unset, stats.total);
                 printKVBool("Is buildable?", stats.isBuildable);
                 printKVBool(

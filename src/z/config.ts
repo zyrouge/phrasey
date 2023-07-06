@@ -7,8 +7,8 @@ export const PhraseyZConfigSchema = z.object({
 
 export const PhraseyZConfigInput = z.object({
     files: z.union([z.string(), z.array(z.string())]),
-    default: z.string().optional(),
     format: z.string(),
+    fallback: z.union([z.string(), z.array(z.string())]).optional(),
 });
 
 export const PhraseyZConfigOutput = z.object({

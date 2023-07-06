@@ -89,10 +89,10 @@ export const symbolPostMap = (symbol: string) => pico.gray(symbol);
 
 function printTotalStatsTree(stats: PhraseySummaryJsonTotalStats) {
     const data = [
-        `Set     : ${stats.set}`,
-        `Default : ${stats.defaulted}`,
-        `Unset   : ${stats.unset}`,
-        `Total   : ${stats.total}`,
+        `Set      : ${stats.setCount}`,
+        `Fallback : ${stats.fallbackCount}`,
+        `Unset    : ${stats.unsetCount}`,
+        `Total    : ${stats.total}`,
     ];
     const tree = PhraseyTreeLike.build(data, {
         symbolPostMap,
@@ -103,10 +103,10 @@ function printTotalStatsTree(stats: PhraseySummaryJsonTotalStats) {
 function printIndividualStatsTree(stats: PhraseyTranslationStatsJson) {
     const p = (value: number) => `${value.toPrecision(3)}%`;
     const data = [
-        `Set     : ${stats.set.count} (${p(stats.set.percent)})`,
-        `Default : ${stats.defaulted.count} (${p(stats.defaulted.percent)})`,
-        `Unset   : ${stats.unset.count} (${p(stats.unset.percent)})`,
-        `Total   : ${stats.total}`,
+        `Set      : ${stats.set.count} (${p(stats.set.percent)})`,
+        `Fallback : ${stats.fallback.count} (${p(stats.fallback.percent)})`,
+        `Unset    : ${stats.unset.count} (${p(stats.unset.percent)})`,
+        `Total    : ${stats.total}`,
     ];
     const tree = PhraseyTreeLike.build(data, {
         prefix: PhraseyTreeLike.tab(1),

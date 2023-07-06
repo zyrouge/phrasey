@@ -5,9 +5,9 @@ import {
 } from "./translation";
 
 export interface PhraseySummaryJsonTotalStats {
-    set: number;
-    defaulted: number;
-    unset: number;
+    setCount: number;
+    fallbackCount: number;
+    unsetCount: number;
     total: number;
 }
 
@@ -18,18 +18,18 @@ export interface PhraseySummaryJson {
 
 export class PhraseySummary {
     totalStats: PhraseySummaryJsonTotalStats = {
-        set: 0,
-        defaulted: 0,
-        unset: 0,
+        setCount: 0,
+        fallbackCount: 0,
+        unsetCount: 0,
         total: 0,
     };
     individualStats = new Map<string, PhraseyTranslationStats>();
 
     add(translation: PhraseyTranslation) {
         this.individualStats.set(translation.locale.code, translation.stats);
-        this.totalStats.set += translation.stats.setCount;
-        this.totalStats.defaulted += translation.stats.defaultedCount;
-        this.totalStats.unset += translation.stats.unsetCount;
+        this.totalStats.setCount += translation.stats.setCount;
+        this.totalStats.fallbackCount += translation.stats.fallbackCount;
+        this.totalStats.unsetCount += translation.stats.unsetCount;
         this.totalStats.total += translation.stats.total;
     }
 

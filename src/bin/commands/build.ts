@@ -18,6 +18,13 @@ export const BuildCommand = new Command()
             log.ln();
             process.exit(1);
         }
+        await phrasey.ensure();
+        if (phrasey.hasEnsureErrors()) {
+            log.error(`Build failed due to ensure error(s).`);
+            log.grayed(PhraseyTreeLike.build(phrasey.ensureErrors));
+            log.ln();
+            process.exit(1);
+        }
         await phrasey.build();
         if (phrasey.hasBuildErrors()) {
             log.error(`Build failed due to error(s).`);

@@ -53,3 +53,11 @@ export const PhraseySafeResolvePackage = (packageName: string) => {
         );
     }
 };
+
+export class PhraseyUtils {
+    static parseStringArrayNullable(data?: string | string[] | null): string[] {
+        if (typeof data === "string") return [data];
+        if (Array.isArray(data)) return data;
+        return [];
+    }
+}

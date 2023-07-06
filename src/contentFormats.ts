@@ -28,12 +28,12 @@ export class PhraseyContentFormats {
                 `Missing implementation of "contentFormatter.extension" in package "${name}"`
             );
         }
-        if (typeof pkg.contentFormatter.serialize !== "string") {
+        if (typeof pkg.contentFormatter.serialize !== "function") {
             throw new PhraseyError(
                 `Missing implementation of "contentFormatter.serialize" in package "${name}"`
             );
         }
-        if (typeof pkg.contentFormatter.deserialize !== "string") {
+        if (typeof pkg.contentFormatter.deserialize !== "function") {
             throw new PhraseyError(
                 `Missing implementation of "contentFormatter.deserialize" in package "${name}"`
             );

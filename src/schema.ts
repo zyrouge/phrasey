@@ -4,18 +4,22 @@ import { PhraseyTransformer } from "./transformer";
 import { PhraseyZSchema, PhraseyZSchemaKeyType, PhraseyZSchemaType } from "./z";
 
 export class PhraseySchema {
-    keysMap = new Map<string, PhraseyZSchemaKeyType>();
+    keys = new Map<string, PhraseyZSchemaKeyType>();
 
     constructor(public z: PhraseyZSchemaType) {}
 
-    initMap() {
+    init() {
         for (const x of this.z.keys) {
-            this.keysMap.set(x.name, x);
+            this.keys.set(x.name, x);
         }
     }
 
     key(name: string) {
-        return this.keysMap.get(name)!;
+        return this.keys.get(name)!;
+    }
+
+    keysCount() {
+        return this.keys.size;
     }
 
     static async create(
@@ -29,7 +33,7 @@ export class PhraseySchema {
         );
         if (!z.success) return z;
         const schema = new PhraseySchema(z.data);
-        schema.initMap();
+        schema.init();
         return { success: true, data: schema };
     }
 }

@@ -1,3 +1,4 @@
+import p from "path";
 import { PhraseyError, PhraseyWrappedError } from "./error";
 import { PhraseyContentFormatter } from "./contentFormats";
 import { PhraseyLocaleType, PhraseyLocales } from "./locales";
@@ -6,6 +7,7 @@ import { PhraseyTransformer } from "./transformer";
 import { PhraseyTranslationStringFormatter } from "./translationStringFormat";
 import { PhraseySchema } from "./schema";
 import { PhraseyZSchemaKeyType, PhraseyZTranslation } from "./z";
+import { PhraseyUtils } from "./utils";
 
 export interface PhraseyTranslationStringPart {
     type: "string" | "parameter";
@@ -15,7 +17,7 @@ export interface PhraseyTranslationStringPart {
 export type PhraseyTranslationStringParts = PhraseyTranslationStringPart[];
 
 export interface PhraseyTranslationStringSet {
-    state: "set" | "default";
+    state: "set" | "fallback";
     parts: PhraseyTranslationStringParts;
 }
 
@@ -27,6 +29,10 @@ export type PhraseyTranslationStringValue =
     | PhraseyTranslationStringSet
     | PhraseyTranslationStringUnset;
 
+export type PhraseyTranslationState =
+    | PhraseyTranslationStringSet["state"]
+    | PhraseyTranslationStringUnset["state"];
+
 export interface PhraseyTranslationJson {
     locale: PhraseyLocaleType;
     extras: Record<string, any>;
@@ -34,21 +40,44 @@ export interface PhraseyTranslationJson {
 }
 
 export class PhraseyTranslation {
+    keys = new Map<string, PhraseyTranslationStringValue>();
+    stats = new PhraseyTranslationStats();
+
     constructor(
         public path: string,
         public schema: PhraseySchema,
         public locale: PhraseyLocaleType,
         public extras: Record<string, any>,
-        public keys: Record<string, PhraseyTranslationStringValue>,
-        public stats: PhraseyTranslationStats
+        public fallback: string[]
     ) {}
+
+    setKey(key: string, value: PhraseyTranslationStringValue) {
+        const pValue = this.keys.get(key);
+        if (pValue) {
+            this.stats.unprocess(key, pValue);
+        }
+        this.keys.set(key, value);
+        this.stats.process(key, value);
+    }
+
+    getKey(key: string) {
+        return this.keys.get(key);
+    }
+
+    hasKey(key: string) {
+        return this.keys.has(key);
+    }
+
+    keysCount() {
+        return this.keys.size;
+    }
 
     json(
         stringFormatter: PhraseyTranslationStringFormatter
     ): PhraseyTranslationJson {
         const keys: Record<string, any> = {};
-        Object.entries(this.keys).map(([k, v]) => {
-            if (v.state === "set" || v.state === "default") {
+        for (const [k, v] of this.keys.entries()) {
+            if (v.state === "set" || v.state === "fallback") {
                 const keySchema = this.schema.key(k);
                 try {
                     keys[k] = stringFormatter.format(v.parts, keySchema);
@@ -59,7 +88,7 @@ export class PhraseyTranslation {
                     );
                 }
             }
-        });
+        }
         return { locale: this.locale, extras: this.extras, keys };
     }
 
@@ -67,7 +96,7 @@ export class PhraseyTranslation {
         path: string,
         schema: PhraseySchema,
         formatter: PhraseyContentFormatter,
-        defaultTranslation?: PhraseyTranslation
+        globalFallback: string[]
     ): Promise<PhraseyResult<PhraseyTranslation, Error>> {
         const unprocessed = await PhraseyTransformer.transform(
             path,
@@ -89,45 +118,31 @@ export class PhraseyTranslation {
             };
         }
         const extras = unprocessed.data.extras ?? {};
-        const stats = new PhraseyTranslationStats();
-        const parsedKeys: Record<string, PhraseyTranslationStringValue> = {};
-        for (const x of schema.z.keys) {
-            const rawValue = unprocessed.data.keys[x.name];
-            if (!rawValue) {
-                const defaultKey = defaultTranslation?.keys[x.name];
-                if (!defaultKey || defaultKey.state === "unset") {
-                    stats.addUnset(x.name);
-                    parsedKeys[x.name] = {
-                        state: "unset",
-                    };
-                    continue;
-                }
-                parsedKeys[x.name] = {
-                    state: "default",
-                    parts: defaultKey.parts,
-                };
-                stats.addDefaulted(x.name);
-                continue;
-            }
-            const parts = PhraseyTranslation.parseTranslationKeyValue(
-                x,
-                rawValue
-            );
-            if (!parts.success) return parts;
-            parsedKeys[x.name] = {
-                state: "set",
-                parts: parts.data,
-            };
-            stats.addSet(x.name);
-        }
+        const dir = p.dirname(path);
+        const fallback = PhraseyUtils.parseStringArrayNullable(
+            unprocessed.data.fallback
+        ).map((x) => p.resolve(dir, x));
+        fallback.push(...globalFallback);
         const translation = new PhraseyTranslation(
             path,
             schema,
             locale,
             extras,
-            parsedKeys,
-            stats
+            fallback
         );
+        for (const x of schema.z.keys) {
+            const rawValue = unprocessed.data.keys[x.name];
+            if (!rawValue) continue;
+            const parts = PhraseyTranslation.parseTranslationKeyValue(
+                x,
+                rawValue
+            );
+            if (!parts.success) return parts;
+            translation.setKey(x.name, {
+                state: "set",
+                parts: parts.data,
+            });
+        }
         return {
             success: true,
             data: translation,
@@ -202,7 +217,7 @@ export interface PhraseyTranslationStatsJsonExtendedState {
 
 export interface PhraseyTranslationStatsJson {
     set: PhraseyTranslationStatsJsonExtendedState;
-    defaulted: PhraseyTranslationStatsJsonExtendedState;
+    fallback: PhraseyTranslationStatsJsonExtendedState;
     unset: PhraseyTranslationStatsJsonExtendedState;
     total: number;
     isBuildable: boolean;
@@ -210,40 +225,63 @@ export interface PhraseyTranslationStatsJson {
 }
 
 export class PhraseyTranslationStats {
-    set: string[] = [];
-    defaulted: string[] = [];
-    unset: string[] = [];
+    set = new Set<string>();
+    fallback = new Set<string>();
+    unset = new Set<string>();
     total = 0;
 
-    addSet(key: string) {
-        this.set.push(key);
-        this.total++;
+    process(key: string, value: PhraseyTranslationStringValue) {
+        switch (value.state) {
+            case "set":
+                this.set.add(key);
+                this.total++;
+                break;
+
+            case "fallback":
+                this.fallback.add(key);
+                this.total++;
+                break;
+
+            case "unset":
+                this.unset.add(key);
+                this.total++;
+                break;
+        }
     }
 
-    addDefaulted(key: string) {
-        this.defaulted.push(key);
-        this.total++;
-    }
+    unprocess(key: string, value: PhraseyTranslationStringValue) {
+        switch (value.state) {
+            case "set":
+                this.set.delete(key);
+                this.total--;
+                break;
 
-    addUnset(key: string) {
-        this.unset.push(key);
-        this.total++;
+            case "fallback":
+                this.fallback.delete(key);
+                this.total--;
+                break;
+
+            case "unset":
+                this.unset.delete(key);
+                this.total--;
+                break;
+        }
     }
 
     json(): PhraseyTranslationStatsJson {
         return {
             set: {
-                keys: this.set,
+                keys: [...this.set],
                 count: this.setCount,
                 percent: this.setPercent,
             },
-            defaulted: {
-                keys: this.defaulted,
-                count: this.defaultedCount,
-                percent: this.defaultedPercent,
+            fallback: {
+                keys: [...this.fallback],
+                count: this.fallbackCount,
+                percent: this.fallbackPercent,
             },
             unset: {
-                keys: this.unset,
+                keys: [...this.unset],
                 count: this.unsetCount,
                 percent: this.unsetPercent,
             },
@@ -254,7 +292,7 @@ export class PhraseyTranslationStats {
     }
 
     get isBuildable() {
-        return this.setCount + this.defaultedCount === this.total;
+        return this.setCount + this.fallbackCount === this.total;
     }
 
     get isStandaloneBuildable() {
@@ -262,22 +300,22 @@ export class PhraseyTranslationStats {
     }
 
     get setCount() {
-        return this.set.length;
+        return this.set.size;
     }
 
-    get defaultedCount() {
-        return this.defaulted.length;
+    get fallbackCount() {
+        return this.fallback.size;
     }
 
     get unsetCount() {
-        return this.unset.length;
+        return this.unset.size;
     }
 
     get setPercent() {
         return (this.setCount / this.total) * 100;
     }
 
-    get defaultedPercent() {
+    get fallbackPercent() {
         return (this.setCount / this.total) * 100;
     }
 
