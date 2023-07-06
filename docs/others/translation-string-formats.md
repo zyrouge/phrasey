@@ -56,6 +56,21 @@ Example of output string:
 ]
 ```
 
+### `compact-parts`
+
+Serializes the parsed string as compact parts.
+Here, `0` denotes a `string` and `1` denotes a `parameter`.
+
+Example of output string:
+
+```json
+[
+    [0, "Hello, "],
+    [1, "user"],
+    [0, "!"]
+]
+```
+
 ### `format-string`
 
 Serializes the parsed string as to a equivalent of `printf()` supported string.

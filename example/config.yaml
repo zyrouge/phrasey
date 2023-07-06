@@ -4,13 +4,14 @@ schema:
 
 input:
     files: ./i18n/**.yaml
-    default: ./i18n/en.yaml
     format: yaml
+    fallback: ./i18n/en.yaml
 
 output:
     dir: ./dist
     format: json
-    stringFormat: parts
+    stringFormat: compact-parts
 
 hooks:
-    - ./hooks.js
+    files:
+        - ./hooks.js

@@ -14,14 +14,21 @@ Read the [API documentation](https://zyrouge.github.io/phrasey/api/) for more in
 
 ```ts
 interface PhraseyHooksPartialHandler {
-    afterInit?(phrasey: Phrasey): Promise<void>;
+    onCreate?(phrasey: Phrasey): Promise<void>;
+
     beforeLoad?(phrasey: Phrasey): Promise<void>;
     afterLoad?(phrasey: Phrasey): Promise<void>;
     beforeLoadTranslation?(phrasey: Phrasey): Promise<void>;
     afterLoadTranslation?(phrasey: Phrasey, locale: string): Promise<void>;
+
+    beforeEnsure?(phrasey: Phrasey): Promise<void>;
+    afterEnsure?(phrasey: Phrasey): Promise<void>;
+    beforeEnsureTranslation?(phrasey: Phrasey, locale: string): Promise<void>;
+    afterEnsureTranslation?(phrasey: Phrasey, locale: string): Promise<void>;
+
     beforeBuild?(phrasey: Phrasey): Promise<void>;
     afterBuild?(phrasey: Phrasey): Promise<void>;
-    beforeBuildTranslation?(phrasey: Phrasey): Promise<void>;
+    beforeBuildTranslation?(phrasey: Phrasey, locale: string): Promise<void>;
     afterBuildTranslation?(phrasey: Phrasey, locale: string): Promise<void>;
 }
 ```
@@ -48,13 +55,25 @@ module.exports = {
     afterLoadTranslation: (phrasey, locale) => {
         console.log("event: afterLoadTranslation");
     },
+    beforeEnsure: (phrasey) => {
+        console.log("event: beforeEnsure");
+    },
+    afterEnsure: (phrasey) => {
+        console.log("event: afterEnsure");
+    },
+    beforeEnsureTranslation: (phrasey, locale) => {
+        console.log("event: beforeEnsureTranslation");
+    },
+    afterEnsureTranslation: (phrasey, locale) => {
+        console.log("event: afterEnsureTranslation");
+    },
     beforeBuild: (phrasey) => {
         console.log("event: beforeBuild");
     },
     afterBuild: (phrasey) => {
         console.log("event: afterBuild");
     },
-    beforeBuildTranslation: (phrasey) => {
+    beforeBuildTranslation: (phrasey, locale) => {
         console.log("event: beforeBuildTranslation");
     },
     afterBuildTranslation: (phrasey, locale) => {

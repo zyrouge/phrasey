@@ -10,7 +10,7 @@ interface PhraseyZConfigType {
         // supports globs
         files: string | string[];
         format: string;
-        default?: string;
+        fallback?: string | string[];
     };
     schema: {
         file: string;
@@ -36,7 +36,7 @@ schema:
 
 input:
     files: ./i18n/**.yaml
-    default: ./i18n/en.yaml
+    fallback: ./i18n/en.yaml
     format: yaml
 
 output:

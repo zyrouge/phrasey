@@ -2,13 +2,14 @@
 
 The translation file consists the actual translation strings.
 
-If `input.default` is specified in the [configuration file](./configuration.md), any files other than the default file can omit keys. Omitted keys would use the values from the default file.
+The `fallback` and `input.fallback` in the [configuration file](./configuration.md) are used to specify the fallback translation files from which omitted keys will be copied from. This can be omitted entirely if you require every translation file to be absolutely complete.
 
 ## Representation
 
 ```ts
 interface PhraseyZTranslationType {
     locale: string;
+    fallback: string | string[];
     extras?: Map<string, any>;
     keys: Record<string, string>;
 }
