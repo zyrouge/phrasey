@@ -1,15 +1,17 @@
 import { defineConfig, HeadConfig } from "vitepress";
 
+const BASE = "/phrasey/";
+
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
     title: "Phrasey",
     description: "A full-blown i18n build system.",
-    base: "/phrasey/",
+    base: BASE,
     outDir: "../docs-dist",
     lastUpdated: true,
     head: [
-        ["link", { rel: "icon", href: "/icon.png" }],
-        _metaTag("og:image", "/banner.png"),
+        ["link", { rel: "icon", href: _base("icon.png") }],
+        _metaTag("og:image", _base("banner.png")),
         _metaTag("theme-color", "#f59e0b"),
         [
             "style",
@@ -109,4 +111,8 @@ export default defineConfig({
 
 function _metaTag(name: string, content: string): HeadConfig {
     return ["meta", { name, property: name, content }];
+}
+
+function _base(path: string) {
+    return BASE + path;
 }
