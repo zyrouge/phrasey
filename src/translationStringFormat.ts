@@ -15,6 +15,22 @@ export class PhraseyTranslationStringFormats {
         parts: this.construct<PhraseyTranslationStringParts>({
             format: (parts) => parts,
         }),
+        /**
+         *  0 - String, 1 - Parameter
+         */
+        "compact-parts": this.construct<[0 | 1, string][]>({
+            format: (parts) => {
+                return parts.map((x) => {
+                    switch (x.type) {
+                        case "string":
+                            return [0, x.value];
+
+                        case "parameter":
+                            return [1, x.value];
+                    }
+                });
+            },
+        }),
         "format-string": this.construct<string>({
             format: (parts, schema) => {
                 const parameters = schema.parameters ?? [];
