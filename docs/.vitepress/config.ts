@@ -1,6 +1,7 @@
 import { defineConfig, HeadConfig } from "vitepress";
 
 const BASE = "/phrasey/";
+const BASE_URL = "https://zyrouge.github.io/phrasey";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -10,10 +11,10 @@ export default defineConfig({
     outDir: "../docs-dist",
     lastUpdated: true,
     head: [
-        ["link", { rel: "icon", href: _base("icon.png") }],
-        _metaTag("og:image", _base("icon.png")),
-        _metaTag("twitter:card", _base("banner.png")),
-        _metaTag("theme-color", "#f59e0b"),
+        ["link", { rel: "icon", href: _url("/icon.png") }],
+        _meta("og:image", _url("/icon.png")),
+        _meta("twitter:card", _url("/banner.png")),
+        _meta("theme-color", "#f59e0b"),
         [
             "style",
             {},
@@ -32,7 +33,7 @@ export default defineConfig({
             { text: "Guide", link: "/", activeMatch: ".*" },
             {
                 text: "API Documentation",
-                link: "https://zyrouge.github.io/phrasey/api/",
+                link: `${BASE_URL}/api/`,
             },
         ],
         sidebar: [
@@ -110,10 +111,10 @@ export default defineConfig({
     },
 });
 
-function _metaTag(name: string, content: string): HeadConfig {
+function _meta(name: string, content: string): HeadConfig {
     return ["meta", { name, property: name, content }];
 }
 
-function _base(path: string) {
-    return BASE + path;
+function _url(path: string) {
+    return BASE_URL + path;
 }
