@@ -11,7 +11,8 @@ export default defineConfig({
     lastUpdated: true,
     head: [
         ["link", { rel: "icon", href: _base("icon.png") }],
-        _metaTag("og:image", _base("banner.png")),
+        _metaTag("og:image", _base("icon.png")),
+        _metaTag("twitter:card", _base("banner.png")),
         _metaTag("theme-color", "#f59e0b"),
         [
             "style",
