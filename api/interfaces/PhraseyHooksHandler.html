@@ -20,7 +20,7 @@
 <ul class="tsd-hierarchy">
 <li><span class="target">PhraseyHooksHandler</span></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/zyrouge/phrasey/blob/407553e/src/hooks.ts#L4">src/hooks.ts:4</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/zyrouge/phrasey/blob/e6cca27/src/hooks.ts#L4">src/hooks.ts:4</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -30,10 +30,14 @@
 <h3 class="tsd-index-heading">Methods</h3>
 <div class="tsd-index-list"><a href="PhraseyHooksHandler.html#afterBuild" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><g id="icon-2048"><rect fill="var(--color-icon-background)" stroke="#FF4DB8" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12"></rect><path d="M9.162 16V7.24H10.578L11.514 10.072C11.602 10.328 11.674 10.584 11.73 10.84C11.794 11.088 11.842 11.28 11.874 11.416C11.906 11.28 11.954 11.088 12.018 10.84C12.082 10.584 12.154 10.324 12.234 10.06L13.122 7.24H14.538V16H13.482V12.82C13.482 12.468 13.49 12.068 13.506 11.62C13.53 11.172 13.558 10.716 13.59 10.252C13.622 9.78 13.654 9.332 13.686 8.908C13.726 8.476 13.762 8.1 13.794 7.78L12.366 12.16H11.334L9.894 7.78C9.934 8.092 9.97 8.456 10.002 8.872C10.042 9.28 10.078 9.716 10.11 10.18C10.142 10.636 10.166 11.092 10.182 11.548C10.206 12.004 10.218 12.428 10.218 12.82V16H9.162Z" fill="var(--color-text)"></path></g></svg><span>after<wbr/>Build</span></a>
 <a href="PhraseyHooksHandler.html#afterBuildTranslation" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>after<wbr/>Build<wbr/>Translation</span></a>
+<a href="PhraseyHooksHandler.html#afterEnsure" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>after<wbr/>Ensure</span></a>
+<a href="PhraseyHooksHandler.html#afterEnsureTranslation" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>after<wbr/>Ensure<wbr/>Translation</span></a>
 <a href="PhraseyHooksHandler.html#afterLoad" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>after<wbr/>Load</span></a>
 <a href="PhraseyHooksHandler.html#afterLoadTranslation" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>after<wbr/>Load<wbr/>Translation</span></a>
 <a href="PhraseyHooksHandler.html#beforeBuild" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>before<wbr/>Build</span></a>
 <a href="PhraseyHooksHandler.html#beforeBuildTranslation" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>before<wbr/>Build<wbr/>Translation</span></a>
+<a href="PhraseyHooksHandler.html#beforeEnsure" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>before<wbr/>Ensure</span></a>
+<a href="PhraseyHooksHandler.html#beforeEnsureTranslation" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>before<wbr/>Ensure<wbr/>Translation</span></a>
 <a href="PhraseyHooksHandler.html#beforeLoad" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>before<wbr/>Load</span></a>
 <a href="PhraseyHooksHandler.html#beforeLoadTranslation" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>before<wbr/>Load<wbr/>Translation</span></a>
 <a href="PhraseyHooksHandler.html#onCreate" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>on<wbr/>Create</span></a>
@@ -45,19 +49,24 @@
 <ul class="tsd-signatures">
 <li class="tsd-signature tsd-anchor-link" id="afterBuild.afterBuild-1"><span class="tsd-kind-call-signature">after<wbr/>Build</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">phrasey</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><a href="#afterBuild.afterBuild-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Fired after building all translations.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
 <h5><span class="tsd-kind-parameter">phrasey</span>: <a href="../classes/Phrasey.html" class="tsd-signature-type tsd-kind-class">Phrasey</a></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/zyrouge/phrasey/blob/407553e/src/hooks.ts#L11">src/hooks.ts:11</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/zyrouge/phrasey/blob/e6cca27/src/hooks.ts#L26">src/hooks.ts:26</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="afterBuildTranslation" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>after<wbr/>Build<wbr/>Translation</span><a href="#afterBuildTranslation" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
 <li class="tsd-signature tsd-anchor-link" id="afterBuildTranslation.afterBuildTranslation-1"><span class="tsd-kind-call-signature">after<wbr/>Build<wbr/>Translation</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">phrasey</span>, <span class="tsd-kind-parameter">locale</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><a href="#afterBuildTranslation.afterBuildTranslation-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Fired after building a translation.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
@@ -65,27 +74,67 @@
 <h5><span class="tsd-kind-parameter">phrasey</span>: <a href="../classes/Phrasey.html" class="tsd-signature-type tsd-kind-class">Phrasey</a></h5></li>
 <li>
 <h5><span class="tsd-kind-parameter">locale</span>: <span class="tsd-signature-type">string</span></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/zyrouge/phrasey/blob/407553e/src/hooks.ts#L13">src/hooks.ts:13</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/zyrouge/phrasey/blob/e6cca27/src/hooks.ts#L30">src/hooks.ts:30</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member"><a id="afterEnsure" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>after<wbr/>Ensure</span><a href="#afterEnsure" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="tsd-signature tsd-anchor-link" id="afterEnsure.afterEnsure-1"><span class="tsd-kind-call-signature">after<wbr/>Ensure</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">phrasey</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><a href="#afterEnsure.afterEnsure-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Fired after ensuring all translations.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5><span class="tsd-kind-parameter">phrasey</span>: <a href="../classes/Phrasey.html" class="tsd-signature-type tsd-kind-class">Phrasey</a></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/zyrouge/phrasey/blob/e6cca27/src/hooks.ts#L18">src/hooks.ts:18</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member"><a id="afterEnsureTranslation" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>after<wbr/>Ensure<wbr/>Translation</span><a href="#afterEnsureTranslation" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="tsd-signature tsd-anchor-link" id="afterEnsureTranslation.afterEnsureTranslation-1"><span class="tsd-kind-call-signature">after<wbr/>Ensure<wbr/>Translation</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">phrasey</span>, <span class="tsd-kind-parameter">locale</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><a href="#afterEnsureTranslation.afterEnsureTranslation-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Fired after ensuring a translation.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5><span class="tsd-kind-parameter">phrasey</span>: <a href="../classes/Phrasey.html" class="tsd-signature-type tsd-kind-class">Phrasey</a></h5></li>
+<li>
+<h5><span class="tsd-kind-parameter">locale</span>: <span class="tsd-signature-type">string</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/zyrouge/phrasey/blob/e6cca27/src/hooks.ts#L22">src/hooks.ts:22</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="afterLoad" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>after<wbr/>Load</span><a href="#afterLoad" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
 <li class="tsd-signature tsd-anchor-link" id="afterLoad.afterLoad-1"><span class="tsd-kind-call-signature">after<wbr/>Load</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">phrasey</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><a href="#afterLoad.afterLoad-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Fired after loading all translations.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
 <h5><span class="tsd-kind-parameter">phrasey</span>: <a href="../classes/Phrasey.html" class="tsd-signature-type tsd-kind-class">Phrasey</a></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/zyrouge/phrasey/blob/407553e/src/hooks.ts#L7">src/hooks.ts:7</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/zyrouge/phrasey/blob/e6cca27/src/hooks.ts#L10">src/hooks.ts:10</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="afterLoadTranslation" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>after<wbr/>Load<wbr/>Translation</span><a href="#afterLoadTranslation" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
 <li class="tsd-signature tsd-anchor-link" id="afterLoadTranslation.afterLoadTranslation-1"><span class="tsd-kind-call-signature">after<wbr/>Load<wbr/>Translation</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">phrasey</span>, <span class="tsd-kind-parameter">locale</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><a href="#afterLoadTranslation.afterLoadTranslation-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Fired after loading a translation.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
@@ -93,74 +142,126 @@
 <h5><span class="tsd-kind-parameter">phrasey</span>: <a href="../classes/Phrasey.html" class="tsd-signature-type tsd-kind-class">Phrasey</a></h5></li>
 <li>
 <h5><span class="tsd-kind-parameter">locale</span>: <span class="tsd-signature-type">string</span></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/zyrouge/phrasey/blob/407553e/src/hooks.ts#L9">src/hooks.ts:9</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/zyrouge/phrasey/blob/e6cca27/src/hooks.ts#L14">src/hooks.ts:14</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="beforeBuild" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>before<wbr/>Build</span><a href="#beforeBuild" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
 <li class="tsd-signature tsd-anchor-link" id="beforeBuild.beforeBuild-1"><span class="tsd-kind-call-signature">before<wbr/>Build</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">phrasey</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><a href="#beforeBuild.beforeBuild-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Fired before building translations.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
 <h5><span class="tsd-kind-parameter">phrasey</span>: <a href="../classes/Phrasey.html" class="tsd-signature-type tsd-kind-class">Phrasey</a></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/zyrouge/phrasey/blob/407553e/src/hooks.ts#L10">src/hooks.ts:10</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/zyrouge/phrasey/blob/e6cca27/src/hooks.ts#L24">src/hooks.ts:24</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="beforeBuildTranslation" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>before<wbr/>Build<wbr/>Translation</span><a href="#beforeBuildTranslation" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
-<li class="tsd-signature tsd-anchor-link" id="beforeBuildTranslation.beforeBuildTranslation-1"><span class="tsd-kind-call-signature">before<wbr/>Build<wbr/>Translation</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">phrasey</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><a href="#beforeBuildTranslation.beforeBuildTranslation-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="beforeBuildTranslation.beforeBuildTranslation-1"><span class="tsd-kind-call-signature">before<wbr/>Build<wbr/>Translation</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">phrasey</span>, <span class="tsd-kind-parameter">locale</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><a href="#beforeBuildTranslation.beforeBuildTranslation-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Fired before building a translation.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5><span class="tsd-kind-parameter">phrasey</span>: <a href="../classes/Phrasey.html" class="tsd-signature-type tsd-kind-class">Phrasey</a></h5></li>
+<li>
+<h5><span class="tsd-kind-parameter">locale</span>: <span class="tsd-signature-type">string</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/zyrouge/phrasey/blob/e6cca27/src/hooks.ts#L28">src/hooks.ts:28</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member"><a id="beforeEnsure" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>before<wbr/>Ensure</span><a href="#beforeEnsure" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="tsd-signature tsd-anchor-link" id="beforeEnsure.beforeEnsure-1"><span class="tsd-kind-call-signature">before<wbr/>Ensure</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">phrasey</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><a href="#beforeEnsure.beforeEnsure-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Fired before ensuring all translations.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
 <h5><span class="tsd-kind-parameter">phrasey</span>: <a href="../classes/Phrasey.html" class="tsd-signature-type tsd-kind-class">Phrasey</a></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/zyrouge/phrasey/blob/407553e/src/hooks.ts#L12">src/hooks.ts:12</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/zyrouge/phrasey/blob/e6cca27/src/hooks.ts#L16">src/hooks.ts:16</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member"><a id="beforeEnsureTranslation" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>before<wbr/>Ensure<wbr/>Translation</span><a href="#beforeEnsureTranslation" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="tsd-signature tsd-anchor-link" id="beforeEnsureTranslation.beforeEnsureTranslation-1"><span class="tsd-kind-call-signature">before<wbr/>Ensure<wbr/>Translation</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">phrasey</span>, <span class="tsd-kind-parameter">locale</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><a href="#beforeEnsureTranslation.beforeEnsureTranslation-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Fired before ensuring a translation.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5><span class="tsd-kind-parameter">phrasey</span>: <a href="../classes/Phrasey.html" class="tsd-signature-type tsd-kind-class">Phrasey</a></h5></li>
+<li>
+<h5><span class="tsd-kind-parameter">locale</span>: <span class="tsd-signature-type">string</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/zyrouge/phrasey/blob/e6cca27/src/hooks.ts#L20">src/hooks.ts:20</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="beforeLoad" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>before<wbr/>Load</span><a href="#beforeLoad" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
 <li class="tsd-signature tsd-anchor-link" id="beforeLoad.beforeLoad-1"><span class="tsd-kind-call-signature">before<wbr/>Load</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">phrasey</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><a href="#beforeLoad.beforeLoad-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Fired before loading translations.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
 <h5><span class="tsd-kind-parameter">phrasey</span>: <a href="../classes/Phrasey.html" class="tsd-signature-type tsd-kind-class">Phrasey</a></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/zyrouge/phrasey/blob/407553e/src/hooks.ts#L6">src/hooks.ts:6</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/zyrouge/phrasey/blob/e6cca27/src/hooks.ts#L8">src/hooks.ts:8</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="beforeLoadTranslation" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>before<wbr/>Load<wbr/>Translation</span><a href="#beforeLoadTranslation" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
 <li class="tsd-signature tsd-anchor-link" id="beforeLoadTranslation.beforeLoadTranslation-1"><span class="tsd-kind-call-signature">before<wbr/>Load<wbr/>Translation</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">phrasey</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><a href="#beforeLoadTranslation.beforeLoadTranslation-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Fired before loading a translation.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
 <h5><span class="tsd-kind-parameter">phrasey</span>: <a href="../classes/Phrasey.html" class="tsd-signature-type tsd-kind-class">Phrasey</a></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/zyrouge/phrasey/blob/407553e/src/hooks.ts#L8">src/hooks.ts:8</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/zyrouge/phrasey/blob/e6cca27/src/hooks.ts#L12">src/hooks.ts:12</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="onCreate" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>on<wbr/>Create</span><a href="#onCreate" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
 <li class="tsd-signature tsd-anchor-link" id="onCreate.onCreate-1"><span class="tsd-kind-call-signature">on<wbr/>Create</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">phrasey</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><a href="#onCreate.onCreate-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Fired when Phrasey client is created.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
 <h5><span class="tsd-kind-parameter">phrasey</span>: <a href="../classes/Phrasey.html" class="tsd-signature-type tsd-kind-class">Phrasey</a></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/zyrouge/phrasey/blob/407553e/src/hooks.ts#L5">src/hooks.ts:5</a></li></ul></aside></li></ul></section></section></div>
+<li>Defined in <a href="https://github.com/zyrouge/phrasey/blob/e6cca27/src/hooks.ts#L6">src/hooks.ts:6</a></li></ul></aside></li></ul></section></section></div>
 <div class="col-sidebar">
 <div class="page-menu">
 <div class="tsd-navigation settings">
@@ -182,10 +283,14 @@
 <ul>
 <li><a href="#afterBuild" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>after<wbr/>Build</span></a></li>
 <li><a href="#afterBuildTranslation" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>after<wbr/>Build<wbr/>Translation</span></a></li>
+<li><a href="#afterEnsure" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>after<wbr/>Ensure</span></a></li>
+<li><a href="#afterEnsureTranslation" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>after<wbr/>Ensure<wbr/>Translation</span></a></li>
 <li><a href="#afterLoad" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>after<wbr/>Load</span></a></li>
 <li><a href="#afterLoadTranslation" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>after<wbr/>Load<wbr/>Translation</span></a></li>
 <li><a href="#beforeBuild" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>before<wbr/>Build</span></a></li>
 <li><a href="#beforeBuildTranslation" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>before<wbr/>Build<wbr/>Translation</span></a></li>
+<li><a href="#beforeEnsure" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>before<wbr/>Ensure</span></a></li>
+<li><a href="#beforeEnsureTranslation" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>before<wbr/>Ensure<wbr/>Translation</span></a></li>
 <li><a href="#beforeLoad" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>before<wbr/>Load</span></a></li>
 <li><a href="#beforeLoadTranslation" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>before<wbr/>Load<wbr/>Translation</span></a></li>
 <li><a href="#onCreate" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>on<wbr/>Create</span></a></li></ul></div></details></div>
@@ -203,11 +308,11 @@
 <li><a href="../classes/PhraseyTranslation.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-128"></use></svg><span>Phrasey<wbr/>Translation</span></a></li>
 <li><a href="../classes/PhraseyTranslationStats.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-128"></use></svg><span>Phrasey<wbr/>Translation<wbr/>Stats</span></a></li>
 <li><a href="../classes/PhraseyTranslationStringFormats.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-128"></use></svg><span>Phrasey<wbr/>Translation<wbr/>String<wbr/>Formats</span></a></li>
+<li><a href="../classes/PhraseyUtils.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-128"></use></svg><span>Phrasey<wbr/>Utils</span></a></li>
 <li><a href="../classes/PhraseyValidationError.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-128"></use></svg><span>Phrasey<wbr/>Validation<wbr/>Error</span></a></li>
 <li><a href="../classes/PhraseyWrappedError.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-128"></use></svg><span>Phrasey<wbr/>Wrapped<wbr/>Error</span></a></li>
 <li><a href="PhraseyAdditional.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><g id="icon-256"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-interface)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6"></rect><path d="M9.51 16V15.016H11.298V8.224H9.51V7.24H14.19V8.224H12.402V15.016H14.19V16H9.51Z" fill="var(--color-text)"></path></g></svg><span>Phrasey<wbr/>Additional</span></a></li>
-<li><a href="PhraseyContentFormatDeserializer.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Phrasey<wbr/>Content<wbr/>Format<wbr/>Deserializer</span></a></li>
-<li><a href="PhraseyContentFormatSerializer.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Phrasey<wbr/>Content<wbr/>Format<wbr/>Serializer</span></a></li>
+<li><a href="PhraseyContentFormatter.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Phrasey<wbr/>Content<wbr/>Formatter</span></a></li>
 <li><a href="PhraseyCreateOptions.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Phrasey<wbr/>Create<wbr/>Options</span></a></li>
 <li><a href="PhraseyHooksHandler.html" class="current"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Phrasey<wbr/>Hooks<wbr/>Handler</span></a></li>
 <li><a href="PhraseyLoadOptions.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-256"></use></svg><span>Phrasey<wbr/>Load<wbr/>Options</span></a></li>
@@ -228,6 +333,7 @@
 <li><a href="../types/PhraseyHooksEventParameters.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Phrasey<wbr/>Hooks<wbr/>Event<wbr/>Parameters</span></a></li>
 <li><a href="../types/PhraseyHooksPartialHandler.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Phrasey<wbr/>Hooks<wbr/>Partial<wbr/>Handler</span></a></li>
 <li><a href="../types/PhraseyResult.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Phrasey<wbr/>Result</span></a></li>
+<li><a href="../types/PhraseyTranslationState.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Phrasey<wbr/>Translation<wbr/>State</span></a></li>
 <li><a href="../types/PhraseyTranslationStringParts.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Phrasey<wbr/>Translation<wbr/>String<wbr/>Parts</span></a></li>
 <li><a href="../types/PhraseyTranslationStringValue.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>Phrasey<wbr/>Translation<wbr/>String<wbr/>Value</span></a></li>
 <li><a href="../types/PhraseyZConfigHooksType.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4194304"></use></svg><span>PhraseyZConfig<wbr/>Hooks<wbr/>Type</span></a></li>
