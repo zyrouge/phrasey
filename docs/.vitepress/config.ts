@@ -13,7 +13,7 @@ export default defineConfig({
     head: [
         ["link", { rel: "icon", href: _url("/icon.png") }],
         _meta("og:image", _url("/banner.png")),
-        _meta("twitter:card", _url("/banner.png")),
+        _meta("twitter:card", "summary_large_image"),
         _meta("twitter:image", _url("/banner.png")),
         _meta("theme-color", "#f59e0b"),
         _meta("author", "Zyrouge, zyrouge@hotmail.com"),
