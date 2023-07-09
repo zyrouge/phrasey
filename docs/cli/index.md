@@ -13,6 +13,6 @@ The following commands can be used to interact with the project,
 
 -   Use the `npx phrasey help` command if you have trouble using the CLI.
 
--   Use the `npx phrasey <command-name> --help` command if you have trouble using the command.
+-   Use the `npx phrasey <command-name> --help` command if you have trouble using a command.
 
 :::

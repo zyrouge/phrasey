@@ -8,42 +8,19 @@ export type PhraseyHooksContext<T extends {}> = {
 } & T;
 
 export interface PhraseyHooksEvents {
-    /** Fired when Phrasey client is created. */
     onCreate: {};
-    /** Fired before loading translations. */
     beforeLoad: {};
-    /** Fired after loading all translations. */
     afterLoad: {};
-    /** Fired before loading a translation. */
     beforeLoadTranslation: {};
-    /** Fired after loading a translation. */
-    afterLoadTranslation: {
-        locale: string;
-    };
-    /** Fired before ensuring all translations. */
+    afterLoadTranslation: { locale: string };
     beforeEnsure: {};
-    /** Fired after ensuring all translations. */
     afterEnsure: {};
-    /** Fired before ensuring a translation. */
-    beforeEnsureTranslation: {
-        locale: string;
-    };
-    /** Fired after ensuring a translation. */
-    afterEnsureTranslation: {
-        locale: string;
-    };
-    /** Fired before building translations. */
+    beforeEnsureTranslation: { locale: string };
+    afterEnsureTranslation: { locale: string };
     beforeBuild: {};
-    /** Fired after building all translations. */
     afterBuild: {};
-    /** Fired before building a translation. */
-    beforeBuildTranslation: {
-        locale: string;
-    };
-    /** Fired after building a translation. */
-    afterBuildTranslation: {
-        locale: string;
-    };
+    beforeBuildTranslation: { locale: string };
+    afterBuildTranslation: { locale: string };
 }
 
 export type PhraseyHooksEvent = keyof PhraseyHooksEvents;

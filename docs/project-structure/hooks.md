@@ -21,10 +21,8 @@ You can use `phrasey.options.source` to find which command was invoked.
 ```ts
 interface PhraseyHooksHandler {
     onCreate?(ctx: { phrasey: Phrasey; log: PhraseyLogger }): Promise<void>;
-
     beforeLoad?(ctx: { phrasey: Phrasey; log: PhraseyLogger }): Promise<void>;
     afterLoad?(ctx: { phrasey: Phrasey; log: PhraseyLogger }): Promise<void>;
-
     beforeLoadTranslation?(ctx: {
         phrasey: Phrasey;
         log: PhraseyLogger;
@@ -34,10 +32,8 @@ interface PhraseyHooksHandler {
         log: PhraseyLogger;
         locale: string;
     }): Promise<void>;
-
     beforeEnsure?(ctx: { phrasey: Phrasey; log: PhraseyLogger }): Promise<void>;
     afterEnsure?(ctx: { phrasey: Phrasey; log: PhraseyLogger }): Promise<void>;
-
     beforeEnsureTranslation?(ctx: {
         phrasey: Phrasey;
         log: PhraseyLogger;
@@ -48,10 +44,8 @@ interface PhraseyHooksHandler {
         log: PhraseyLogger;
         locale: string;
     }): Promise<void>;
-
     beforeBuild?(ctx: { phrasey: Phrasey; log: PhraseyLogger }): Promise<void>;
     afterBuild?(ctx: { phrasey: Phrasey; log: PhraseyLogger }): Promise<void>;
-
     beforeBuildTranslation?(ctx: {
         phrasey: Phrasey;
         log: PhraseyLogger;
