@@ -10,26 +10,58 @@ Read the [API documentation](https://zyrouge.github.io/phrasey/api/) for more in
 
 :::
 
+::: tip
+
+You can use `phrasey.options.source` to find which command was invoked.
+
+:::
+
 ## Representation
 
 ```ts
-interface PhraseyHooksPartialHandler {
-    onCreate?(phrasey: Phrasey): Promise<void>;
+interface PhraseyHooksHandler {
+    onCreate?(ctx: { phrasey: Phrasey; log: PhraseyLogger }): Promise<void>;
 
-    beforeLoad?(phrasey: Phrasey): Promise<void>;
-    afterLoad?(phrasey: Phrasey): Promise<void>;
-    beforeLoadTranslation?(phrasey: Phrasey): Promise<void>;
-    afterLoadTranslation?(phrasey: Phrasey, locale: string): Promise<void>;
+    beforeLoad?(ctx: { phrasey: Phrasey; log: PhraseyLogger }): Promise<void>;
+    afterLoad?(ctx: { phrasey: Phrasey; log: PhraseyLogger }): Promise<void>;
 
-    beforeEnsure?(phrasey: Phrasey): Promise<void>;
-    afterEnsure?(phrasey: Phrasey): Promise<void>;
-    beforeEnsureTranslation?(phrasey: Phrasey, locale: string): Promise<void>;
-    afterEnsureTranslation?(phrasey: Phrasey, locale: string): Promise<void>;
+    beforeLoadTranslation?(ctx: {
+        phrasey: Phrasey;
+        log: PhraseyLogger;
+    }): Promise<void>;
+    afterLoadTranslation?(ctx: {
+        phrasey: Phrasey;
+        log: PhraseyLogger;
+        locale: string;
+    }): Promise<void>;
 
-    beforeBuild?(phrasey: Phrasey): Promise<void>;
-    afterBuild?(phrasey: Phrasey): Promise<void>;
-    beforeBuildTranslation?(phrasey: Phrasey, locale: string): Promise<void>;
-    afterBuildTranslation?(phrasey: Phrasey, locale: string): Promise<void>;
+    beforeEnsure?(ctx: { phrasey: Phrasey; log: PhraseyLogger }): Promise<void>;
+    afterEnsure?(ctx: { phrasey: Phrasey; log: PhraseyLogger }): Promise<void>;
+
+    beforeEnsureTranslation?(ctx: {
+        phrasey: Phrasey;
+        log: PhraseyLogger;
+        locale: string;
+    }): Promise<void>;
+    afterEnsureTranslation?(ctx: {
+        phrasey: Phrasey;
+        log: PhraseyLogger;
+        locale: string;
+    }): Promise<void>;
+
+    beforeBuild?(ctx: { phrasey: Phrasey; log: PhraseyLogger }): Promise<void>;
+    afterBuild?(ctx: { phrasey: Phrasey; log: PhraseyLogger }): Promise<void>;
+
+    beforeBuildTranslation?(ctx: {
+        phrasey: Phrasey;
+        log: PhraseyLogger;
+        locale: string;
+    }): Promise<void>;
+    afterBuildTranslation?(ctx: {
+        phrasey: Phrasey;
+        log: PhraseyLogger;
+        locale: string;
+    }): Promise<void>;
 }
 ```
 
@@ -37,47 +69,47 @@ interface PhraseyHooksPartialHandler {
 
 ```js
 /**
- * @type {import("phrasey").PhraseyHooksPartialHandler}
+ * @type {import("phrasey").PhraseyHooksHandler}
  */
 module.exports = {
-    onCreate: (phrasey) => {
-        console.log("event: onCreate");
+    onCreate: ({ phrasey, log }) => {
+        log("Hello from the event onCreate!");
     },
-    beforeLoad: (phrasey) => {
-        console.log("event: beforeLoad");
+    beforeLoad: ({ phrasey, log }) => {
+        log("Hello from the event beforeLoad!");
     },
-    afterLoad: (phrasey) => {
-        console.log("event: afterLoad");
+    afterLoad: ({ phrasey, log }) => {
+        log("Hello from the event afterLoad!");
     },
-    beforeLoadTranslation: (phrasey) => {
-        console.log("event: beforeLoadTranslation");
+    beforeLoadTranslation: ({ phrasey }) => {
+        log("Hello from the event beforeLoadTranslation!");
     },
-    afterLoadTranslation: (phrasey, locale) => {
-        console.log("event: afterLoadTranslation");
+    afterLoadTranslation: ({ phrasey, log, locale }) => {
+        log("Hello from the event afterLoadTranslation!");
     },
-    beforeEnsure: (phrasey) => {
-        console.log("event: beforeEnsure");
+    beforeEnsure: ({ phrasey, log }) => {
+        log("Hello from the event beforeEnsure!");
     },
-    afterEnsure: (phrasey) => {
-        console.log("event: afterEnsure");
+    afterEnsure: ({ phrasey, log }) => {
+        log("Hello from the event afterEnsure!");
     },
-    beforeEnsureTranslation: (phrasey, locale) => {
-        console.log("event: beforeEnsureTranslation");
+    beforeEnsureTranslation: ({ phrasey, log, locale }) => {
+        log("Hello from the event beforeEnsureTranslation!");
     },
-    afterEnsureTranslation: (phrasey, locale) => {
-        console.log("event: afterEnsureTranslation");
+    afterEnsureTranslation: ({ phrasey, log, locale }) => {
+        log("Hello from the event afterEnsureTranslation!");
     },
-    beforeBuild: (phrasey) => {
-        console.log("event: beforeBuild");
+    beforeBuild: ({ phrasey, log }) => {
+        log("Hello from the event beforeBuild!");
     },
-    afterBuild: (phrasey) => {
-        console.log("event: afterBuild");
+    afterBuild: ({ phrasey, log }) => {
+        log("Hello from the event afterBuild!");
     },
-    beforeBuildTranslation: (phrasey, locale) => {
-        console.log("event: beforeBuildTranslation");
+    beforeBuildTranslation: ({ phrasey, log, locale }) => {
+        log("Hello from the event beforeBuildTranslation!");
     },
-    afterBuildTranslation: (phrasey, locale) => {
-        console.log("event: afterBuildTranslation");
+    afterBuildTranslation: ({ phrasey, log, locale }) => {
+        log("Hello from the event afterBuildTranslation!");
     },
 };
 ```

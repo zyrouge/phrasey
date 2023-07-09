@@ -15,7 +15,7 @@ export default defineConfig({
         _meta("og:image", _url("/banner.png")),
         _meta("twitter:card", "summary_large_image"),
         _meta("twitter:image", _url("/banner.png")),
-        _meta("theme-color", "#f59e0b"),
+        _meta("theme-color", "#d97706"),
         _meta("author", "Zyrouge, zyrouge@hotmail.com"),
         [
             "style",
@@ -32,7 +32,11 @@ export default defineConfig({
     themeConfig: {
         logo: "/icon.png",
         nav: [
-            { text: "Guide", link: "/", activeMatch: ".*" },
+            {
+                text: "Guide",
+                link: "/getting-started/",
+                activeMatch: "\\/.+",
+            },
             {
                 text: "API Documentation",
                 link: `${BASE_URL}/api/`,
@@ -109,6 +113,12 @@ export default defineConfig({
         },
         footer: {
             message: "Made with ❤️ by Zyrouge.",
+        },
+    },
+    markdown: {
+        theme: {
+            light: "min-light",
+            dark: "min-dark",
         },
     },
 });

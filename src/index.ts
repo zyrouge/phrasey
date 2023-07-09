@@ -4,6 +4,7 @@ export * from "./contentFormats";
 export * from "./error";
 export * from "./hooks";
 export * from "./locales";
+export * from "./logger";
 export * from "./phrasey";
 export * from "./result";
 export * from "./schema";

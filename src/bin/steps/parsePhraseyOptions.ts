@@ -31,6 +31,7 @@ export const parsePhraseyOptions = (
             file: configFile,
             format: configFormat,
         },
+        log,
         source,
     };
 };

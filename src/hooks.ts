@@ -1,47 +1,68 @@
 import { PhraseyError } from "./error";
+import { PhraseyLogger } from "./logger";
 import { Phrasey } from "./phrasey";
 
-export interface PhraseyHooksHandler {
+export type PhraseyHooksContext<T extends {}> = {
+    phrasey: Phrasey;
+    log: PhraseyLogger;
+} & T;
+
+export interface PhraseyHooksEvents {
     /** Fired when Phrasey client is created. */
-    onCreate(phrasey: Phrasey): Promise<void>;
+    onCreate: {};
     /** Fired before loading translations. */
-    beforeLoad(phrasey: Phrasey): Promise<void>;
+    beforeLoad: {};
     /** Fired after loading all translations. */
-    afterLoad(phrasey: Phrasey): Promise<void>;
+    afterLoad: {};
     /** Fired before loading a translation. */
-    beforeLoadTranslation(phrasey: Phrasey): Promise<void>;
+    beforeLoadTranslation: {};
     /** Fired after loading a translation. */
-    afterLoadTranslation(phrasey: Phrasey, locale: string): Promise<void>;
+    afterLoadTranslation: {
+        locale: string;
+    };
     /** Fired before ensuring all translations. */
-    beforeEnsure(phrasey: Phrasey): Promise<void>;
+    beforeEnsure: {};
     /** Fired after ensuring all translations. */
-    afterEnsure(phrasey: Phrasey): Promise<void>;
+    afterEnsure: {};
     /** Fired before ensuring a translation. */
-    beforeEnsureTranslation(phrasey: Phrasey, locale: string): Promise<void>;
+    beforeEnsureTranslation: {
+        locale: string;
+    };
     /** Fired after ensuring a translation. */
-    afterEnsureTranslation(phrasey: Phrasey, locale: string): Promise<void>;
+    afterEnsureTranslation: {
+        locale: string;
+    };
     /** Fired before building translations. */
-    beforeBuild(phrasey: Phrasey): Promise<void>;
+    beforeBuild: {};
     /** Fired after building all translations. */
-    afterBuild(phrasey: Phrasey): Promise<void>;
+    afterBuild: {};
     /** Fired before building a translation. */
-    beforeBuildTranslation(phrasey: Phrasey, locale: string): Promise<void>;
+    beforeBuildTranslation: {
+        locale: string;
+    };
     /** Fired after building a translation. */
-    afterBuildTranslation(phrasey: Phrasey, locale: string): Promise<void>;
+    afterBuildTranslation: {
+        locale: string;
+    };
 }
 
-export type PhraseyHooksPartialHandler = Partial<PhraseyHooksHandler>;
-export type PhraseyHooksEvent = keyof PhraseyHooksHandler;
-export type PhraseyHooksEventParameters<
-    Event extends keyof PhraseyHooksHandler
-> = Parameters<PhraseyHooksHandler[Event]>;
+export type PhraseyHooksEvent = keyof PhraseyHooksEvents;
+export type PhraseyHooksEventContext<Event extends PhraseyHooksEvent> =
+    PhraseyHooksContext<PhraseyHooksEvents[Event]>;
+
+export type PhraseyHooksHandler = {
+    [Event in PhraseyHooksEvent]?: (
+        ctx: PhraseyHooksEventContext<Event>
+    ) => Promise<void>;
+};
 
 export class PhraseyHooks {
-    handlers: PhraseyHooksPartialHandler[] = [];
+    phrasey!: Phrasey;
+    handlers: PhraseyHooksHandler[] = [];
 
     addHandlerFile(packagePath: string) {
         try {
-            const handler: PhraseyHooksPartialHandler = require(packagePath);
+            const handler: PhraseyHooksHandler = require(packagePath);
             this.addHandler(handler);
         } catch (err) {
             throw new PhraseyError(
@@ -50,25 +71,33 @@ export class PhraseyHooks {
         }
     }
 
-    addHandler(handler: PhraseyHooksPartialHandler) {
+    addHandler(handler: PhraseyHooksHandler) {
         this.handlers.push(handler);
         return () => this.removeHandler(handler);
     }
 
-    removeHandler(handler: PhraseyHooksPartialHandler) {
+    removeHandler(handler: PhraseyHooksHandler) {
         this.handlers = this.handlers.filter((x) => x !== handler);
+    }
+
+    bind(phrasey: Phrasey) {
+        this.phrasey = phrasey;
     }
 
     async dispatch<Event extends PhraseyHooksEvent>(
         event: Event,
-        ...args: PhraseyHooksEventParameters<Event>
+        data: PhraseyHooksEvents[Event]
     ) {
+        const ctx: PhraseyHooksEventContext<Event> = {
+            phrasey: this.phrasey,
+            log: this.phrasey.log.inherit(`hooks:${event}`),
+            ...data,
+        };
         await Promise.allSettled(
             this.handlers.map(async (handler) => {
                 const fn = handler[event];
                 if (typeof fn === "function") {
-                    // @ts-expect-error
-                    await fn(...args);
+                    await fn(ctx);
                 }
             })
         );

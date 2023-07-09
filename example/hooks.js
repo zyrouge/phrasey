@@ -2,14 +2,12 @@ const p = require("path");
 const { writeFile } = require("fs-extra");
 const pico = require("picocolors");
 
-const logPrefix = pico.gray("[hooks:afterLoad]");
-
 /**
- * @type {import("../src").PhraseyHooksPartialHandler}
+ * @type {import("../src").PhraseyHooksHandler}
  */
 const handler = {
-    afterLoad: async (phrasey) => {
-        if (phrasey.additional.source !== "build") return;
+    afterLoad: async ({ phrasey, log }) => {
+        if (phrasey.options.source !== "build") return;
         try {
             const modelPath = p.resolve(__dirname, "dist/model.d.ts");
             const content = `
@@ -17,7 +15,18 @@ export interface ITranslation {
     locale: {
         name: string;
         code: string;
-    }
+    };
+
+${phrasey.schema.z.keys
+    .map((x) => `    ${x.name}: [0 | 1, string][];`)
+    .join("\n")}
+}
+
+export interface Translation {
+    locale: {
+        name: string;
+        code: string;
+    };
 
 ${phrasey.schema.z.keys
     .map((x) => {
@@ -31,11 +40,9 @@ ${phrasey.schema.z.keys
 }
         `.trim();
             await writeFile(modelPath, content);
-            console.log(`${logPrefix} Generated model "${modelPath}".`);
+            log.success(`Generated model "${modelPath}".`);
         } catch (err) {
-            console.error(
-                `${logPrefix} Generating model failed. (Error: ${err})`
-            );
+            log.error(`Generating model failed. (Error: ${err})`);
         }
     },
 };
