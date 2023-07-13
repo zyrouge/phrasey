@@ -316,10 +316,10 @@ export class PhraseyTranslationStats {
     }
 
     get fallbackPercent() {
-        return (this.setCount / this.total) * 100;
+        return (this.fallbackCount / this.total) * 100;
     }
 
     get unsetPercent() {
-        return (this.setCount / this.total) * 100;
+        return (this.unsetCount / this.total) * 100;
     }
 }

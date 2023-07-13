@@ -213,7 +213,9 @@ export class Phrasey implements PhraseyProps {
     }
 
     prepareSummary() {
-        const summary = new PhraseySummary();
+        const summary = new PhraseySummary({
+            keysCount: this.schema.keysCount(),
+        });
         for (const x of this.translations.values()) {
             summary.add(x);
         }

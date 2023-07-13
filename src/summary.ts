@@ -4,7 +4,12 @@ import {
     PhraseyTranslationStatsJson,
 } from "./translation";
 
+export interface PhraseySummaryOptions {
+    keysCount: number;
+}
+
 export interface PhraseySummaryJsonTotalStats {
+    keysCount: number;
     setCount: number;
     fallbackCount: number;
     unsetCount: number;
@@ -12,12 +17,13 @@ export interface PhraseySummaryJsonTotalStats {
 }
 
 export interface PhraseySummaryJson {
-    total: PhraseySummaryJsonTotalStats;
+    full: PhraseySummaryJsonTotalStats;
     individual: Record<string, PhraseyTranslationStatsJson>;
 }
 
 export class PhraseySummary {
-    totalStats: PhraseySummaryJsonTotalStats = {
+    fullStats: PhraseySummaryJsonTotalStats = {
+        keysCount: 0,
         setCount: 0,
         fallbackCount: 0,
         unsetCount: 0,
@@ -25,12 +31,16 @@ export class PhraseySummary {
     };
     individualStats = new Map<string, PhraseyTranslationStats>();
 
+    constructor(public options: PhraseySummaryOptions) {
+        this.fullStats.keysCount = options.keysCount;
+    }
+
     add(translation: PhraseyTranslation) {
         this.individualStats.set(translation.locale.code, translation.stats);
-        this.totalStats.setCount += translation.stats.setCount;
-        this.totalStats.fallbackCount += translation.stats.fallbackCount;
-        this.totalStats.unsetCount += translation.stats.unsetCount;
-        this.totalStats.total += translation.stats.total;
+        this.fullStats.setCount += translation.stats.setCount;
+        this.fullStats.fallbackCount += translation.stats.fallbackCount;
+        this.fullStats.unsetCount += translation.stats.unsetCount;
+        this.fullStats.total += translation.stats.total;
     }
 
     json(): PhraseySummaryJson {
@@ -39,7 +49,7 @@ export class PhraseySummary {
             individual[locale] = stats.json();
         }
         return {
-            total: this.totalStats,
+            full: this.fullStats,
             individual,
         };
     }
