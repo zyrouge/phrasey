@@ -27,8 +27,15 @@ export const SummaryCommand = new Command()
         const phrasey = await createPhrasey("summary", options);
         await phrasey.load();
         if (phrasey.hasLoadErrors()) {
-            log.error(`Load failed due to error(s).`);
+            log.error(`Summary failed due to load error(s).`);
             log.grayed(PhraseyTreeLike.build(phrasey.loadErrors));
+            log.ln();
+            process.exit(1);
+        }
+        await phrasey.ensure();
+        if (phrasey.hasEnsureErrors()) {
+            log.error(`Summary failed due to ensure error(s).`);
+            log.grayed(PhraseyTreeLike.build(phrasey.ensureErrors));
             log.ln();
             process.exit(1);
         }

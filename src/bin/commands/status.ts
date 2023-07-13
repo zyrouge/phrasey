@@ -42,6 +42,13 @@ export const StatusCommand = new Command()
             log.ln();
             process.exit(1);
         }
+        await phrasey.ensure();
+        if (phrasey.hasEnsureErrors()) {
+            log.error(`Status failed due to ensure error(s).`);
+            log.grayed(PhraseyTreeLike.build(phrasey.ensureErrors));
+            log.ln();
+            process.exit(1);
+        }
         const translation = [...phrasey.translations.values()].find(
             (x) => x.path === inputFilePath
         );
