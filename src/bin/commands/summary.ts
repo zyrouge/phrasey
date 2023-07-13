@@ -37,8 +37,8 @@ export const SummaryCommand = new Command()
         let serialized = "";
         switch (outputFormat) {
             case "console":
-                log.write(pico.bold("Total"));
-                printTotalStatsTree(data.total);
+                log.write(pico.bold("Full"));
+                printFullStatsTree(data.full);
                 log.ln();
                 log.write(pico.bold("Individual"));
                 Object.entries(data.individual).forEach(([k, v]) => {
@@ -87,12 +87,13 @@ export const SummaryCommand = new Command()
 
 export const symbolPostMap = (symbol: string) => pico.gray(symbol);
 
-function printTotalStatsTree(stats: PhraseySummaryJsonTotalStats) {
+function printFullStatsTree(stats: PhraseySummaryJsonTotalStats) {
     const data = [
         `Set      : ${stats.setCount}`,
         `Fallback : ${stats.fallbackCount}`,
         `Unset    : ${stats.unsetCount}`,
         `Total    : ${stats.total}`,
+        `Keys     : ${stats.keysCount}`,
     ];
     const tree = PhraseyTreeLike.build(data, {
         symbolPostMap,
