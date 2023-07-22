@@ -1,3 +1,4 @@
+import { PhraseyLocaleType } from "@zyrouge/phrasey-locales";
 import { PhraseyContentFormatter } from "./contentFormats";
 import { PhraseyError } from "./error";
 import { PhraseyResult } from "./result";
@@ -9,25 +10,27 @@ import {
 
 export class PhraseyTranslations {
     all = new Map<string, PhraseyTranslation>();
-    pathCodeMap: Record<string, string> = {};
+    pathCodeMap = new Map<string, string>();
 
     constructor(public schema: PhraseySchema) {}
 
     async load(
         path: string,
         formatter: PhraseyContentFormatter,
+        locales: PhraseyLocaleType[],
         globalFallback: string[]
     ): Promise<PhraseyResult<string, Error>> {
         const translation = await PhraseyTranslation.create(
             path,
             this.schema,
             formatter,
+            locales,
             globalFallback
         );
         if (!translation.success) return translation;
         const localeCode = translation.data.locale.code;
         this.all.set(localeCode, translation.data);
-        this.pathCodeMap[path] = localeCode;
+        this._pathCodeSet(path, localeCode);
         return { success: true, data: localeCode };
     }
 
@@ -37,7 +40,7 @@ export class PhraseyTranslations {
         }
         const fallback: PhraseyTranslation[] = [];
         for (const x of translation.fallback) {
-            const locale = this.pathCodeMap[x];
+            const locale = this._pathCodeGet(x);
             if (!locale) {
                 return {
                     success: false,
@@ -84,6 +87,14 @@ export class PhraseyTranslations {
         return this.all.values();
     }
 
+    _pathCodeSet(path: string, locale: string) {
+        this.pathCodeMap.set(PhraseyTranslations.normalizePath(path), locale);
+    }
+
+    _pathCodeGet(path: string) {
+        return this.pathCodeMap.get(PhraseyTranslations.normalizePath(path));
+    }
+
     static resolveFallbackKey(
         translations: PhraseyTranslation[],
         key: string
@@ -93,5 +104,9 @@ export class PhraseyTranslations {
             if (value) return value;
         }
         return;
+    }
+
+    static normalizePath(path: string) {
+        return path.replace(/\\/g, "/");
     }
 }
