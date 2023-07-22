@@ -21,8 +21,18 @@ interface PhraseyZConfigType {
         format: string;
         stringFormat: string;
     };
+    locales?: {
+        file: string;
+        format: string;
+    };
     hooks?: {
-        files: string[];
+        files: (
+            | string
+            | {
+                  path: string;
+                  options?: Record<string, any>;
+              }
+        )[];
     };
 }
 ```

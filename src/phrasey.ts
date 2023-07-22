@@ -386,7 +386,10 @@ export class Phrasey implements PhraseyProps {
             source: options.source,
         });
         hooks.bind(phrasey);
-        await hooks.dispatch("onCreate", {});
+        const hookResult = await hooks.dispatch("onCreate", {});
+        if (!hookResult.success) {
+            return hookResult;
+        }
         return { success: true, data: phrasey };
     }
 }
