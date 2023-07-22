@@ -5,7 +5,7 @@ export interface PhraseyLoggerOptions {
     write: (text: string) => void;
 }
 
-export type PhraseyLogLevel = "success" | "info" | "error";
+export type PhraseyLogLevel = "success" | "info" | "warn" | "error";
 
 export class PhraseyLogger {
     constructor(public readonly options: PhraseyLoggerOptions) {}
@@ -16,6 +16,10 @@ export class PhraseyLogger {
 
     info(text: string) {
         this.log("info", text);
+    }
+
+    warn(text: string) {
+        this.log("warn", text);
     }
 
     error(text: string) {
@@ -50,6 +54,9 @@ export class PhraseyLogger {
 
             case "info":
                 return pico.cyan(`[info]`);
+
+            case "warn":
+                return pico.yellow(`[warn]`);
 
             case "error":
                 return pico.red(`[error]`);

@@ -146,7 +146,7 @@ export const InitCommand = new Command()
                 format: outputFormat,
                 stringFormat: outputStringFormat,
             },
-            hooks: hooksFile ? { files: [hooksFile] } : undefined,
+            hooks: hooksFile ? { files: [{ path: hooksFile }] } : undefined,
         };
         const configFormatter = PhraseySafeRun(() =>
             PhraseyContentFormats.resolve(configFormat)

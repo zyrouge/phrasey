@@ -1,7 +1,7 @@
 import p from "path";
 import { PhraseyError, PhraseyWrappedError } from "./error";
 import { PhraseyContentFormatter } from "./contentFormats";
-import { PhraseyLocaleType, PhraseyLocales } from "./locales";
+import { PhraseyLocaleType } from "./locales";
 import { PhraseyResult } from "./result";
 import { PhraseyTransformer } from "./transformer";
 import { PhraseyTranslationStringFormatter } from "./translationStringFormat";
@@ -96,6 +96,7 @@ export class PhraseyTranslation {
         path: string,
         schema: PhraseySchema,
         formatter: PhraseyContentFormatter,
+        locales: PhraseyLocaleType[],
         globalFallback: string[]
     ): Promise<PhraseyResult<PhraseyTranslation, Error>> {
         const unprocessed = await PhraseyTransformer.transform(
@@ -106,9 +107,7 @@ export class PhraseyTranslation {
         if (!unprocessed.success) {
             return { success: false, error: unprocessed.error };
         }
-        const locale = PhraseyLocales.find(
-            (x) => x.code === unprocessed.data.locale
-        );
+        const locale = locales.find((x) => x.code === unprocessed.data.locale);
         if (!locale) {
             return {
                 success: false,

@@ -62,7 +62,7 @@ export const StatusCommand = new Command()
         switch (outputFormat) {
             case "console":
                 printKV("Path", translation.path);
-                printKV("Language", translation.locale.name);
+                printKV("Language", translation.locale.display);
                 printKV("Locale", translation.locale.code);
                 log.ln();
                 printStateStats("Set Keys", stats.set, stats.total);

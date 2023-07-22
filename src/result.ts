@@ -16,7 +16,7 @@ export const PhraseySafeRun = <T>(fn: () => T): PhraseyResult<T, Error> => {
     try {
         const data = fn();
         return { success: true, data };
-    } catch (error: any) {
+    } catch (error: unknown) {
         return PhraseyParseRunError(error);
     }
 };

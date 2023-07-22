@@ -22,7 +22,7 @@ export class PhraseyValidationError extends Error {
 
     get formattedErrors() {
         return PhraseyTreeLike.build(this.zodError.errors, {
-            map: (x) => `Invalid field "${x.path}" (${x.message})`,
+            map: (x) => `Invalid field "${x.path.join(".")}" (${x.message})`,
         });
     }
 }
