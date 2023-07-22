@@ -25,7 +25,8 @@ export class PhraseyCldrMiscLayout {
         code: string
     ): Promise<PhraseyCldrMiscLayoutType<string>> {
         return PhraseyCldrJson.parse(
-            `cldr-misc-modern/main/${code}/layout.json`
+            "cldr-misc-modern",
+            `main/${code}/layout.json`
         );
     }
 }

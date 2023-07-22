@@ -1,13 +1,13 @@
-import { PhraseyLocaleCodeExtendedType } from "../../../locale";
+import { PhraseyLocaleCodeDetailsType } from "../../../locale";
 import { PhraseyRawLocaleCodeType } from "../codes";
 import { PhraseyLocaleCodesExtendedLanguage } from "./language";
 import { PhraseyLocaleCodesExtendedTerritory } from "./territory";
 
-export class PhraseyLocaleCodesExtended {
+export class PhraseyLocaleCodesDetails {
     static async parse(
         locale: PhraseyRawLocaleCodeType,
         displayLocaleCode: string
-    ): Promise<PhraseyLocaleCodeExtendedType> {
+    ): Promise<PhraseyLocaleCodeDetailsType> {
         const language = await PhraseyLocaleCodesExtendedLanguage.parse(
             locale,
             displayLocaleCode

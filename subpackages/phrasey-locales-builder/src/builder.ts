@@ -1,8 +1,8 @@
-import { PhraseyLocaleCodeExtendedType, PhraseyLocaleType } from "./locale";
+import { PhraseyLocaleCodeDetailsType, PhraseyLocaleType } from "./locale";
 import {
     PhraseyLocaleCodeLayout,
     PhraseyLocaleCodes,
-    PhraseyLocaleCodesExtended,
+    PhraseyLocaleCodesDetails,
 } from "./parsers";
 
 export interface PhraseyLocaleBuilderOptions {
@@ -19,12 +19,12 @@ export class PhraseyLocaleBuilder {
             // "und" is used for undetermined primary language
             if (code === "und") continue;
             const rawLocaleCode = await PhraseyLocaleCodes.parse(code);
-            const extended = await PhraseyLocaleCodesExtended.parse(
+            const details = await PhraseyLocaleCodesDetails.parse(
                 rawLocaleCode,
                 options.displayLocaleCode
             );
-            const display = this.constructDisplay(extended);
-            const native = this.constructNative(extended);
+            const display = this.constructDisplay(details);
+            const native = this.constructNative(details);
             const direction = await PhraseyLocaleCodeLayout.parse(
                 rawLocaleCode
             );
@@ -32,14 +32,14 @@ export class PhraseyLocaleBuilder {
                 display,
                 native,
                 code,
-                extended,
+                details,
                 direction,
             });
         }
         return locales;
     }
 
-    static constructDisplay(extended: PhraseyLocaleCodeExtendedType) {
+    static constructDisplay(extended: PhraseyLocaleCodeDetailsType) {
         let out = `${extended.language.display}`;
         if (extended.territory) {
             out += ` (${extended.territory.display})`;
@@ -50,7 +50,7 @@ export class PhraseyLocaleBuilder {
         return out;
     }
 
-    static constructNative(extended: PhraseyLocaleCodeExtendedType) {
+    static constructNative(extended: PhraseyLocaleCodeDetailsType) {
         let out = `${extended.language.native}`;
         if (extended.territory) {
             out += ` (${extended.territory.native})`;

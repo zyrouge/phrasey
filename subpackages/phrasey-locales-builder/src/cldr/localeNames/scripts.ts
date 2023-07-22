@@ -16,7 +16,8 @@ export class PhraseyCldrLocaleNamesScripts {
         code: string
     ): Promise<PhraseyCldrLocaleNamesScriptsType<string>> {
         return PhraseyCldrJson.parse(
-            `cldr-localenames-modern/main/${code}/scripts.json`
+            "cldr-localenames-modern",
+            `main/${code}/scripts.json`
         );
     }
 }

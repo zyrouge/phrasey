@@ -1,17 +1,17 @@
-# @zyrouge/phrasey-json
+# @zyrouge/phrasey-locales-builder
 
-Content format support for `.json` files.
+Locales data builder for Phrasey.
 
-[![npm](https://img.shields.io/npm/v/@zyrouge/phrasey-json)](https://npmjs.com/package/@zyrouge/phrasey-json)
-[![npm](https://img.shields.io/npm/dw/@zyrouge/phrasey-json)](https://npmjs.com/package/@zyrouge/phrasey-json)
-[![npm](https://img.shields.io/npm/l/@zyrouge/phrasey-json)](https://github.com/zyrouge/phrasey/tree/main/subpackages/phrasey-json)
+[![npm](https://img.shields.io/npm/v/@zyrouge/phrasey-locales-builder)](https://npmjs.com/package/@zyrouge/phrasey-locales-builder)
+[![npm](https://img.shields.io/npm/dw/@zyrouge/phrasey-locales-builder)](https://npmjs.com/package/@zyrouge/phrasey-locales-builder)
+[![npm](https://img.shields.io/npm/l/@zyrouge/phrasey-locales-builder)](https://github.com/zyrouge/phrasey/tree/main/subpackages/phrasey-locales-builder)
 
 Read about [Phrasey](https://zyrouge.github.io/phrasey/getting-started/).
 
 ## Installation
 
 ```bash
-npm install --save-dev @zyrouge/phrasey-json
+npm install --save-dev @zyrouge/phrasey-locales-builder
 ```
 
 ## License

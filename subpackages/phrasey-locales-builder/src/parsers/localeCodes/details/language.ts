@@ -1,12 +1,12 @@
 import { PhraseyCldrLocaleNamesLanguages } from "../../../cldr";
-import { PhraseyLocaleCodeExtendedCodeType } from "../../../locale";
+import { PhraseyLocaleCodeDetailsCodeType } from "../../../locale";
 import { PhraseyRawLocaleCodeType } from "../codes";
 
 export class PhraseyLocaleCodesExtendedLanguage {
     static async parse(
         { code, language }: PhraseyRawLocaleCodeType,
         displayLocaleCode: string
-    ): Promise<PhraseyLocaleCodeExtendedCodeType> {
+    ): Promise<PhraseyLocaleCodeDetailsCodeType> {
         const display = await this.parseDisplay(displayLocaleCode, language);
         const native = await this.parseDisplay(code, language);
         return {

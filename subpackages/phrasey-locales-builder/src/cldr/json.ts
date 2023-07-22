@@ -1,11 +1,21 @@
 import p from "path";
 import fs from "fs/promises";
 
+export type PhraseyCldrModulesType =
+    | "cldr-core"
+    | "cldr-localenames-modern"
+    | "cldr-misc-modern";
+
 export class PhraseyCldrJson {
     static cache = new Map<string, any>();
 
-    static async parse<T>(relativePath: string): Promise<T> {
-        const path = p.resolve(__dirname, `../../node_modules`, relativePath);
+    static async parse<T>(
+        module: PhraseyCldrModulesType,
+        subpath: string
+    ): Promise<T> {
+        // "package.json" to avoid searching entrypoint of the module
+        const dir = p.dirname(require.resolve(`${module}/package.json`));
+        const path = p.resolve(dir, subpath);
         const cached = PhraseyCldrJson.cache.get(path);
         if (cached) {
             return cached as T;

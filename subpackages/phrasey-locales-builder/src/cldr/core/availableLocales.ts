@@ -9,6 +9,6 @@ export interface PhraseyCldrCoreAvailableLocalesType {
 
 export class PhraseyCldrCoreAvailableLocales {
     static async parse(): Promise<PhraseyCldrCoreAvailableLocalesType> {
-        return PhraseyCldrJson.parse(`cldr-core/availableLocales.json`);
+        return PhraseyCldrJson.parse("cldr-core", "availableLocales.json");
     }
 }

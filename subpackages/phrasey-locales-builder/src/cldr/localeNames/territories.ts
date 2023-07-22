@@ -16,7 +16,8 @@ export class PhraseyCldrLocaleNamesTerritories {
         code: string
     ): Promise<PhraseyCldrLocaleNamesTerritoriesType<string>> {
         return PhraseyCldrJson.parse(
-            `cldr-localenames-modern/main/${code}/territories.json`
+            "cldr-localenames-modern",
+            `main/${code}/territories.json`
         );
     }
 }

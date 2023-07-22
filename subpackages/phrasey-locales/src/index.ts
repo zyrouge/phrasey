@@ -1,5 +1,5 @@
-import { PhraseyLocaleType } from "@zyrouge/phrasey-locales-builder";
+import { PhraseyLocaleType } from "@zyrouge/phrasey-locales-shared";
 
-export const PhraseyLocales: PhraseyLocaleType[] = require("./data.json");
+export const PhraseyDefaultLocales: PhraseyLocaleType[] = require("./data.json");
 
-export * from "@zyrouge/phrasey-locales-builder/locale";
+export * from "@zyrouge/phrasey-locales-shared";
