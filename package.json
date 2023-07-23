@@ -1,6 +1,6 @@
 {
     "name": "phrasey",
-    "version": "2.0.17",
+    "version": "2.0.18",
     "description": "A full-blown i18n build system.",
     "files": [
         "dist"
@@ -27,7 +27,7 @@
     "author": "Zyrouge",
     "license": "MIT",
     "dependencies": {
-        "@zyrouge/phrasey-locales": "^1.1.5",
+        "@zyrouge/phrasey-locales": "^1.1.9",
         "commander": "^11.0.0",
         "enquirer": "^2.3.6",
         "fast-glob": "^3.2.12",

@@ -3,7 +3,7 @@ import { PhraseyLocaleCodeDetailsCodeType } from "../../../locale";
 import { PhraseyRawLocaleCodeType } from "../codes";
 
 export class PhraseyLocaleCodesExtendedScriptCode {
-    async parse(
+    static async parse(
         { code, script }: PhraseyRawLocaleCodeType,
         displayLocaleCode: string
     ): Promise<PhraseyLocaleCodeDetailsCodeType | undefined> {
@@ -17,8 +17,8 @@ export class PhraseyLocaleCodesExtendedScriptCode {
         };
     }
 
-    async parseDisplay(code: string, script: string): Promise<string> {
+    static async parseDisplay(code: string, script: string): Promise<string> {
         const data = await PhraseyCldrLocaleNamesScripts.parse(code);
-        return data.main[code]!.localeDisplayNames.scripts[script!]!;
+        return data.main[code]!.localeDisplayNames.scripts[script]!;
     }
 }

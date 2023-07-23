@@ -22,6 +22,6 @@ export class PhraseyLocaleCodesExtendedTerritory {
         territory: string
     ): Promise<string> {
         const data = await PhraseyCldrLocaleNamesTerritories.parse(code);
-        return data.main[code]!.localeDisplayNames.territories[territory!]!;
+        return data.main[code]!.localeDisplayNames.territories[territory]!;
     }
 }

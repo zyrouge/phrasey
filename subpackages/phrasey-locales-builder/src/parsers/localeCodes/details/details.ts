@@ -1,6 +1,7 @@
 import { PhraseyLocaleCodeDetailsType } from "../../../locale";
 import { PhraseyRawLocaleCodeType } from "../codes";
 import { PhraseyLocaleCodesExtendedLanguage } from "./language";
+import { PhraseyLocaleCodesExtendedScriptCode } from "./script";
 import { PhraseyLocaleCodesExtendedTerritory } from "./territory";
 
 export class PhraseyLocaleCodesDetails {
@@ -16,7 +17,7 @@ export class PhraseyLocaleCodesDetails {
             locale,
             displayLocaleCode
         );
-        const script = await PhraseyLocaleCodesExtendedLanguage.parse(
+        const script = await PhraseyLocaleCodesExtendedScriptCode.parse(
             locale,
             displayLocaleCode
         );
