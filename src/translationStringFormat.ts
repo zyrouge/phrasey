@@ -50,6 +50,25 @@ export class PhraseyTranslationStringFormats {
                 return out;
             },
         }),
+        "java-format-string": this.construct<string>({
+            format: (parts, schema) => {
+                const parameters = schema.parameters ?? [];
+                let out = "";
+                for (const x of parts) {
+                    switch (x.type) {
+                        case "parameter":
+                            const index = parameters.indexOf(x.value);
+                            out += `%${index + 1}\$s`;
+                            break;
+
+                        case "string":
+                            out += this.replaceCharacter(x.value, "%", "%%");
+                            break;
+                    }
+                }
+                return out;
+            },
+        }),
         "python-format-string": this.construct<string>({
             format: (parts) => {
                 let out = "";

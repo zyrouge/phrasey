@@ -79,6 +79,17 @@ The output string uses positional argument with `%s`.
 Example of output string:
 
 ```
+Hello, %0$s!
+```
+
+### `java-format-string`
+
+Serializes the parsed string to be suitable for Java's `.format()` method.
+The output string uses positional argument with `%s`.
+
+Example of output string:
+
+```
 Hello, %1$s!
 ```
 
