@@ -1,6 +1,6 @@
 {
     "name": "phrasey",
-    "version": "2.0.18",
+    "version": "2.0.19",
     "description": "A full-blown i18n build system.",
     "files": [
         "dist"
