@@ -86,7 +86,7 @@ export class Phrasey implements PhraseyProps {
     async loadLocales(): Promise<boolean> {
         const beforeHookResult = await this.hooks.dispatch(
             "beforeLoadLocales",
-            {}
+            {},
         );
         if (!beforeHookResult.success) {
             this.loadErrors.push(beforeHookResult.error);
@@ -95,7 +95,7 @@ export class Phrasey implements PhraseyProps {
         if (this.config.z.locales) {
             const locales = await PhraseyLocales.resolve(
                 this.config.z.locales.file,
-                this.config.z.locales.format
+                this.config.z.locales.format,
             );
             if (locales.success) {
                 this.locales.push(...locales.data);
@@ -107,7 +107,7 @@ export class Phrasey implements PhraseyProps {
         }
         const afterHookResult = await this.hooks.dispatch(
             "afterLoadLocales",
-            {}
+            {},
         );
         if (!afterHookResult.success) {
             this.loadErrors.push(afterHookResult.error);
@@ -123,10 +123,10 @@ export class Phrasey implements PhraseyProps {
             return false;
         }
         const formatter = PhraseyContentFormats.resolve(
-            this.config.z.input.format
+            this.config.z.input.format,
         );
         const globalFallback = PhraseyUtils.parseStringArrayNullable(
-            this.config.z.input.fallback
+            this.config.z.input.fallback,
         ).map((x) => this.path(x));
         const stream = FastGlob.stream(this.config.z.input.files, {
             cwd: this.cwd,
@@ -150,11 +150,11 @@ export class Phrasey implements PhraseyProps {
     async loadTranslation(
         path: string,
         formatter: PhraseyContentFormatter,
-        globalFallback: string[]
+        globalFallback: string[],
     ): Promise<string | null> {
         const beforeHookResult = await this.hooks.dispatch(
             "beforeLoadTranslation",
-            {}
+            {},
         );
         if (!beforeHookResult.success) {
             this.loadErrors.push(beforeHookResult.error);
@@ -164,7 +164,7 @@ export class Phrasey implements PhraseyProps {
             path,
             formatter,
             this.locales,
-            globalFallback
+            globalFallback,
         );
         if (!result.success) {
             this.loadErrors.push(result.error);
@@ -174,7 +174,7 @@ export class Phrasey implements PhraseyProps {
             "afterLoadTranslation",
             {
                 locale: result.data,
-            }
+            },
         );
         if (!afterHookResult.success) {
             this.loadErrors.push(afterHookResult.error);
@@ -206,7 +206,7 @@ export class Phrasey implements PhraseyProps {
             "beforeEnsureTranslation",
             {
                 locale: localeCode,
-            }
+            },
         );
         if (!beforeHookResult.success) {
             this.ensureErrors.push(beforeHookResult.error);
@@ -221,7 +221,7 @@ export class Phrasey implements PhraseyProps {
             "afterEnsureTranslation",
             {
                 locale: localeCode,
-            }
+            },
         );
         if (!afterHookResult.success) {
             this.ensureErrors.push(afterHookResult.error);
@@ -239,21 +239,21 @@ export class Phrasey implements PhraseyProps {
         if (!this.config.z.output) {
             this.loadErrors.push(
                 new PhraseyError(
-                    `Cannot build when "output" is not specified in configuration file`
-                )
+                    `Cannot build when "output" is not specified in configuration file`,
+                ),
             );
             return false;
         }
         const formatter = PhraseyContentFormats.resolve(
-            this.config.z.output.format
+            this.config.z.output.format,
         );
         const stringFormatter = PhraseyTranslationStringFormats.resolve(
-            this.config.z.output.stringFormat
+            this.config.z.output.stringFormat,
         );
         for (const x of this.translations.values()) {
             const path = this.path(
                 this.config.z.output.dir,
-                `${x.locale.code}.${formatter.extension}`
+                `${x.locale.code}.${formatter.extension}`,
             );
             await this.buildTranslation(path, x, formatter, stringFormatter);
         }
@@ -269,14 +269,14 @@ export class Phrasey implements PhraseyProps {
         path: string,
         translation: PhraseyTranslation,
         formatter: PhraseyContentFormatter,
-        stringFormatter: PhraseyTranslationStringFormatter
+        stringFormatter: PhraseyTranslationStringFormatter,
     ): Promise<boolean> {
         const localeCode = translation.locale.code;
         const beforeHookResult = await this.hooks.dispatch(
             "beforeBuildTranslation",
             {
                 locale: localeCode,
-            }
+            },
         );
         if (!beforeHookResult.success) {
             this.buildErrors.push(beforeHookResult.error);
@@ -284,20 +284,22 @@ export class Phrasey implements PhraseyProps {
         }
         if (!translation.stats.isBuildable) {
             this.buildErrors.push(
-                new PhraseyError(`Translation "${localeCode}" is not buildable`)
+                new PhraseyError(
+                    `Translation "${localeCode}" is not buildable`,
+                ),
             );
             return false;
         }
         await ensureFile(path);
         const content = PhraseySafeRun(() =>
-            formatter.serialize(translation.json(stringFormatter))
+            formatter.serialize(translation.json(stringFormatter)),
         );
         if (!content.success) {
             this.buildErrors.push(
                 new PhraseyWrappedError(
                     `Serializing "${localeCode}" failed`,
-                    content.error
-                )
+                    content.error,
+                ),
             );
             return false;
         }
@@ -306,7 +308,7 @@ export class Phrasey implements PhraseyProps {
             "afterBuildTranslation",
             {
                 locale: localeCode,
-            }
+            },
         );
         if (!afterHookResult.success) {
             this.buildErrors.push(afterHookResult.error);
@@ -346,19 +348,19 @@ export class Phrasey implements PhraseyProps {
     }
 
     static async create(
-        options: PhraseyCreateOptions
+        options: PhraseyCreateOptions,
     ): Promise<PhraseyResult<Phrasey, Error>> {
         options.config.file = p.resolve(process.cwd(), options.config.file);
         const config = await PhraseyConfig.create(
             options.config.file,
-            options.config.format
+            options.config.format,
         );
         if (!config.success) return config;
         const cwd = p.dirname(options.config.file);
         config.data.z.schema.file = p.resolve(cwd, config.data.z.schema.file);
         const schema = await PhraseySchema.create(
             config.data.z.schema.file,
-            config.data.z.schema.format
+            config.data.z.schema.format,
         );
         if (!schema.success) return schema;
         const translations = new PhraseyTranslations(schema.data);
@@ -373,7 +375,7 @@ export class Phrasey implements PhraseyProps {
         if (config.data.z.locales) {
             config.data.z.locales.file = p.resolve(
                 cwd,
-                config.data.z.locales.file
+                config.data.z.locales.file,
             );
         }
         const phrasey = new Phrasey({

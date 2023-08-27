@@ -42,6 +42,7 @@
         "@types/node": "^20.2.5",
         "@zyrouge/phrasey-json": "file:subpackages/phrasey-json",
         "@zyrouge/phrasey-yaml": "file:subpackages/phrasey-yaml",
+        "prettier": "^3.0.2",
         "rimraf": "^5.0.1",
         "ts-node": "^10.9.1",
         "typedoc": "^0.24.8",
