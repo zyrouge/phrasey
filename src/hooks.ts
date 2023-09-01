@@ -33,7 +33,7 @@ export type PhraseyHooksEventContext<Event extends PhraseyHooksEvent> =
 
 export type PhraseyHooksHandler = {
     [Event in PhraseyHooksEvent]?: (
-        ctx: PhraseyHooksEventContext<Event>
+        ctx: PhraseyHooksEventContext<Event>,
     ) => Promise<void>;
 };
 
@@ -53,7 +53,7 @@ export class PhraseyHooks {
             this.addHandler({ path, options, handler });
         } catch (err) {
             throw new PhraseyError(
-                `Could not import hooks handler file "${path}"`
+                `Could not import hooks handler file "${path}"`,
             );
         }
     }
@@ -73,7 +73,7 @@ export class PhraseyHooks {
 
     async dispatch<Event extends PhraseyHooksEvent>(
         event: Event,
-        data: PhraseyHooksEvents[Event]
+        data: PhraseyHooksEvents[Event],
     ): Promise<PhraseyResult<boolean, Error>> {
         const phrasey = this.phrasey;
         const log = this.phrasey.log.inherit(`hooks:${event}`);
@@ -82,7 +82,7 @@ export class PhraseyHooks {
             if (typeof fn === "function") {
                 const ctx: PhraseyHooksEventContext<Event> = Object.assign(
                     { phrasey, log, options },
-                    data
+                    data,
                 );
                 try {
                     await fn(ctx);
@@ -92,7 +92,7 @@ export class PhraseyHooks {
                         success: false,
                         error: new PhraseyWrappedError(
                             `Hook "${rpath}" handling "${event}" failed.`,
-                            err
+                            err,
                         ),
                     };
                 }

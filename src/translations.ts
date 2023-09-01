@@ -18,14 +18,14 @@ export class PhraseyTranslations {
         path: string,
         formatter: PhraseyContentFormatter,
         locales: PhraseyLocaleType[],
-        globalFallback: string[]
+        globalFallback: string[],
     ): Promise<PhraseyResult<string, Error>> {
         const translation = await PhraseyTranslation.create(
             path,
             this.schema,
             formatter,
             locales,
-            globalFallback
+            globalFallback,
         );
         if (!translation.success) return translation;
         const localeCode = translation.data.locale.code;
@@ -45,7 +45,7 @@ export class PhraseyTranslations {
                 return {
                     success: false,
                     error: new PhraseyError(
-                        `Invalid translation file path "${x}"`
+                        `Invalid translation file path "${x}"`,
                     ),
                 };
             }
@@ -62,7 +62,7 @@ export class PhraseyTranslations {
             if (translation.hasKey(x.name)) continue;
             const fallbackValue = PhraseyTranslations.resolveFallbackKey(
                 fallback,
-                x.name
+                x.name,
             );
             switch (fallbackValue?.state) {
                 case "set":
@@ -87,6 +87,11 @@ export class PhraseyTranslations {
         return this.all.values();
     }
 
+    reset() {
+        this.all.clear();
+        this.pathCodeMap.clear();
+    }
+
     _pathCodeSet(path: string, locale: string) {
         this.pathCodeMap.set(PhraseyTranslations.normalizePath(path), locale);
     }
@@ -97,7 +102,7 @@ export class PhraseyTranslations {
 
     static resolveFallbackKey(
         translations: PhraseyTranslation[],
-        key: string
+        key: string,
     ): PhraseyTranslationStringValue | undefined {
         for (const x of translations) {
             const value = x.getKey(key);

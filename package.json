@@ -28,6 +28,7 @@
     "license": "MIT",
     "dependencies": {
         "@zyrouge/phrasey-locales": "^1.1.9",
+        "chokidar": "^3.5.3",
         "commander": "^11.0.0",
         "enquirer": "^2.3.6",
         "fast-glob": "^3.2.12",

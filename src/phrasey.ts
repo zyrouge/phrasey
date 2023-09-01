@@ -52,7 +52,6 @@ export interface PhraseyOptions extends PhraseyProps {
 }
 
 export class Phrasey implements PhraseyProps {
-    defaultLocale: string | null = null;
     loadErrors: Error[] = [];
     ensureErrors: Error[] = [];
     buildErrors: Error[] = [];
@@ -337,6 +336,16 @@ export class Phrasey implements PhraseyProps {
             summary.add(x);
         }
         return summary;
+    }
+
+    resetErrors() {
+        this.loadErrors = [];
+        this.ensureErrors = [];
+        this.buildErrors = [];
+    }
+
+    resetLocales() {
+        this.locales = [];
     }
 
     path(...parts: string[]) {
