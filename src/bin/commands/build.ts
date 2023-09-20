@@ -1,37 +1,34 @@
 import { Command } from "commander";
 import { PhraseyTreeLike } from "../../";
+import { PhraseyBuilder } from "../../builder";
 import { log } from "../utils";
-import { createPhrasey } from "../steps/createPhrasey";
-import { PhraseyConfigOptions } from "../steps/parsePhraseyOptions";
+import {
+    PhraseyCliConfigOptionFlags,
+    parsePhraseyCliConfigOptions,
+} from "../steps/parseConfigOptions";
 
 export const BuildCommand = new Command()
     .name("build")
     .description("Build the project.")
-    .addOption(PhraseyConfigOptions.configFile)
-    .addOption(PhraseyConfigOptions.configFormat)
+    .addOption(PhraseyCliConfigOptionFlags.configFile)
+    .addOption(PhraseyCliConfigOptionFlags.configFormat)
     .action(async (options) => {
-        const phrasey = await createPhrasey("build", options);
-        await phrasey.load();
-        if (phrasey.hasLoadErrors()) {
-            log.error(`Build failed due to load error(s).`);
-            log.grayed(PhraseyTreeLike.build(phrasey.loadErrors));
+        const configOptions = parsePhraseyCliConfigOptions(options);
+        const result = await PhraseyBuilder.build({
+            cwd: configOptions.cwd,
+            config: configOptions.config,
+            log,
+            source: "build",
+        });
+        if (!result.success) {
+            const errors = Array.isArray(result.error)
+                ? result.error
+                : [result.error];
+            log.error("Build failed.");
+            log.grayed(PhraseyTreeLike.build(errors));
             log.ln();
             process.exit(1);
         }
-        await phrasey.ensure();
-        if (phrasey.hasEnsureErrors()) {
-            log.error(`Build failed due to ensure error(s).`);
-            log.grayed(PhraseyTreeLike.build(phrasey.ensureErrors));
-            log.ln();
-            process.exit(1);
-        }
-        await phrasey.build();
-        if (phrasey.hasBuildErrors()) {
-            log.error(`Build failed due to error(s).`);
-            log.grayed(PhraseyTreeLike.build(phrasey.buildErrors));
-            log.ln();
-            process.exit(1);
-        }
-        log.success(`Build succeeded.`);
+        log.success("Build succeeded.");
         log.ln();
     });

@@ -1,16 +1,33 @@
+import { PhraseyDefaultLocales } from "@zyrouge/phrasey-locales";
 import { PhraseyContentFormats } from "./contentFormats";
 import { PhraseyTransformer } from "./transformer";
-import { PhraseyZLocales } from "./z";
+import { PhraseyZLocales, PhraseyZLocalesType } from "./z";
+import { PhraseyResult } from "./result";
 
 export * from "@zyrouge/phrasey-locales";
 
 export class PhraseyLocales {
-    static async resolve(path: string, format: string) {
+    constructor(public all: PhraseyZLocalesType) {}
+
+    static async create(
+        path: string,
+        format: string,
+    ): Promise<PhraseyResult<PhraseyLocales, Error>> {
         const locales = await PhraseyTransformer.transform(
             path,
             PhraseyContentFormats.resolve(format),
-            PhraseyZLocales
+            PhraseyZLocales,
         );
-        return locales;
+        if (!locales.success) {
+            return locales;
+        }
+        return {
+            success: true,
+            data: new PhraseyLocales(locales.data),
+        };
+    }
+
+    static defaultLocales() {
+        return new PhraseyLocales(PhraseyDefaultLocales);
     }
 }

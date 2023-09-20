@@ -1,4 +1,5 @@
-import { PhraseyError } from "./error";
+import { PhraseyError } from "./errors";
+import { PhraseyResult } from "./result";
 const { version } = require("../package.json");
 
 export const PhraseyVersion = version;
@@ -17,7 +18,7 @@ export const PhraseyTreeLike = {
     TR: "└",
     build: <T>(
         data: T[],
-        { map, prefix = "", symbolPostMap }: PhraseyTreeLikeOptions<T> = {}
+        { map, prefix = "", symbolPostMap }: PhraseyTreeLikeOptions<T> = {},
     ) => {
         const lines: string[] = [];
         data.forEach((x, i) => {
@@ -49,7 +50,7 @@ export const PhraseySafeResolvePackage = (packageName: string) => {
         return require(packageName);
     } catch (err) {
         throw new PhraseyError(
-            `Cannot import format package named "${packageName}". Did you install it?`
+            `Cannot import format package named "${packageName}". Did you install it?`,
         );
     }
 };
@@ -59,5 +60,27 @@ export class PhraseyUtils {
         if (typeof data === "string") return [data];
         if (Array.isArray(data)) return data;
         return [];
+    }
+}
+
+export type PhraseyPipelineTask = () => Promise<
+    PhraseyResult<true, Error | Error[]>
+>;
+
+export class PhraseyPipeline {
+    tasks: PhraseyPipelineTask[] = [];
+
+    add(task: PhraseyPipelineTask) {
+        this.tasks.push(task);
+    }
+
+    async execute(): Promise<PhraseyResult<true, Error | Error[]>> {
+        for (const x of this.tasks) {
+            const result = await x();
+            if (!result.success) {
+                return result;
+            }
+        }
+        return { success: true, data: true };
     }
 }

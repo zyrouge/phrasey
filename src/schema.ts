@@ -24,12 +24,12 @@ export class PhraseySchema {
 
     static async create(
         path: string,
-        format: string
+        format: string,
     ): Promise<PhraseyResult<PhraseySchema, Error>> {
         const z = await PhraseyTransformer.transform(
             path,
             PhraseyContentFormats.resolve(format),
-            PhraseyZSchema
+            PhraseyZSchema,
         );
         if (!z.success) return z;
         const schema = new PhraseySchema(z.data);

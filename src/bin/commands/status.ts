@@ -9,14 +9,14 @@ import {
 } from "../..";
 import { log, pico } from "../utils";
 import { createPhrasey } from "../steps/createPhrasey";
-import { PhraseyConfigOptions } from "../steps/parsePhraseyOptions";
+import { PhraseyCliConfigOptionFlags } from "../steps/parseConfigOptions";
 import { symbolPostMap } from "./summary";
 
 export const StatusCommand = new Command()
     .name("status")
     .description("View status of a translation.")
-    .addOption(PhraseyConfigOptions.configFile)
-    .addOption(PhraseyConfigOptions.configFormat)
+    .addOption(PhraseyCliConfigOptionFlags.configFile)
+    .addOption(PhraseyCliConfigOptionFlags.configFormat)
     .option(`-i --input-file <path>`, "Path to input translation file")
     .option(`-o --output-file <path>`, "Path to output file")
     .option(`-s --output-format <format>`, "Output file format")
@@ -50,7 +50,7 @@ export const StatusCommand = new Command()
             process.exit(1);
         }
         const translation = [...phrasey.translations.values()].find(
-            (x) => x.path === inputFilePath
+            (x) => x.path === inputFilePath,
         );
         if (!translation) {
             log.error(`Could not find results for "${inputFilePath}".`);
@@ -71,12 +71,12 @@ export const StatusCommand = new Command()
                 printKVBool("Is buildable?", stats.isBuildable);
                 printKVBool(
                     "Is standalone buildable?",
-                    stats.isStandaloneBuildable
+                    stats.isStandaloneBuildable,
                 );
                 log.ln();
                 if (outputFile) {
                     log.error(
-                        `Default output format does not support saving to a file.`
+                        `Default output format does not support saving to a file.`,
                     );
                     log.ln();
                     process.exit(1);
@@ -123,7 +123,7 @@ function printKVBool(key: string, value: boolean) {
 function printStateStats(
     title: string,
     state: PhraseyTranslationStatsJsonExtendedState,
-    total: number
+    total: number,
 ) {
     printKV(title, pico.magenta(`(${state.count}/${total})`));
     const tree = PhraseyTreeLike.build(state.keys, {

@@ -10,13 +10,13 @@ import {
 } from "../..";
 import { log, pico } from "../utils";
 import { createPhrasey } from "../steps/createPhrasey";
-import { PhraseyConfigOptions } from "../steps/parsePhraseyOptions";
+import { PhraseyCliConfigOptionFlags } from "../steps/parseConfigOptions";
 
 export const SummaryCommand = new Command()
     .name("summary")
     .description("Generate summary of the project.")
-    .addOption(PhraseyConfigOptions.configFile)
-    .addOption(PhraseyConfigOptions.configFormat)
+    .addOption(PhraseyCliConfigOptionFlags.configFile)
+    .addOption(PhraseyCliConfigOptionFlags.configFormat)
     .option(`-o --output-file <path>`, "Path to output file")
     .option(`-s --output-format <format>`, "Output file format")
     .option(`-d --disable-output-print`, "Disable logging output data")
@@ -52,7 +52,7 @@ export const SummaryCommand = new Command()
                     const { isBuildable } = summary.individualStats.get(k)!;
                     const titleTree = PhraseyTreeLike.build(
                         [pico.bold(isBuildable ? pico.green(k) : pico.red(k))],
-                        { symbolPostMap }
+                        { symbolPostMap },
                     );
                     log.write(titleTree);
                     printIndividualStatsTree(v);
@@ -60,7 +60,7 @@ export const SummaryCommand = new Command()
                 log.ln();
                 if (outputFile) {
                     log.error(
-                        `Default output format does not support saving to a file.`
+                        `Default output format does not support saving to a file.`,
                     );
                     log.ln();
                     process.exit(1);

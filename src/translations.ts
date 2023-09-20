@@ -1,23 +1,23 @@
-import { PhraseyLocaleType } from "@zyrouge/phrasey-locales";
 import { PhraseyContentFormatter } from "./contentFormats";
-import { PhraseyError } from "./error";
+import { PhraseyError } from "./errors";
 import { PhraseyResult } from "./result";
 import { PhraseySchema } from "./schema";
 import {
     PhraseyTranslation,
     PhraseyTranslationStringValue,
 } from "./translation";
+import { PhraseyLocales } from "./locales";
 
 export class PhraseyTranslations {
-    all = new Map<string, PhraseyTranslation>();
-    pathCodeMap = new Map<string, string>();
+    translations = new Map<string, PhraseyTranslation>();
+    pathCodes = new Map<string, string>();
 
     constructor(public schema: PhraseySchema) {}
 
     async load(
         path: string,
         formatter: PhraseyContentFormatter,
-        locales: PhraseyLocaleType[],
+        locales: PhraseyLocales,
         globalFallback: string[],
     ): Promise<PhraseyResult<string, Error>> {
         const translation = await PhraseyTranslation.create(
@@ -29,18 +29,20 @@ export class PhraseyTranslations {
         );
         if (!translation.success) return translation;
         const localeCode = translation.data.locale.code;
-        this.all.set(localeCode, translation.data);
-        this._pathCodeSet(path, localeCode);
+        this.translations.set(localeCode, translation.data);
+        this.pathCodes.set(PhraseyTranslations.normalizePath(path), localeCode);
         return { success: true, data: localeCode };
     }
 
-    ensure(translation: PhraseyTranslation): PhraseyResult<boolean, Error> {
+    ensure(translation: PhraseyTranslation): PhraseyResult<true, Error> {
         if (this.schema.keysCount() === translation.keysCount()) {
             return { success: true, data: true };
         }
         const fallback: PhraseyTranslation[] = [];
         for (const x of translation.fallback) {
-            const locale = this._pathCodeGet(x);
+            const locale = this.pathCodes.get(
+                PhraseyTranslations.normalizePath(x),
+            );
             if (!locale) {
                 return {
                     success: false,
@@ -49,7 +51,7 @@ export class PhraseyTranslations {
                     ),
                 };
             }
-            const resolved = this.all.get(locale);
+            const resolved = this.translations.get(locale);
             if (!resolved) {
                 return {
                     success: false,
@@ -84,20 +86,7 @@ export class PhraseyTranslations {
     }
 
     values() {
-        return this.all.values();
-    }
-
-    reset() {
-        this.all.clear();
-        this.pathCodeMap.clear();
-    }
-
-    _pathCodeSet(path: string, locale: string) {
-        this.pathCodeMap.set(PhraseyTranslations.normalizePath(path), locale);
-    }
-
-    _pathCodeGet(path: string) {
-        return this.pathCodeMap.get(PhraseyTranslations.normalizePath(path));
+        return this.translations.values();
     }
 
     static resolveFallbackKey(

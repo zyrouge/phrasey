@@ -12,7 +12,10 @@ export class PhraseyError extends Error {
 }
 
 export class PhraseyValidationError extends Error {
-    constructor(message: string, public zodError: ZodError) {
+    constructor(
+        message: string,
+        public zodError: ZodError,
+    ) {
         super(message);
     }
 
@@ -28,7 +31,10 @@ export class PhraseyValidationError extends Error {
 }
 
 export class PhraseyWrappedError extends Error {
-    constructor(message: string, public error: unknown) {
+    constructor(
+        message: string,
+        public error: unknown,
+    ) {
         super(message);
     }
 

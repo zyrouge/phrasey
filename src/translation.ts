@@ -1,7 +1,7 @@
 import p from "path";
-import { PhraseyError, PhraseyWrappedError } from "./error";
+import { PhraseyError, PhraseyWrappedError } from "./errors";
 import { PhraseyContentFormatter } from "./contentFormats";
-import { PhraseyLocaleType } from "./locales";
+import { PhraseyLocaleType, PhraseyLocales } from "./locales";
 import { PhraseyResult } from "./result";
 import { PhraseyTransformer } from "./transformer";
 import { PhraseyTranslationStringFormatter } from "./translationStringFormat";
@@ -48,7 +48,7 @@ export class PhraseyTranslation {
         public schema: PhraseySchema,
         public locale: PhraseyLocaleType,
         public extras: Record<string, any>,
-        public fallback: string[]
+        public fallback: string[],
     ) {}
 
     setKey(key: string, value: PhraseyTranslationStringValue) {
@@ -73,7 +73,7 @@ export class PhraseyTranslation {
     }
 
     json(
-        stringFormatter: PhraseyTranslationStringFormatter
+        stringFormatter: PhraseyTranslationStringFormatter,
     ): PhraseyTranslationJson {
         const keys: Record<string, any> = {};
         for (const [k, v] of this.keys.entries()) {
@@ -84,7 +84,7 @@ export class PhraseyTranslation {
                 } catch (err) {
                     throw new PhraseyWrappedError(
                         "Formatting translation string failed",
-                        err
+                        err,
                     );
                 }
             }
@@ -96,30 +96,32 @@ export class PhraseyTranslation {
         path: string,
         schema: PhraseySchema,
         formatter: PhraseyContentFormatter,
-        locales: PhraseyLocaleType[],
-        globalFallback: string[]
+        locales: PhraseyLocales,
+        globalFallback: string[],
     ): Promise<PhraseyResult<PhraseyTranslation, Error>> {
         const unprocessed = await PhraseyTransformer.transform(
             path,
             formatter,
-            PhraseyZTranslation
+            PhraseyZTranslation,
         );
         if (!unprocessed.success) {
             return { success: false, error: unprocessed.error };
         }
-        const locale = locales.find((x) => x.code === unprocessed.data.locale);
+        const locale = locales.all.find(
+            (x) => x.code === unprocessed.data.locale,
+        );
         if (!locale) {
             return {
                 success: false,
                 error: new PhraseyError(
-                    `Invalid locale "${unprocessed.data.locale}"`
+                    `Invalid locale "${unprocessed.data.locale}"`,
                 ),
             };
         }
         const extras = unprocessed.data.extras ?? {};
         const dir = p.dirname(path);
         const fallback = PhraseyUtils.parseStringArrayNullable(
-            unprocessed.data.fallback
+            unprocessed.data.fallback,
         ).map((x) => p.resolve(dir, x));
         fallback.push(...globalFallback);
         const translation = new PhraseyTranslation(
@@ -127,14 +129,14 @@ export class PhraseyTranslation {
             schema,
             locale,
             extras,
-            fallback
+            fallback,
         );
         for (const x of schema.z.keys) {
             const rawValue = unprocessed.data.keys[x.name];
             if (!rawValue) continue;
             const parts = PhraseyTranslation.parseTranslationKeyValue(
                 x,
-                rawValue
+                rawValue,
             );
             if (!parts.success) return parts;
             translation.setKey(x.name, {
@@ -150,7 +152,7 @@ export class PhraseyTranslation {
 
     static parseTranslationKeyValue(
         key: PhraseyZSchemaKeyType,
-        content: string
+        content: string,
     ): PhraseyResult<PhraseyTranslationStringPart[], Error> {
         const parts: PhraseyTranslationStringPart[] = [];
         let escaped = false;
@@ -163,7 +165,7 @@ export class PhraseyTranslation {
                     return {
                         success: false,
                         error: new PhraseyError(
-                            `Unexpected delimiter "{" at ${i}`
+                            `Unexpected delimiter "{" at ${i}`,
                         ),
                     };
                 }
@@ -182,7 +184,7 @@ export class PhraseyTranslation {
                         error: new PhraseyError(
                             `Invalid parameter "${current}" at ${
                                 i - current.length - 1
-                            }`
+                            }`,
                         ),
                     };
                 }

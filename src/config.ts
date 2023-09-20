@@ -8,12 +8,12 @@ export class PhraseyConfig {
 
     static async create(
         path: string,
-        format: string
+        format: string,
     ): Promise<PhraseyResult<PhraseyConfig, Error>> {
         const z = await PhraseyTransformer.transform(
             path,
             PhraseyContentFormats.resolve(format),
-            PhraseyZConfig
+            PhraseyZConfig,
         );
         if (!z.success) return z;
         const config = new PhraseyConfig(z.data);

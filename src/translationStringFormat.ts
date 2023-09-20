@@ -1,4 +1,4 @@
-import { PhraseyError } from "./error";
+import { PhraseyError } from "./errors";
 import { PhraseyZSchemaKeyType } from "./z";
 import { PhraseyTranslationStringParts } from "./translation";
 import { PhraseySafeResolvePackage } from "./utils";
@@ -6,7 +6,7 @@ import { PhraseySafeResolvePackage } from "./utils";
 export interface PhraseyTranslationStringFormatter<T = any> {
     format(
         parts: PhraseyTranslationStringParts,
-        schema: PhraseyZSchemaKeyType
+        schema: PhraseyZSchemaKeyType,
     ): T;
 }
 
@@ -101,12 +101,12 @@ export class PhraseyTranslationStringFormats {
         const pkg = PhraseySafeResolvePackage(name);
         if (typeof pkg?.stringFormatter !== "object") {
             throw new PhraseyError(
-                `Missing implementation of "stringFormatter" in package "${name}"`
+                `Missing implementation of "stringFormatter" in package "${name}"`,
             );
         }
         if (typeof pkg.stringFormatter.format !== "function") {
             throw new PhraseyError(
-                `Missing implementation of "stringFormatter.format" in package "${name}"`
+                `Missing implementation of "stringFormatter.format" in package "${name}"`,
             );
         }
         return pkg.stringFormatter;

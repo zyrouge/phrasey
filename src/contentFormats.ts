@@ -1,4 +1,4 @@
-import { PhraseyError } from "./error";
+import { PhraseyError } from "./errors";
 import { PhraseySafeResolvePackage } from "./utils";
 
 export interface PhraseyContentFormatter {
@@ -20,22 +20,22 @@ export class PhraseyContentFormats {
         const pkg = PhraseySafeResolvePackage(packageName);
         if (typeof pkg?.contentFormatter !== "object") {
             throw new PhraseyError(
-                `Missing implementation of "contentFormatter" in package "${name}"`
+                `Missing implementation of "contentFormatter" in package "${name}"`,
             );
         }
         if (typeof pkg.contentFormatter.extension !== "string") {
             throw new PhraseyError(
-                `Missing implementation of "contentFormatter.extension" in package "${name}"`
+                `Missing implementation of "contentFormatter.extension" in package "${name}"`,
             );
         }
         if (typeof pkg.contentFormatter.serialize !== "function") {
             throw new PhraseyError(
-                `Missing implementation of "contentFormatter.serialize" in package "${name}"`
+                `Missing implementation of "contentFormatter.serialize" in package "${name}"`,
             );
         }
         if (typeof pkg.contentFormatter.deserialize !== "function") {
             throw new PhraseyError(
-                `Missing implementation of "contentFormatter.deserialize" in package "${name}"`
+                `Missing implementation of "contentFormatter.deserialize" in package "${name}"`,
             );
         }
         return pkg.contentFormatter;

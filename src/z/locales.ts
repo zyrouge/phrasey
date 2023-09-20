@@ -24,4 +24,9 @@ export const PhraseyZLocale = z.object({
 
 export const PhraseyZLocales = z.array(PhraseyZLocale);
 
+export type PhraseyZLocaleDirection = z.infer<typeof PhraseyZLocaleDirection>;
+export type PhraseyZLocaleCodeDetailsCode = z.infer<
+    typeof PhraseyZLocaleCodeDetailsCode
+>;
+export type PhraseyZLocale = z.infer<typeof PhraseyZLocale>;
 export type PhraseyZLocalesType = z.infer<typeof PhraseyZLocales>;

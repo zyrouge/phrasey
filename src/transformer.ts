@@ -2,20 +2,20 @@ import { readFile } from "fs-extra";
 import { ZodTypeDef, z } from "zod";
 import { PhraseyResult, PhraseySafeRun, PhraseySafeRunAsync } from "./result";
 import { PhraseyContentFormatter } from "./contentFormats";
-import { PhraseyValidationError } from "./error";
+import { PhraseyValidationError } from "./errors";
 
 export class PhraseyTransformer {
     static async transform<Output, Def extends ZodTypeDef, Input>(
         path: string,
         formatter: PhraseyContentFormatter,
-        schema: z.ZodType<Output, Def, Input>
+        schema: z.ZodType<Output, Def, Input>,
     ): Promise<PhraseyResult<Output, Error>> {
         const content = await PhraseySafeRunAsync(
-            async () => await readFile(path, { encoding: "utf-8" })
+            async () => await readFile(path, { encoding: "utf-8" }),
         );
         if (!content.success) return content;
         const parsed = PhraseySafeRun(() =>
-            formatter.deserialize(content.data)
+            formatter.deserialize(content.data),
         );
         if (!parsed.success) return parsed;
         const transformed = schema.safeParse(parsed.data);
@@ -24,7 +24,7 @@ export class PhraseyTransformer {
                 success: false,
                 error: new PhraseyValidationError(
                     `Parsing "${path}" failed due to validation errors`,
-                    transformed.error
+                    transformed.error,
                 ),
             };
         }
