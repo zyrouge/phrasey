@@ -1,5 +1,5 @@
 import { Command } from "commander";
-import { PhraseyTreeLike } from "../../";
+import { PhraseyTreeLike } from "../../utils";
 import { PhraseyBuilder } from "../../builder";
 import { log } from "../utils";
 import {
@@ -21,11 +21,8 @@ export const BuildCommand = new Command()
             source: "build",
         });
         if (!result.success) {
-            const errors = Array.isArray(result.error)
-                ? result.error
-                : [result.error];
             log.error("Build failed.");
-            log.grayed(PhraseyTreeLike.build(errors));
+            log.grayed(PhraseyTreeLike.build(result.error));
             log.ln();
             process.exit(1);
         }
