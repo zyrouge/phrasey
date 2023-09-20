@@ -1,6 +1,6 @@
 import p from "path";
 import { Option } from "commander";
-import { log, pico } from "../utils";
+import { log, pico } from "./log";
 
 export const PhraseyCliConfigOptionFlags = {
     configFile: new Option("-p --config-file <path>", "Path to config file"),

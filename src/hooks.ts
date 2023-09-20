@@ -66,12 +66,12 @@ export class PhraseyHooks {
             const handler: PhraseyHooksHandler = require(path);
             this.addHandler({ path, options, handler });
             return { success: true, data: true };
-        } catch (err) {
+        } catch (error) {
             return {
                 success: false,
                 error: new PhraseyWrappedError(
                     `Could not import hooks handler file "${path}"`,
-                    err,
+                    error,
                 ),
             };
         }
@@ -102,13 +102,13 @@ export class PhraseyHooks {
                 );
                 try {
                     await fn(ctx);
-                } catch (err) {
+                } catch (error) {
                     const rpath = this.phrasey.rpath(path);
                     return {
                         success: false,
                         error: new PhraseyWrappedError(
                             `Hook "${rpath}" handling "${event}" failed.`,
-                            err,
+                            error,
                         ),
                     };
                 }

@@ -23,13 +23,34 @@ export class PhraseyState {
 
     constructor(
         public phrasey: Phrasey,
-        public options: PhraseyStateOptions,
+        public options?: PhraseyStateOptions,
     ) {
-        this.setConfig(options.config);
-        this.setHooks(options.hooks);
-        this.setSchema(options.schema);
-        this.setLocales(options.locales);
-        this.setTranslations(options.translations);
+        this.setConfig(options?.config);
+        this.setHooks(options?.hooks);
+        this.setSchema(options?.schema);
+        this.setLocales(options?.locales);
+        this.setTranslations(options?.translations);
+    }
+
+    clone(phrasey: Phrasey, options?: PhraseyStateOptions): PhraseyState;
+    clone(options?: PhraseyStateOptions): PhraseyState;
+    clone(a0?: Phrasey | PhraseyStateOptions, a1?: PhraseyStateOptions) {
+        let phrasey: Phrasey;
+        let options: PhraseyStateOptions | undefined;
+        if (a0 instanceof Phrasey) {
+            phrasey = a0;
+            options = a1;
+        } else {
+            phrasey = this.phrasey;
+            options = a1 ?? a0;
+        }
+        return new PhraseyState(phrasey, {
+            config: options?.config ?? this._config,
+            hooks: options?.hooks ?? this._hooks,
+            schema: options?.schema ?? this._schema,
+            locales: options?.locales ?? this._locales,
+            translations: options?.translations ?? this._translations,
+        });
     }
 
     hasConfig() {
@@ -41,6 +62,10 @@ export class PhraseyState {
             throw new PhraseyError("State does not possess config");
         }
         return this._config!;
+    }
+
+    maybeGetConfig() {
+        return this._config;
     }
 
     setConfig(config?: PhraseyConfig) {
@@ -58,6 +83,10 @@ export class PhraseyState {
         return this._hooks!;
     }
 
+    maybeGetHooks() {
+        return this._hooks;
+    }
+
     setHooks(hooks?: PhraseyHooks) {
         this._hooks = hooks;
     }
@@ -71,6 +100,10 @@ export class PhraseyState {
             throw new PhraseyError("State does not possess schema");
         }
         return this._schema!;
+    }
+
+    maybeGetSchema() {
+        return this._schema;
     }
 
     setSchema(schema?: PhraseySchema) {
@@ -88,6 +121,10 @@ export class PhraseyState {
         return this._locales!;
     }
 
+    maybeGetLocales() {
+        return this._locales;
+    }
+
     setLocales(locales?: PhraseyLocales) {
         this._locales = locales;
     }
@@ -101,6 +138,10 @@ export class PhraseyState {
             throw new PhraseyError("State does not possess translations");
         }
         return this._translations!;
+    }
+
+    maybeGetTranslations() {
+        return this._translations;
     }
 
     setTranslations(translations?: PhraseyTranslations) {

@@ -1,4 +1,5 @@
 import p from "path";
+import { writeFile } from "fs-extra";
 import { Command } from "commander";
 import enquirer, { Prompt } from "enquirer";
 import {
@@ -10,8 +11,7 @@ import {
     PhraseyTreeLike,
     PhraseySafeRun,
 } from "../..";
-import { log, pico } from "../utils";
-import { writeFile } from "fs-extra";
+import { log, pico } from "../utils/log";
 
 export const InitCommand = new Command()
     .name("init")
@@ -19,21 +19,21 @@ export const InitCommand = new Command()
     .action(async () => {
         log.write(pico.bold(`Thank you for choosing ${pico.cyan("Phrasey")}!`));
         log.write(
-            `Please answer the below question to initialize the project.`
+            `Please answer the below question to initialize the project.`,
         );
         log.ln();
         const configFile = await inquire<string>({
             type: "input",
             message: "Path to config file (eg. ./phrasey.json)",
             validate: inquirerNonEmptyStringValidate(
-                "Please enter a valid path or glob"
+                "Please enter a valid path or glob",
             ),
         });
         const configFormat = await inquire<string>({
             type: "input",
             message: "Format of config file (eg. json)",
             validate: inquirerNonEmptyStringValidate(
-                "Please enter a valid format"
+                "Please enter a valid format",
             ),
         });
         const configFormatCheck = isContentFormatInstalled(configFormat);
@@ -47,14 +47,14 @@ export const InitCommand = new Command()
             type: "input",
             message: "Path to input files (supports glob) (eg. ./i18n/**.json)",
             validate: inquirerNonEmptyStringValidate(
-                "Please enter a valid path or glob"
+                "Please enter a valid path or glob",
             ),
         });
         const inputFormat = await inquire<string>({
             type: "input",
             message: "Format of input files (eg. json)",
             validate: inquirerNonEmptyStringValidate(
-                "Please enter a valid format"
+                "Please enter a valid format",
             ),
         });
         const inputFormatCheck = isContentFormatInstalled(inputFormat);
@@ -72,14 +72,14 @@ export const InitCommand = new Command()
             type: "input",
             message: "Path to schema file (eg. ./phrasey-schema.json)",
             validate: inquirerNonEmptyStringValidate(
-                "Please enter a valid path"
+                "Please enter a valid path",
             ),
         });
         const schemaFormat = await inquire<string>({
             type: "input",
             message: "Format of schema file (eg. json)",
             validate: inquirerNonEmptyStringValidate(
-                "Please enter a valid format"
+                "Please enter a valid format",
             ),
         });
         const schemaFormatCheck = isContentFormatInstalled(schemaFormat);
@@ -93,14 +93,14 @@ export const InitCommand = new Command()
             type: "input",
             message: "Path to output directory (eg. ./dist-i18n)",
             validate: inquirerNonEmptyStringValidate(
-                "Please enter a valid path"
+                "Please enter a valid path",
             ),
         });
         const outputFormat = await inquire<string>({
             type: "input",
             message: "Format of output files (eg. json)",
             validate: inquirerNonEmptyStringValidate(
-                "Please enter a valid format"
+                "Please enter a valid format",
             ),
         });
         const outputFormatCheck = isContentFormatInstalled(outputFormat);
@@ -115,7 +115,7 @@ export const InitCommand = new Command()
             message:
                 "Format of translation strings in output files (eg. format-string)",
             validate: inquirerNonEmptyStringValidate(
-                "Please enter a valid format"
+                "Please enter a valid format",
             ),
         });
         const outputStringFormatCheck =
@@ -149,23 +149,23 @@ export const InitCommand = new Command()
             hooks: hooksFile ? { files: [{ path: hooksFile }] } : undefined,
         };
         const configFormatter = PhraseySafeRun(() =>
-            PhraseyContentFormats.resolve(configFormat)
+            PhraseyContentFormats.resolve(configFormat),
         );
         if (configFormatter.success) {
             const configFilePath = p.resolve(process.cwd(), configFile);
             await writeFile(
                 configFilePath,
-                configFormatter.data.serialize(config)
+                configFormatter.data.serialize(config),
             );
             log.success(`Generated config at "${configFilePath}".`);
         } else {
             log.error(
-                `Unable to use specified config format "${configFormat}" due to errors.`
+                `Unable to use specified config format "${configFormat}" due to errors.`,
             );
             log.grayed(PhraseyTreeLike.build([configFormatter.error]));
             log.ln();
             log.info(
-                `You could try manually creating "${configFile}" using the below generated config.`
+                `You could try manually creating "${configFile}" using the below generated config.`,
             );
             log.write(JSON.stringify(config, null, 4));
             log.ln();
@@ -180,23 +180,23 @@ export const InitCommand = new Command()
             ],
         };
         const schemaFormatter = PhraseySafeRun(() =>
-            PhraseyContentFormats.resolve(schemaFormat)
+            PhraseyContentFormats.resolve(schemaFormat),
         );
         if (schemaFormatter.success) {
             const schemaFilePath = p.resolve(process.cwd(), schemaFile);
             await writeFile(
                 schemaFilePath,
-                schemaFormatter.data.serialize(schema)
+                schemaFormatter.data.serialize(schema),
             );
             log.success(`Generated schema at "${schemaFilePath}".`);
         } else {
             log.error(
-                `Unable to use specified schema format "${configFormat}" due to errors.`
+                `Unable to use specified schema format "${configFormat}" due to errors.`,
             );
             log.grayed(PhraseyTreeLike.build([schemaFormatter.error]));
             log.ln();
             log.info(
-                `You could try manually creating "${schemaFile}" using the below generated schema.`
+                `You could try manually creating "${schemaFile}" using the below generated schema.`,
             );
             log.write(JSON.stringify(schema, null, 4));
             log.ln();
@@ -208,7 +208,7 @@ export const InitCommand = new Command()
             },
         };
         const inputFormatter = PhraseySafeRun(() =>
-            PhraseyContentFormats.resolve(inputFormat)
+            PhraseyContentFormats.resolve(inputFormat),
         );
         if (inputFormatter.success) {
             const serializedDemoTranslation =
@@ -216,18 +216,18 @@ export const InitCommand = new Command()
             if (fallbackInputFile) {
                 const fallbackInputFilePath = p.resolve(
                     process.cwd(),
-                    fallbackInputFile
+                    fallbackInputFile,
                 );
                 await writeFile(
                     fallbackInputFilePath,
-                    serializedDemoTranslation
+                    serializedDemoTranslation,
                 );
                 log.success(
-                    `Generated fallback translation file at "${fallbackInputFilePath}".`
+                    `Generated fallback translation file at "${fallbackInputFilePath}".`,
                 );
             } else {
                 log.info(
-                    `Get started by creating a translation file that matches the generated content!`
+                    `Get started by creating a translation file that matches the generated content!`,
                 );
                 log.ln();
                 log.info(`Example of translation file:`);
@@ -236,12 +236,12 @@ export const InitCommand = new Command()
             }
         } else {
             log.error(
-                `Unable to use specified input translation format "${inputFormat}" due to errors.`
+                `Unable to use specified input translation format "${inputFormat}" due to errors.`,
             );
             log.grayed(PhraseyTreeLike.build([inputFormatter.error]));
             log.ln();
             log.info(
-                `You could try manually creating a translation file using the below generated content.`
+                `You could try manually creating a translation file using the below generated content.`,
             );
             log.write(JSON.stringify(demoTranslation, null, 4));
             log.ln();
@@ -281,7 +281,7 @@ function isContentFormatInstalled(format: string): IsFormatInstalledResult {
 }
 
 function isTranslationStringFormatInstalled(
-    format: string
+    format: string,
 ): IsFormatInstalledResult {
     let packageName = format;
     try {
@@ -312,7 +312,7 @@ async function inquire<T>(options: Omit<InquireOptions, "name">) {
 }
 
 function inquirerNonEmptyStringValidate(
-    error: string
+    error: string,
 ): InquireOptions["validate"] {
     return (input) => {
         if (typeof input === "string" && input.length > 0) {

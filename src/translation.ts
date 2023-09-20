@@ -81,10 +81,10 @@ export class PhraseyTranslation {
                 const keySchema = this.schema.key(k);
                 try {
                     keys[k] = stringFormatter.format(v.parts, keySchema);
-                } catch (err) {
+                } catch (error) {
                     throw new PhraseyWrappedError(
                         "Formatting translation string failed",
-                        err,
+                        error,
                     );
                 }
             }

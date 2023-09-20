@@ -7,7 +7,7 @@ export class PhraseyError extends Error {
     }
 
     toString() {
-        return `PhraseyError: ${this.message}`;
+        return `PhraseyError: ${this.message}\n${this.stack}`;
     }
 }
 

@@ -9,7 +9,7 @@
     "bin": "dist/bin/index.js",
     "scripts": {
         "build": "rimraf ./dist && tsc",
-        "hot-cli": "ts-node ./src/bin/index.ts",
+        "hot-cli": "tsx ./src/bin/index.ts",
         "docs:base:dev": "vitepress dev docs",
         "docs:base:build": "vitepress build docs",
         "docs:api:build": "typedoc",
@@ -45,7 +45,7 @@
         "@zyrouge/phrasey-yaml": "file:subpackages/phrasey-yaml",
         "prettier": "^3.0.2",
         "rimraf": "^5.0.1",
-        "ts-node": "^10.9.1",
+        "tsx": "^3.12.10",
         "typedoc": "^0.24.8",
         "typescript": "^5.0.4",
         "vitepress": "^1.0.0-beta.3"

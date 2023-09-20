@@ -1,19 +1,19 @@
 import { Command } from "commander";
-import { PhraseyBuilder, PhraseyTreeLike } from "../../";
 import { log } from "../utils/log";
 import {
     PhraseyCliConfigOptionFlags,
     parsePhraseyCliConfigOptions,
 } from "../utils/parseConfigOptions";
+import { PhraseyWatcher } from "../../";
 
-export const BuildCommand = new Command()
-    .name("build")
-    .description("Build the project.")
+export const WatchCommand = new Command()
+    .name("watch")
+    .description("Watch and build the project.")
     .addOption(PhraseyCliConfigOptionFlags.configFile)
     .addOption(PhraseyCliConfigOptionFlags.configFormat)
     .action(async (options) => {
         const configOptions = parsePhraseyCliConfigOptions(options);
-        const result = await PhraseyBuilder.build({
+        await PhraseyWatcher.create({
             phrasey: {
                 cwd: configOptions.cwd,
                 log,
@@ -22,13 +22,8 @@ export const BuildCommand = new Command()
             builder: {
                 config: configOptions.config,
             },
+            watcher: {
+                buildAllTranslations: true,
+            },
         });
-        if (!result.success) {
-            log.error("Build failed.");
-            log.grayed(PhraseyTreeLike.build(result.error));
-            log.ln();
-            process.exit(1);
-        }
-        log.success("Build succeeded.");
-        log.ln();
     });

@@ -1,19 +1,21 @@
 import p from "path";
 import { ensureFile, writeFile } from "fs-extra";
 import { Command } from "commander";
-import { PhraseyTreeLike } from "../../utils";
-import { PhraseyBuilder } from "../../builder";
-import { log, pico } from "../utils";
+import {
+    PhraseyTreeLike,
+    PhraseySummaryJsonTotalStats,
+    PhraseyTranslationStatsJson,
+    PhraseyContentFormats,
+    PhraseySafeRun,
+    PhraseyBuilder,
+} from "../../";
+import { log, pico } from "../utils/log";
 import {
     PhraseyCliConfigOptionFlags,
     parsePhraseyCliConfigOptions,
-} from "../steps/parseConfigOptions";
-import { PhraseySummaryJsonTotalStats } from "../../summary";
-import { PhraseyTranslationStatsJson } from "../../translation";
-import { PhraseyContentFormats } from "../../contentFormats";
-import { PhraseySafeRun } from "../../result";
+} from "../utils/parseConfigOptions";
 
-export const BuildCommand = new Command()
+export const SummaryCommand = new Command()
     .name("summary")
     .description("Build the project.")
     .addOption(PhraseyCliConfigOptionFlags.configFile)
@@ -24,10 +26,14 @@ export const BuildCommand = new Command()
         const disableOutputPrint: string = options.disableOutputPrint || true;
         const configOptions = parsePhraseyCliConfigOptions(options);
         const result = await PhraseyBuilder.summary({
-            cwd: configOptions.cwd,
-            config: configOptions.config,
-            log,
-            source: "summary",
+            phrasey: {
+                cwd: configOptions.cwd,
+                log,
+                source: "summary",
+            },
+            builder: {
+                config: configOptions.config,
+            },
         });
         if (!result.success) {
             log.error("Summary failed.");

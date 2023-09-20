@@ -18,32 +18,37 @@ import { PhraseyLocales } from "./locales";
 import { Phrasey, PhraseyOptions } from "./phrasey";
 import { PhraseyState } from "./state";
 import { PhraseySummary } from "./summary";
+import { PhraseySchema } from "./schema";
+import { PhraseyTranslations } from "./translations";
 
-export interface PhraseyBuilderOptions extends PhraseyOptions {
+export interface PhraseyBuilderOptions {
     config: {
         file: string;
         format: string;
     };
 }
 
+export interface PhraseyBuilderCreateOptions {
+    phrasey: PhraseyOptions;
+    builder: PhraseyBuilderOptions;
+}
+
 export interface PhraseyBuilderConstructPipelineOptions {
     loadConfig: boolean;
     loadHooks: boolean;
     loadLocales: boolean;
+    loadSchema: boolean;
     loadTranslations: boolean;
     ensureTranslations: boolean;
     buildTranslations: boolean;
 }
 
 export class PhraseyBuilder {
-    state: PhraseyState;
-
     constructor(
         public phrasey: Phrasey,
+        public state: PhraseyState,
         public options: PhraseyBuilderOptions,
-    ) {
-        this.state = new PhraseyState(phrasey, {});
-    }
+    ) {}
 
     async loadConfig(): Promise<PhraseyResult<true, Error>> {
         const configPath = this.phrasey.path(this.options.config.file);
@@ -105,6 +110,27 @@ export class PhraseyBuilder {
         return { success: true, data: true };
     }
 
+    async loadSchema(): Promise<PhraseyResult<true, Error>> {
+        const beforeHookResult = await this.hooks.dispatch(
+            "beforeSchemaParsing",
+            this.state,
+            {},
+        );
+        if (!beforeHookResult.success) {
+            return beforeHookResult;
+        }
+        const schemaPath = this.phrasey.path(this.config.z.schema.file);
+        const schemaResult = await PhraseySchema.create(
+            schemaPath,
+            this.config.z.schema.format,
+        );
+        if (!schemaResult.success) {
+            return schemaResult;
+        }
+        this.state.setSchema(schemaResult.data);
+        return { success: true, data: true };
+    }
+
     async loadTranslations(): Promise<PhraseyResult<true, Error | Error[]>> {
         const beforeHookResult = await this.hooks.dispatch(
             "beforeTranslationsParsing",
@@ -126,6 +152,7 @@ export class PhraseyBuilder {
             dot: true,
             onlyFiles: true,
         });
+        this.state.setTranslations(new PhraseyTranslations(this.schema));
         const errors: Error[] = [];
         for await (const x of stream) {
             const path = x.toString();
@@ -353,24 +380,62 @@ export class PhraseyBuilder {
         return summary;
     }
 
-    constructBuildPipeline() {
+    constructBuildablePipeline(
+        options: PhraseyBuilderConstructPipelineOptions,
+    ) {
         const pipeline = new PhraseyBuildablePipeline();
-        pipeline.add(this.loadConfig.bind(this));
-        pipeline.add(this.loadHooks.bind(this));
-        pipeline.add(this.loadLocales.bind(this));
-        pipeline.add(this.loadTranslations.bind(this));
-        pipeline.add(this.ensureTranslations.bind(this));
-        pipeline.add(this.buildTranslations.bind(this));
+        if (options.loadConfig) {
+            pipeline.add(this.loadConfig.bind(this));
+        }
+        if (options.loadHooks) {
+            pipeline.add(this.loadHooks.bind(this));
+        }
+        if (options.loadLocales) {
+            pipeline.add(this.loadLocales.bind(this));
+        }
+        if (options.loadSchema) {
+            pipeline.add(this.loadSchema.bind(this));
+        }
+        if (options.loadTranslations) {
+            pipeline.add(this.loadTranslations.bind(this));
+        }
+        if (options.ensureTranslations) {
+            pipeline.add(this.ensureTranslations.bind(this));
+        }
+        if (options.buildTranslations) {
+            pipeline.add(this.buildTranslations.bind(this));
+        }
+        return pipeline;
+    }
+
+    constructPipeline(options: PhraseyBuilderConstructPipelineOptions) {
+        const pipeline = this.constructBuildablePipeline(options);
         return pipeline.build();
     }
 
+    constructBuildPipeline() {
+        const pipeline = this.constructPipeline({
+            loadConfig: true,
+            loadHooks: true,
+            loadLocales: true,
+            loadSchema: true,
+            loadTranslations: true,
+            ensureTranslations: true,
+            buildTranslations: true,
+        });
+        return pipeline;
+    }
+
     constructSummaryPipeline() {
-        const pipeline = new PhraseyBuildablePipeline();
-        pipeline.add(this.loadConfig.bind(this));
-        pipeline.add(this.loadHooks.bind(this));
-        pipeline.add(this.loadLocales.bind(this));
-        pipeline.add(this.loadTranslations.bind(this));
-        pipeline.add(this.ensureTranslations.bind(this));
+        const pipeline = this.constructBuildablePipeline({
+            loadConfig: true,
+            loadHooks: true,
+            loadLocales: true,
+            loadSchema: true,
+            loadTranslations: true,
+            ensureTranslations: true,
+            buildTranslations: false,
+        });
         return pipeline.buildWithOutput(async () => {
             const summary = new PhraseySummary({
                 keysCount: this.schema.keysCount(),
@@ -402,18 +467,15 @@ export class PhraseyBuilder {
         return this.state.getTranslations();
     }
 
-    static create(options: PhraseyBuilderOptions) {
-        const phrasey = new Phrasey({
-            cwd: options.cwd,
-            log: options.log,
-            source: options.source,
-        });
-        const builder = new PhraseyBuilder(phrasey, options);
+    static create(options: PhraseyBuilderCreateOptions) {
+        const phrasey = new Phrasey(options.phrasey);
+        const state = new PhraseyState(phrasey);
+        const builder = new PhraseyBuilder(phrasey, state, options.builder);
         return builder;
     }
 
     static async build(
-        options: PhraseyBuilderOptions,
+        options: PhraseyBuilderCreateOptions,
     ): Promise<PhraseyResult<true, Error | Error[]>> {
         const builder = PhraseyBuilder.create(options);
         const pipeline = builder.constructBuildPipeline();
@@ -421,7 +483,7 @@ export class PhraseyBuilder {
     }
 
     static async summary(
-        options: PhraseyBuilderOptions,
+        options: PhraseyBuilderCreateOptions,
     ): Promise<PhraseyResult<PhraseySummary, Error | Error[]>> {
         const builder = PhraseyBuilder.create(options);
         const pipeline = builder.constructSummaryPipeline();

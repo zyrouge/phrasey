@@ -1,5 +1,5 @@
 import pico from "picocolors";
-import { PhraseyLogger } from "../logger";
+import { PhraseyLogger } from "../../logger";
 
 export { pico };
 

@@ -49,7 +49,7 @@ export const PhraseyTreeLike = {
 export const PhraseySafeResolvePackage = (packageName: string) => {
     try {
         return require(packageName);
-    } catch (err) {
+    } catch (error) {
         throw new PhraseyError(
             `Cannot import format package named "${packageName}". Did you install it?`,
         );
@@ -111,12 +111,12 @@ export class PhraseyBuildablePipeline implements PhraseyPipeline {
         try {
             const result = await task();
             return result;
-        } catch (err) {
+        } catch (error) {
             return {
                 success: false,
                 error: new PhraseyWrappedError(
                     "Unexpected pipeline task error",
-                    err,
+                    error,
                 ),
             };
         }

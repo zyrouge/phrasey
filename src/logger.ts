@@ -50,7 +50,7 @@ export class PhraseyLogger {
     _level(level: PhraseyLogLevel) {
         switch (level) {
             case "success":
-                return pico.green(`[success]`);
+                return pico.green(`[done]`);
 
             case "info":
                 return pico.cyan(`[info]`);
@@ -59,7 +59,7 @@ export class PhraseyLogger {
                 return pico.yellow(`[warn]`);
 
             case "error":
-                return pico.red(`[error]`);
+                return pico.red(`[err!]`);
         }
     }
 

@@ -41,8 +41,8 @@ ${phrasey.schema.z.keys
         `.trim();
             await writeFile(modelPath, content);
             log.success(`Generated model "${modelPath}".`);
-        } catch (err) {
-            log.error(`Generating model failed. (Error: ${err})`);
+        } catch (error) {
+            log.error(`Generating model failed. (Error: ${error})`);
         }
     },
 };
