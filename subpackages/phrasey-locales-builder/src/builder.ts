@@ -11,7 +11,7 @@ export interface PhraseyLocaleBuilderOptions {
 
 export class PhraseyLocaleBuilder {
     static async build(
-        options: PhraseyLocaleBuilderOptions
+        options: PhraseyLocaleBuilderOptions,
     ): Promise<PhraseyLocaleType[]> {
         const locales: PhraseyLocaleType[] = [];
         const localeCodes = await PhraseyLocaleCodes.parseAll();
@@ -21,13 +21,12 @@ export class PhraseyLocaleBuilder {
             const rawLocaleCode = await PhraseyLocaleCodes.parse(code);
             const details = await PhraseyLocaleCodesDetails.parse(
                 rawLocaleCode,
-                options.displayLocaleCode
+                options.displayLocaleCode,
             );
             const display = this.constructDisplay(details);
             const native = this.constructNative(details);
-            const direction = await PhraseyLocaleCodeLayout.parse(
-                rawLocaleCode
-            );
+            const direction =
+                await PhraseyLocaleCodeLayout.parse(rawLocaleCode);
             locales.push({
                 display,
                 native,

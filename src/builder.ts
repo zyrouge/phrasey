@@ -201,7 +201,7 @@ export class PhraseyBuilder {
         const beforeHookResult = await this.hooks.dispatch(
             "beforeTranslationParsing",
             this.state,
-            {},
+            { path },
         );
         if (!beforeHookResult.success) {
             return beforeHookResult;
