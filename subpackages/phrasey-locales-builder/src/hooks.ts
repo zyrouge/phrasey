@@ -6,13 +6,13 @@ import { PhraseyLocaleBuilder } from "./builder";
 class PhraseyLocaleBuilderOptionsError extends Error {
     constructor(option: string) {
         super(
-            `phrasey-locales-builder: Missing or invalid "${option}" value in options`
+            `phrasey-locales-builder: Missing or invalid "${option}" value in options`,
         );
     }
 }
 
 const hooks: PhraseyHooksHandler = {
-    beforeLoadLocales: async ({ phrasey, options, log }) => {
+    beforeLocalesParsing: async ({ phrasey, options, log }) => {
         const { displayLocaleCode, outputFile, outputFormat } = options;
         if (typeof displayLocaleCode !== "string") {
             throw new PhraseyLocaleBuilderOptionsError("displayLocaleCode");
