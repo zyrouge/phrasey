@@ -21,6 +21,10 @@ jobs:
             - name: 🚧 Install dependencies
               run: npm install
 
+            # Required for processing subpackages
+            - name: 👷 Build phrasey
+              run: npm run build
+
             - name: 👷 Build site
               run: npm run docs:build
 
