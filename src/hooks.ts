@@ -18,19 +18,25 @@ export interface PhraseyHooksEvents {
     beforeSchemaParsing: {};
     onSchemaParsed: {};
     beforeTranslationsParsing: {};
-    beforeTranslationParsing: {};
+    beforeTranslationParsing: {
+        path: string;
+    };
     onTranslationParsed: {
         locale: string;
     };
     onTranslationsParsed: {};
     beforeTranslationsEnsuring: {};
-    beforeTranslationEnsuring: {};
+    beforeTranslationEnsuring: {
+        locale: string;
+    };
     onTranslationEnsured: {
         locale: string;
     };
     onTranslationsEnsured: {};
     beforeTranslationsBuilding: {};
-    beforeTranslationBuilding: {};
+    beforeTranslationBuilding: {
+        locale: string;
+    };
     onTranslationBuildFinished: {
         locale: string;
     };

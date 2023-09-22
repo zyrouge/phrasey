@@ -20,41 +20,130 @@ You can use `phrasey.options.source` to find which command was invoked.
 
 ```ts
 interface PhraseyHooksHandler {
-    onCreate?(ctx: { phrasey: Phrasey; log: PhraseyLogger }): Promise<void>;
-    beforeLoad?(ctx: { phrasey: Phrasey; log: PhraseyLogger }): Promise<void>;
-    afterLoad?(ctx: { phrasey: Phrasey; log: PhraseyLogger }): Promise<void>;
-    beforeLoadTranslation?(ctx: {
+    onCreated?(ctx: {
         phrasey: Phrasey;
+        state: PhraseyState;
         log: PhraseyLogger;
+        options: Record<string, any>;
     }): Promise<void>;
-    afterLoadTranslation?(ctx: {
+
+    beforeLocalesParsing?(ctx: {
         phrasey: Phrasey;
+        state: PhraseyState;
         log: PhraseyLogger;
+        options: Record<string, any>;
+    }): Promise<void>;
+
+    onLocalesParsed?(ctx: {
+        phrasey: Phrasey;
+        state: PhraseyState;
+        log: PhraseyLogger;
+        options: Record<string, any>;
+    }): Promise<void>;
+
+    beforeSchemaParsing?(ctx: {
+        phrasey: Phrasey;
+        state: PhraseyState;
+        log: PhraseyLogger;
+        options: Record<string, any>;
+    }): Promise<void>;
+
+    onSchemaParsed?(ctx: {
+        phrasey: Phrasey;
+        state: PhraseyState;
+        log: PhraseyLogger;
+        options: Record<string, any>;
+    }): Promise<void>;
+
+    beforeTranslationsParsing?(ctx: {
+        phrasey: Phrasey;
+        state: PhraseyState;
+        log: PhraseyLogger;
+        options: Record<string, any>;
+    }): Promise<void>;
+
+    beforeTranslationParsing?(ctx: {
+        phrasey: Phrasey;
+        state: PhraseyState;
+        log: PhraseyLogger;
+        options: Record<string, any>;
+
+        path: string;
+    }): Promise<void>;
+
+    onTranslationParsed?(ctx: {
+        phrasey: Phrasey;
+        state: PhraseyState;
+        log: PhraseyLogger;
+        options: Record<string, any>;
+
         locale: string;
     }): Promise<void>;
-    beforeEnsure?(ctx: { phrasey: Phrasey; log: PhraseyLogger }): Promise<void>;
-    afterEnsure?(ctx: { phrasey: Phrasey; log: PhraseyLogger }): Promise<void>;
-    beforeEnsureTranslation?(ctx: {
+
+    onTranslationsParsed?(ctx: {
         phrasey: Phrasey;
+        state: PhraseyState;
         log: PhraseyLogger;
+        options: Record<string, any>;
+    }): Promise<void>;
+
+    beforeTranslationsEnsuring?(ctx: {
+        phrasey: Phrasey;
+        state: PhraseyState;
+        log: PhraseyLogger;
+        options: Record<string, any>;
+    }): Promise<void>;
+
+    beforeTranslationEnsuring?(ctx: {
+        phrasey: Phrasey;
+        state: PhraseyState;
+        log: PhraseyLogger;
+        options: Record<string, any>;
+
         locale: string;
     }): Promise<void>;
-    afterEnsureTranslation?(ctx: {
+
+    onTranslationEnsured?(ctx: {
         phrasey: Phrasey;
+        state: PhraseyState;
         log: PhraseyLogger;
+
         locale: string;
     }): Promise<void>;
-    beforeBuild?(ctx: { phrasey: Phrasey; log: PhraseyLogger }): Promise<void>;
-    afterBuild?(ctx: { phrasey: Phrasey; log: PhraseyLogger }): Promise<void>;
-    beforeBuildTranslation?(ctx: {
+
+    onTranslationsEnsured?(ctx: {
         phrasey: Phrasey;
+        state: PhraseyState;
         log: PhraseyLogger;
+        options: Record<string, any>;
+    }): Promise<void>;
+
+    beforeTranslationsBuilding?(ctx: {
+        phrasey: Phrasey;
+        state: PhraseyState;
+        log: PhraseyLogger;
+    }): Promise<void>;
+
+    beforeTranslationBuilding?(ctx: {
+        phrasey: Phrasey;
+        state: PhraseyState;
+        log: PhraseyLogger;
+
         locale: string;
     }): Promise<void>;
-    afterBuildTranslation?(ctx: {
+
+    onTranslationBuildFinished?(ctx: {
         phrasey: Phrasey;
+        state: PhraseyState;
         log: PhraseyLogger;
+
         locale: string;
+    }): Promise<void>;
+
+    onTranslationsBuildFinished?(ctx: {
+        phrasey: Phrasey;
+        state: PhraseyState;
+        log: PhraseyLogger;
     }): Promise<void>;
 }
 ```
@@ -66,44 +155,56 @@ interface PhraseyHooksHandler {
  * @type {import("phrasey").PhraseyHooksHandler}
  */
 module.exports = {
-    onCreate: ({ phrasey, log }) => {
-        log("Hello from the event onCreate!");
+    onCreated: ({ phrasey, state, log }) => {
+        log("Hello from the event onCreated!");
     },
-    beforeLoad: ({ phrasey, log }) => {
-        log("Hello from the event beforeLoad!");
+    beforeLocalesParsing: ({ phrasey, state, log }) => {
+        log("Hello from the event beforeLocalesParsing!");
     },
-    afterLoad: ({ phrasey, log }) => {
-        log("Hello from the event afterLoad!");
+    onLocalesParsed: ({ phrasey, state, log }) => {
+        log("Hello from the event onLocalesParsed!");
     },
-    beforeLoadTranslation: ({ phrasey }) => {
-        log("Hello from the event beforeLoadTranslation!");
+    beforeSchemaParsing: ({ phrasey }) => {
+        log("Hello from the event beforeSchemaParsing!");
     },
-    afterLoadTranslation: ({ phrasey, log, locale }) => {
-        log("Hello from the event afterLoadTranslation!");
+    onSchemaParsed: ({ phrasey, state, log, locale }) => {
+        log("Hello from the event onSchemaParsed!");
     },
-    beforeEnsure: ({ phrasey, log }) => {
-        log("Hello from the event beforeEnsure!");
+    beforeTranslationsParsing: ({ phrasey, state, log }) => {
+        log("Hello from the event beforeTranslationsParsing!");
     },
-    afterEnsure: ({ phrasey, log }) => {
-        log("Hello from the event afterEnsure!");
+    beforeTranslationParsing: ({ phrasey, state, log, path }) => {
+        log("Hello from the event beforeTranslationParsing!");
     },
-    beforeEnsureTranslation: ({ phrasey, log, locale }) => {
-        log("Hello from the event beforeEnsureTranslation!");
+    onTranslationParsed: ({ phrasey, state, log, locale }) => {
+        log("Hello from the event onTranslationParsed!");
     },
-    afterEnsureTranslation: ({ phrasey, log, locale }) => {
-        log("Hello from the event afterEnsureTranslation!");
+    onTranslationsParsed: ({ phrasey, state, log }) => {
+        log("Hello from the event onTranslationsParsed!");
     },
-    beforeBuild: ({ phrasey, log }) => {
-        log("Hello from the event beforeBuild!");
+    beforeTranslationsEnsuring: ({ phrasey, state, log }) => {
+        log("Hello from the event beforeTranslationsEnsuring!");
     },
-    afterBuild: ({ phrasey, log }) => {
-        log("Hello from the event afterBuild!");
+    beforeTranslationEnsuring: ({ phrasey, state, log, locale }) => {
+        log("Hello from the event beforeTranslationEnsuring!");
     },
-    beforeBuildTranslation: ({ phrasey, log, locale }) => {
-        log("Hello from the event beforeBuildTranslation!");
+    onTranslationEnsured: ({ phrasey, state, log, locale }) => {
+        log("Hello from the event onTranslationEnsured!");
     },
-    afterBuildTranslation: ({ phrasey, log, locale }) => {
-        log("Hello from the event afterBuildTranslation!");
+    onTranslationsEnsured: ({ phrasey, state, log }) => {
+        log("Hello from the event onTranslationsEnsured!");
+    },
+    beforeTranslationsBuilding: ({ phrasey, state, log }) => {
+        log("Hello from the event beforeTranslationsBuilding!");
+    },
+    beforeTranslationBuilding: ({ phrasey, state, log, locale }) => {
+        log("Hello from the event beforeTranslationBuilding!");
+    },
+    onTranslationBuildFinished: ({ phrasey, state, log, locale }) => {
+        log("Hello from the event onTranslationBuildFinished!");
+    },
+    onTranslationsBuildFinished: ({ phrasey, state, log }) => {
+        log("Hello from the event onTranslationsBuildFinished!");
     },
 };
 ```
