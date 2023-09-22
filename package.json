@@ -12,7 +12,7 @@
         "hot-cli": "tsx ./src/bin/index.ts",
         "docs:base:dev": "vitepress dev docs",
         "docs:base:build": "vitepress build docs",
-        "docs:api:build": "typedoc",
+        "docs:api:build": "node ./scripts/docs-api-json.js && typedoc --options ./typedoc.all.json",
         "docs:build": "rimraf ./docs-dist && npm run docs:base:build && npm run docs:api:build",
         "docs:deploy": "gh workflow run docs.yml"
     },

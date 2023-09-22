@@ -1,0 +1,6 @@
+{
+    "$schema": "https://typedoc.org/schema.json",
+    "entryPoints": ["./docs-dist/api-json/*"],
+    "entryPointStrategy": "merge",
+    "out": "./docs-dist/api"
+}
