@@ -1,8 +1,11 @@
+import { inspect } from "util";
 import pico from "picocolors";
+import { PhraseyTreeLike } from "./utils";
 
 export interface PhraseyLoggerOptions {
     tag?: string;
     write: (text: string) => void;
+    writeError: (error: any) => void;
 }
 
 export type PhraseyLogLevel = "success" | "info" | "warn" | "error";
@@ -22,8 +25,32 @@ export class PhraseyLogger {
         this.log("warn", text);
     }
 
-    error(text: string) {
+    error(text: string, error?: any) {
         this.log("error", text);
+        if (!error) return;
+        this.logErrors(error);
+    }
+
+    logErrors(errors: any | any[]) {
+        const errorsArray = Array.isArray(errors) ? errors : [errors];
+        errorsArray.forEach((x) => {
+            const raw = inspect(x, {
+                colors: false,
+            });
+            const pretty = raw
+                .split(/\s*{\s*\[cause\]:\s*/g)
+                .map((x, i) => {
+                    const pretty = x
+                        .replaceAll(/^\s*}\s*$/gm, "")
+                        .replace(/^\s+/gm, PhraseyTreeLike.tab(i))
+                        .trim();
+                    return PhraseyTreeLike.build(pretty, {
+                        prefix: PhraseyTreeLike.tab(i),
+                    });
+                })
+                .join("\n");
+            this.writeError(pico.red(pretty));
+        });
     }
 
     grayed(text: string) {
@@ -42,15 +69,23 @@ export class PhraseyLogger {
         this.options.write(text);
     }
 
+    writeError(error: any) {
+        this.options.writeError(error);
+    }
+
     inherit(tag: string) {
-        const log = new PhraseyLogger({ tag, write: this.options.write });
+        const log = new PhraseyLogger({
+            tag,
+            write: this.options.write,
+            writeError: this.options.writeError,
+        });
         return log;
     }
 
     _level(level: PhraseyLogLevel) {
         switch (level) {
             case "success":
-                return pico.green(`[done]`);
+                return pico.green(`[success]`);
 
             case "info":
                 return pico.cyan(`[info]`);
@@ -59,7 +94,7 @@ export class PhraseyLogger {
                 return pico.yellow(`[warn]`);
 
             case "error":
-                return pico.red(`[err!]`);
+                return pico.red(`[error]`);
         }
     }
 
@@ -74,6 +109,7 @@ export class PhraseyLogger {
         const log = new PhraseyLogger({
             tag,
             write: (text) => console.log(text),
+            writeError: (error) => console.error(error),
         });
         return log;
     }

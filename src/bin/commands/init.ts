@@ -8,7 +8,6 @@ import {
     PhraseyZTranslationType,
     PhraseyContentFormats,
     PhraseyTranslationStringFormats,
-    PhraseyTreeLike,
     PhraseySafeRun,
 } from "../..";
 import { log, pico } from "../utils/log";
@@ -162,7 +161,7 @@ export const InitCommand = new Command()
             log.error(
                 `Unable to use specified config format "${configFormat}" due to errors.`,
             );
-            log.grayed(PhraseyTreeLike.build([configFormatter.error]));
+            log.logErrors(configFormatter.error);
             log.ln();
             log.info(
                 `You could try manually creating "${configFile}" using the below generated config.`,
@@ -193,7 +192,7 @@ export const InitCommand = new Command()
             log.error(
                 `Unable to use specified schema format "${configFormat}" due to errors.`,
             );
-            log.grayed(PhraseyTreeLike.build([schemaFormatter.error]));
+            log.logErrors(schemaFormatter.error);
             log.ln();
             log.info(
                 `You could try manually creating "${schemaFile}" using the below generated schema.`,
@@ -238,7 +237,7 @@ export const InitCommand = new Command()
             log.error(
                 `Unable to use specified input translation format "${inputFormat}" due to errors.`,
             );
-            log.grayed(PhraseyTreeLike.build([inputFormatter.error]));
+            log.logErrors(inputFormatter.error);
             log.ln();
             log.info(
                 `You could try manually creating a translation file using the below generated content.`,
@@ -250,7 +249,7 @@ export const InitCommand = new Command()
 
 function logUnableToResolveFormat(result: IsFormatInstalledFailResult) {
     log.error(`Unable to resolve format "${result.format}".`);
-    log.grayed(PhraseyTreeLike.build([result.error]));
+    log.logErrors(result.error);
 }
 
 interface IsFormatInstalledSuccessResult {

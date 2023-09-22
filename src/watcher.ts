@@ -1,10 +1,11 @@
+import fs from "fs-extra";
 import chokidar from "chokidar";
 import { Phrasey, PhraseyOptions } from "./phrasey";
 import { PhraseyState } from "./state";
 import { PhraseyBuilder, PhraseyBuilderOptions } from "./builder";
 import { PhraseyTranslations } from "./translations";
-import { PhraseyWrappedError } from "./errors";
-import { pico } from "./bin/utils/log";
+import { PhraseyError } from "./errors";
+import { PhraseyUtils } from "./utils";
 
 export interface PhraseyWatcherOptions {
     phrasey: PhraseyOptions;
@@ -25,6 +26,12 @@ export interface PhraseyWatcherCompleteListener {
 
 export type PhraseyWatcherListener = Partial<PhraseyWatcherCompleteListener>;
 
+export type PhraseyChokidarWatcherListener = (
+    eventName: "add" | "addDir" | "change" | "unlink" | "unlinkDir",
+    path: string,
+    stats?: fs.Stats,
+) => void;
+
 export class PhraseyWatcher {
     listeners: PhraseyWatcherListener[] = [];
 
@@ -44,14 +51,12 @@ export class PhraseyWatcher {
     async initialize() {
         await this.updateConfig();
         const configPath = this.phrasey.path(this.options.builder.config.file);
-        this.configWatcher = chokidar
-            .watch(configPath)
-            .on("all", () => this.onConfigChange());
+        this.configWatcher = PhraseyWatcher.createWatcher(configPath, () =>
+            this.onConfigChange(),
+        );
     }
 
     async updateConfig() {
-        await this.configWatcher?.close();
-        delete this.configWatcher;
         await this.localesWatcher?.close();
         delete this.localesWatcher;
         await this.schemaWatcher?.close();
@@ -79,52 +84,61 @@ export class PhraseyWatcher {
         const result = await pipeline.execute();
         if (!result.success) {
             await this.onError(
-                new PhraseyWrappedError("Updating config failed", result.error),
+                new PhraseyError("Updating config failed", {
+                    cause: result.error,
+                }),
             );
             return;
         }
         this.log.success("Synced config state.");
+
         const prevConfig = prevState.maybeGetConfig();
         const config = state.getConfig();
-        if (
-            !prevConfig ||
-            prevConfig?.z.locales?.file !== config.z.locales?.file ||
-            prevConfig?.z.locales?.format !== config.z.locales?.format
-        ) {
+        const isLocalesUnchanged =
+            prevState.hasLocales() &&
+            PhraseyUtils.equals(prevConfig?.z.locales, config.z.locales);
+        const isSchemaUnchanged =
+            prevState.hasSchema() &&
+            PhraseyUtils.equals(prevConfig?.z.schema, config.z.schema);
+        const isTranslationsUnchanged =
+            isLocalesUnchanged &&
+            isSchemaUnchanged &&
+            prevState.hasTranslations() &&
+            PhraseyUtils.equals(prevConfig?.z.input, config.z.input) &&
+            PhraseyUtils.equals(prevConfig?.z.output, config.z.output);
+        if (isLocalesUnchanged) {
+            state.setLocales(prevState.getLocales());
+        } else {
             await this.onLocalesChange();
         }
-        if (
-            prevConfig?.z.schema?.file !== config.z.schema?.file ||
-            prevConfig?.z.schema?.format !== config.z.schema?.format
-        ) {
+        if (isSchemaUnchanged) {
+            state.setSchema(prevState.getSchema());
+        } else {
             await this.onSchemaChange();
         }
-        if (
-            (Array.isArray(prevConfig?.z.input.files) &&
-            Array.isArray(config.z.input.files)
-                ? prevConfig?.z.input.files.join() !==
-                  config.z.input.files.join()
-                : prevConfig?.z.input?.files !== config.z.input?.files) ||
-            prevConfig?.z.input?.format !== config.z.input?.format
-        ) {
+        if (isTranslationsUnchanged) {
+            state.setTranslations(prevState.getTranslations());
+        } else {
             await this.onTranslationsChange();
         }
         if (config.z.locales) {
             const localesPath = this.phrasey.path(config.z.locales.file);
-            this.localesWatcher = chokidar
-                .watch(localesPath)
-                .on("all", () => this.onLocalesChange());
+            this.localesWatcher = PhraseyWatcher.createWatcher(
+                localesPath,
+                () => this.onLocalesChange(),
+            );
         }
         const schemaPath = this.phrasey.path(config.z.schema.file);
-        this.schemaWatcher = chokidar
-            .watch(schemaPath)
-            .on("all", () => this.onSchemaChange());
+        this.schemaWatcher = PhraseyWatcher.createWatcher(schemaPath, () =>
+            this.onSchemaChange(),
+        );
         const translationPaths = Array.isArray(config.z.input.files)
             ? config.z.input.files.map((x) => this.phrasey.path(x))
             : this.phrasey.path(config.z.input.files);
-        this.translationsWatcher = chokidar
-            .watch(translationPaths)
-            .on("all", (_, path) => this.onTranslationChange(path));
+        this.translationsWatcher = PhraseyWatcher.createWatcher(
+            translationPaths,
+            (_, path) => this.onTranslationChange(path),
+        );
     }
 
     async updateLocales() {
@@ -145,10 +159,9 @@ export class PhraseyWatcher {
         const result = await pipeline.execute();
         if (!result.success) {
             await this.onError(
-                new PhraseyWrappedError(
-                    "Updating locales failed",
-                    result.error,
-                ),
+                new PhraseyError("Updating locales failed", {
+                    cause: result.error,
+                }),
             );
             return;
         }
@@ -173,7 +186,9 @@ export class PhraseyWatcher {
         const result = await pipeline.execute();
         if (!result.success) {
             await this.onError(
-                new PhraseyWrappedError("Updating schema failed", result.error),
+                new PhraseyError("Updating schema failed", {
+                    cause: result.error,
+                }),
             );
             return;
         }
@@ -202,16 +217,53 @@ export class PhraseyWatcher {
             const result = await pipeline.execute();
             if (!result.success) {
                 await this.onError(
-                    new PhraseyWrappedError(
-                        "Updating translations failed",
-                        result.error,
-                    ),
+                    new PhraseyError("Updating translations failed", {
+                        cause: result.error,
+                    }),
                 );
                 return;
             }
             this.log.success("Processed all translations.");
         }
         this.log.success("Synced translations state.");
+    }
+
+    async updateTranslation(path: string) {
+        const rebuildPaths = new Set<string>();
+        rebuildPaths.add(path);
+        const translations = this.state.getTranslations();
+        for (const x of translations.values()) {
+            if (x.path === path) continue;
+            if (x.fallback.includes(path)) {
+                rebuildPaths.add(x.path);
+            }
+        }
+        const builder = new PhraseyBuilder(this.phrasey, this.state, {
+            ...this.options.builder,
+            translations: {
+                ...this.options.builder?.translations,
+                skip: (x) => !rebuildPaths.has(x),
+            },
+        });
+        const pipeline = builder.constructPipeline({
+            loadConfig: false,
+            loadHooks: false,
+            loadLocales: false,
+            loadSchema: false,
+            loadTranslations: true,
+            ensureTranslations: true,
+            buildTranslations: true,
+        });
+        const result = await pipeline.execute();
+        if (!result.success) {
+            await this.onError(
+                new PhraseyError("Updating translation failed", {
+                    cause: result.error,
+                }),
+            );
+            return;
+        }
+        this.log.success(`Synced "${path}" translation state.`);
     }
 
     async onConfigChange() {
@@ -239,14 +291,14 @@ export class PhraseyWatcher {
     }
 
     async onTranslationChange(path: string) {
-        this.log.info(
-            `Triggering translation change... ${pico.gray(`(${path})`)}`,
-        );
+        this.log.info(`Triggering "${path}" translation change...`);
+        await this.updateTranslation(path);
         await this.dispatch(async (x) => x.onTranslationChange?.(path));
     }
 
     async onError(error: Error) {
-        this.log.error(`${error}`);
+        this.log.error("Watcher encountered an error.");
+        this.log.logErrors(error);
         await this.dispatch(async (x) => x.onError?.(error));
     }
 
@@ -276,7 +328,9 @@ export class PhraseyWatcher {
                 await apply(x);
             } catch (error) {
                 await this.onError(
-                    new PhraseyWrappedError("Event dispatching failed", error),
+                    new PhraseyError("Event dispatching failed", {
+                        cause: error,
+                    }),
                 );
             }
         }
@@ -289,6 +343,17 @@ export class PhraseyWatcher {
     static async create(options: PhraseyWatcherOptions) {
         const watcher = new PhraseyWatcher(options);
         await watcher.initialize();
+        return watcher;
+    }
+
+    static createWatcher(
+        path: string | string[],
+        listener: PhraseyChokidarWatcherListener,
+    ) {
+        const watcher = chokidar.watch(path, {
+            ignoreInitial: true,
+        });
+        watcher.on("all", listener);
         return watcher;
     }
 }

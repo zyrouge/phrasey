@@ -37,7 +37,7 @@ export const SummaryCommand = new Command()
         });
         if (!result.success) {
             log.error("Summary failed.");
-            log.grayed(PhraseyTreeLike.build(result.error));
+            log.logErrors(result.error);
             log.ln();
             process.exit(1);
         }
@@ -76,7 +76,7 @@ export const SummaryCommand = new Command()
                 });
                 if (!serializedResult.success) {
                     log.error(`Serializing summary failed due to error.`);
-                    log.grayed(PhraseyTreeLike.build([serializedResult.error]));
+                    log.logErrors(serializedResult.error);
                     log.ln();
                     process.exit(1);
                 }

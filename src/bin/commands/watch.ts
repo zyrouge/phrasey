@@ -17,7 +17,7 @@ export const WatchCommand = new Command()
             phrasey: {
                 cwd: configOptions.cwd,
                 log,
-                source: "build",
+                source: "watch",
             },
             builder: {
                 config: configOptions.config,

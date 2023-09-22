@@ -1,5 +1,5 @@
 import p from "path";
-import { PhraseyError, PhraseyWrappedError } from "./errors";
+import { PhraseyError } from "./errors";
 import { PhraseyContentFormatter } from "./contentFormats";
 import { PhraseyLocaleType, PhraseyLocales } from "./locales";
 import { PhraseyResult } from "./result";
@@ -82,9 +82,9 @@ export class PhraseyTranslation {
                 try {
                     keys[k] = stringFormatter.format(v.parts, keySchema);
                 } catch (error) {
-                    throw new PhraseyWrappedError(
+                    throw new PhraseyError(
                         "Formatting translation string failed",
-                        error,
+                        { cause: error },
                     );
                 }
             }

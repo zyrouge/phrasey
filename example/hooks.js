@@ -1,14 +1,17 @@
 const p = require("path");
 const { writeFile } = require("fs-extra");
-const pico = require("picocolors");
+const { PhraseyTreeLike } = require("../src");
 
 /**
  * @type {import("../src").PhraseyHooksHandler}
  */
 const handler = {
-    afterLoad: async ({ phrasey, log }) => {
-        if (phrasey.options.source !== "build") return;
+    onSchemaParsed: async ({ phrasey, state, log }) => {
+        if (!["build", "watch"].includes(phrasey.options.source)) {
+            return;
+        }
         try {
+            const schema = state.getSchema();
             const modelPath = p.resolve(__dirname, "dist/model.d.ts");
             const content = `
 export interface ITranslation {
@@ -17,9 +20,7 @@ export interface ITranslation {
         code: string;
     };
 
-${phrasey.schema.z.keys
-    .map((x) => `    ${x.name}: [0 | 1, string][];`)
-    .join("\n")}
+${schema.z.keys.map((x) => `    ${x.name}: [0 | 1, string][];`).join("\n")}
 }
 
 export interface Translation {
@@ -28,7 +29,7 @@ export interface Translation {
         code: string;
     };
 
-${phrasey.schema.z.keys
+${schema.z.keys
     .map((x) => {
         if (!x.parameters) {
             return `    ${x.name}: string;`;
@@ -42,7 +43,8 @@ ${phrasey.schema.z.keys
             await writeFile(modelPath, content);
             log.success(`Generated model "${modelPath}".`);
         } catch (error) {
-            log.error(`Generating model failed. (Error: ${error})`);
+            log.error(`Generating model failed.`);
+            log.logErrors(error);
         }
     },
 };

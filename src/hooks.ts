@@ -1,4 +1,4 @@
-import { PhraseyWrappedError } from "./errors";
+import { PhraseyError } from "./errors";
 import { PhraseyLogger } from "./logger";
 import { Phrasey } from "./phrasey";
 import { PhraseyResult } from "./result";
@@ -69,9 +69,9 @@ export class PhraseyHooks {
         } catch (error) {
             return {
                 success: false,
-                error: new PhraseyWrappedError(
+                error: new PhraseyError(
                     `Could not import hooks handler file "${path}"`,
-                    error,
+                    { cause: error },
                 ),
             };
         }
@@ -106,9 +106,9 @@ export class PhraseyHooks {
                     const rpath = this.phrasey.rpath(path);
                     return {
                         success: false,
-                        error: new PhraseyWrappedError(
+                        error: new PhraseyError(
                             `Hook "${rpath}" handling "${event}" failed.`,
-                            error,
+                            { cause: error },
                         ),
                     };
                 }

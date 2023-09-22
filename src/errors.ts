@@ -2,13 +2,30 @@ import { ZodError } from "zod";
 import { PhraseyTreeLike } from "./utils";
 
 export class PhraseyError extends Error {
-    constructor(message: string) {
-        super(message);
+    constructor(message: string, options?: ErrorOptions) {
+        super(message, options);
     }
 
     toString() {
-        return `PhraseyError: ${this.message}\n${this.stack}`;
+        return `PhraseyError: ${this.message}`;
     }
+
+    // static constructTreeLikeString(error: any) {
+    //     if (error instanceof PhraseyWrappedError) {
+    //         return PhraseyTreeLike.build([
+    //             `PhraseyWrappedError: ${error.message}\n${
+    //                 error.stack ?? ""
+    //             }`.trim(),
+    //             PhraseyError.constructTreeLikeString(error.error),
+    //         ]);
+    //     }
+    //     if (error instanceof Error) {
+    //         return PhraseyTreeLike.build(
+    //             `${error}\n${error.stack ?? ""}`.trim(),
+    //         );
+    //     }
+    //     return PhraseyTreeLike.build(`${error}`);
+    // }
 }
 
 export class PhraseyValidationError extends Error {
@@ -27,22 +44,5 @@ export class PhraseyValidationError extends Error {
         return PhraseyTreeLike.build(this.zodError.errors, {
             map: (x) => `Invalid field "${x.path.join(".")}" (${x.message})`,
         });
-    }
-}
-
-export class PhraseyWrappedError extends Error {
-    constructor(
-        message: string,
-        public error: unknown,
-    ) {
-        super(message);
-    }
-
-    toString() {
-        return `PhraseyWrappedError: ${this.message}\n${this.formattedError}`;
-    }
-
-    get formattedError() {
-        return PhraseyTreeLike.build([`${this.error}`]);
     }
 }

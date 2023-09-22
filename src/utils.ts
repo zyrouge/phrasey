@@ -1,4 +1,4 @@
-import { PhraseyError, PhraseyWrappedError } from "./errors";
+import { PhraseyError } from "./errors";
 import { PhraseyResult } from "./result";
 const { version } = require("../package.json");
 
@@ -62,6 +62,29 @@ export class PhraseyUtils {
         if (Array.isArray(data)) return data;
         return [];
     }
+
+    static equals(a: any, b: any): boolean {
+        const aType = typeof a;
+        const bType = typeof b;
+        if (aType !== bType) {
+            return false;
+        }
+        if (Array.isArray(a)) {
+            if (a.length !== b.length) {
+                return false;
+            }
+            return a.every((x, i) => PhraseyUtils.equals(b[i], x));
+        }
+        if (aType === "object") {
+            const aKeys = Object.keys(a);
+            const bKeys = Object.keys(b);
+            if (aKeys.length !== bKeys.length) {
+                return false;
+            }
+            return aKeys.every((x) => PhraseyUtils.equals(b[x], a[x]));
+        }
+        return a === b;
+    }
 }
 
 export type PhraseyPipelineTask<T = true> = () => Promise<
@@ -114,10 +137,9 @@ export class PhraseyBuildablePipeline implements PhraseyPipeline {
         } catch (error) {
             return {
                 success: false,
-                error: new PhraseyWrappedError(
-                    "Unexpected pipeline task error",
-                    error,
-                ),
+                error: new PhraseyError("Unexpected pipeline task error", {
+                    cause: error,
+                }),
             };
         }
     }

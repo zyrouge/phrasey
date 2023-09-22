@@ -6,7 +6,7 @@ import {
     PhraseyContentFormatter,
     PhraseyContentFormats,
 } from "./contentFormats";
-import { PhraseyError, PhraseyWrappedError } from "./errors";
+import { PhraseyError } from "./errors";
 import { PhraseyHooks } from "./hooks";
 import {
     PhraseyTranslationStringFormats,
@@ -25,6 +25,9 @@ export interface PhraseyBuilderOptions {
     config: {
         file: string;
         format: string;
+    };
+    translations?: {
+        skip: (path: string) => boolean;
     };
 }
 
@@ -128,6 +131,14 @@ export class PhraseyBuilder {
             return schemaResult;
         }
         this.state.setSchema(schemaResult.data);
+        const afterHookResult = await this.hooks.dispatch(
+            "onSchemaParsed",
+            this.state,
+            {},
+        );
+        if (!afterHookResult.success) {
+            return afterHookResult;
+        }
         return { success: true, data: true };
     }
 
@@ -156,6 +167,9 @@ export class PhraseyBuilder {
         const errors: Error[] = [];
         for await (const x of stream) {
             const path = x.toString();
+            if (this.options.translations?.skip?.(path)) {
+                continue;
+            }
             const result = await this.loadTranslation(
                 path,
                 formatter,
@@ -223,6 +237,9 @@ export class PhraseyBuilder {
         }
         const errors: Error[] = [];
         for (const x of this.translations.values()) {
+            if (this.options.translations?.skip?.(x.path)) {
+                continue;
+            }
             const result = await this.ensureTranslation(x);
             if (!result.success) {
                 errors.push(result.error);
@@ -294,6 +311,9 @@ export class PhraseyBuilder {
         );
         const errors: Error[] = [];
         for (const x of this.translations.values()) {
+            if (this.options.translations?.skip?.(x.path)) {
+                continue;
+            }
             const path = this.phrasey.path(
                 this.config.z.output.dir,
                 `${x.locale.code}.${formatter.extension}`,
@@ -352,10 +372,9 @@ export class PhraseyBuilder {
         if (!content.success) {
             return {
                 success: false,
-                error: new PhraseyWrappedError(
-                    `Serializing "${localeCode}" failed`,
-                    content.error,
-                ),
+                error: new PhraseyError(`Serializing "${localeCode}" failed`, {
+                    cause: content.error,
+                }),
             };
         }
         await writeFile(path, content.data);
