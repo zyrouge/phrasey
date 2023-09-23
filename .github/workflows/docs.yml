@@ -19,11 +19,10 @@ jobs:
                   cache: npm
 
             - name: 🚧 Install dependencies
-              run: npm install
+              run: npm ci
 
-            # Required for processing subpackages
             - name: 👷 Build phrasey
-              run: npm run build
+              run: npm run build -w phrasey
 
             - name: 👷 Build site
               run: npm run docs:build

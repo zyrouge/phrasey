@@ -19,14 +19,14 @@ Get started by visiting [What is Phrasey?](https://zyrouge.github.io/phrasey/get
 
 ## Repository Architecture
 
--   [pharsey](./src)
--   [@zyrouge/phrasey-json](./subpackages/phrasey-json/)
--   [@zyrouge/phrasey-yaml](./subpackages/phrasey-yaml/)
--   [@zyrouge/phrasey-toml](./subpackages/phrasey-toml/)
--   [@zyrouge/phrasey-xml](./subpackages/phrasey-xml/)
--   [@zyrouge/phrasey-locales](./subpackages/phrasey-locales/)
--   [@zyrouge/phrasey-locales-shared](./subpackages/phrasey-locales-shared/)
--   [@zyrouge/phrasey-locales-builder](./subpackages/phrasey-locales-builder/)
+-   [pharsey](./packages/phrasey)
+-   [@zyrouge/phrasey-json](./packages/phrasey-json/)
+-   [@zyrouge/phrasey-yaml](./packages/phrasey-yaml/)
+-   [@zyrouge/phrasey-toml](./packages/phrasey-toml/)
+-   [@zyrouge/phrasey-xml](./packages/phrasey-xml/)
+-   [@zyrouge/phrasey-locales](./packages/phrasey-locales/)
+-   [@zyrouge/phrasey-locales-shared](./packages/phrasey-locales-shared/)
+-   [@zyrouge/phrasey-locales-builder](./packages/phrasey-locales-builder/)
 -   [docs](./docs)
 
 ## License
