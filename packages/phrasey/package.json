@@ -21,7 +21,7 @@
     "author": "Zyrouge",
     "license": "MIT",
     "dependencies": {
-        "@zyrouge/phrasey-locales": "^1.1.9",
+        "@zyrouge/phrasey-locales-shared": "^1.1.5",
         "chokidar": "^3.5.3",
         "commander": "^11.0.0",
         "enquirer": "^2.3.6",

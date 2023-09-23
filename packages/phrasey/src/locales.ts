@@ -1,10 +1,10 @@
-import { PhraseyDefaultLocales } from "@zyrouge/phrasey-locales";
 import { PhraseyContentFormats } from "./contentFormats";
 import { PhraseyTransformer } from "./transformer";
 import { PhraseyZLocales, PhraseyZLocalesType } from "./z";
 import { PhraseyResult } from "./result";
+import { PhraseySafeResolvePackage } from "./utils";
 
-export * from "@zyrouge/phrasey-locales";
+export * from "@zyrouge/phrasey-locales-shared";
 
 export class PhraseyLocales {
     constructor(public all: PhraseyZLocalesType) {}
@@ -28,6 +28,7 @@ export class PhraseyLocales {
     }
 
     static defaultLocales() {
-        return new PhraseyLocales(PhraseyDefaultLocales);
+        const pkg = PhraseySafeResolvePackage("@zyrouge/phrasey-locales");
+        return new PhraseyLocales(pkg.PhraseyDefaultLocales);
     }
 }
