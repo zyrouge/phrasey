@@ -1,4 +1,5 @@
 {
+    "name": "Phrasey API Documentation",
     "entryPoints": ["packages/*"],
     "entryPointStrategy": "packages",
     "includeVersion": true,

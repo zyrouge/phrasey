@@ -21,11 +21,10 @@ export default defineConfig({
             "style",
             {},
             `:root {
-                --vp-c-brand: #f59e0b;
-                --vp-c-brand-light: #fbbf24;
-                --vp-c-brand-lighter: #fcd34d;
-                --vp-c-brand-dark: #d97706;
-                --vp-c-brand-darker: #b45309;
+                --vp-c-brand-1: #F59E0B;
+                --vp-c-brand-2: #EC980A;
+                --vp-c-brand-3: #E29209;
+                --vp-c-brand-soft: #F6A823;
             }`,
         ],
     ],
