@@ -2,6 +2,10 @@
     "name": "@zyrouge/phrasey",
     "private": true,
     "workspaces": [
+        "packages/phrasey-locales-shared",
+        "packages/phrasey-locales-builder",
+        "packages/phrasey-locales",
+        "packages/phrasey",
         "packages/*"
     ],
     "scripts": {
