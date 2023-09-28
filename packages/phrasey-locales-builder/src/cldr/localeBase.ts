@@ -9,7 +9,7 @@ export interface PhraseyCldrLocaleIdentifyType {
 
 export interface PhraseyCldrLocaleBaseType<
     Code extends string,
-    Data extends {}
+    Data extends object,
 > {
     main: {
         [code in Code]: {

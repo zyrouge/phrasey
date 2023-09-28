@@ -1,4 +1,4 @@
-const { PhraseyLocaleBuilder } = require("./dist");
+const { PhraseyLocaleBuilder } = require("../dist");
 
 const start = async () => {
     const codes = await PhraseyLocaleBuilder.build({

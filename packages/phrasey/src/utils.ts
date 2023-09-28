@@ -1,5 +1,7 @@
 import { PhraseyError } from "./errors";
 import { PhraseyResult } from "./result";
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version } = require("../package.json");
 
 export const PhraseyVersion = version;
@@ -63,27 +65,35 @@ export class PhraseyUtils {
         return [];
     }
 
-    static equals(a: any, b: any): boolean {
+    static equals(a: unknown, b: unknown): boolean {
         const aType = typeof a;
         const bType = typeof b;
         if (aType !== bType) {
             return false;
         }
         if (Array.isArray(a)) {
-            if (a.length !== b.length) {
-                return false;
-            }
-            return a.every((x, i) => PhraseyUtils.equals(b[i], x));
+            return this._arrayEquals(a, b as unknown[]);
         }
         if (aType === "object") {
-            const aKeys = Object.keys(a);
-            const bKeys = Object.keys(b);
-            if (aKeys.length !== bKeys.length) {
-                return false;
-            }
-            return aKeys.every((x) => PhraseyUtils.equals(b[x], a[x]));
+            return this._objectEquals(a as object, b as object);
         }
         return a === b;
+    }
+
+    static _arrayEquals(a: unknown[], b: unknown[]): boolean {
+        if (a.length !== b.length) {
+            return false;
+        }
+        return a.every((x, i) => PhraseyUtils.equals((b as unknown[])[i], x));
+    }
+
+    static _objectEquals(a: object, b: object): boolean {
+        const aKeys = Object.keys(a) as (keyof typeof a)[];
+        const bKeys = Object.keys(b) as (keyof typeof a)[];
+        if (aKeys.length !== bKeys.length) {
+            return false;
+        }
+        return aKeys.every((x) => this.equals(b[x], a[x]));
     }
 }
 

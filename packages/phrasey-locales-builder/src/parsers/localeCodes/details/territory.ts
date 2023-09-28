@@ -5,7 +5,7 @@ import { PhraseyRawLocaleCodeType } from "../codes";
 export class PhraseyLocaleCodesExtendedTerritory {
     static async parse(
         { code, territory }: PhraseyRawLocaleCodeType,
-        displayLocaleCode: string
+        displayLocaleCode: string,
     ): Promise<PhraseyLocaleCodeDetailsCodeType | undefined> {
         if (!territory) return;
         const display = await this.parseDisplay(displayLocaleCode, territory);
@@ -19,7 +19,7 @@ export class PhraseyLocaleCodesExtendedTerritory {
 
     static async parseDisplay(
         code: string,
-        territory: string
+        territory: string,
     ): Promise<string> {
         const data = await PhraseyCldrLocaleNamesTerritories.parse(code);
         return data.main[code]!.localeDisplayNames.territories[territory]!;

@@ -18,7 +18,7 @@ export const InitCommand = new Command()
     .action(async () => {
         log.write(pico.bold(`Thank you for choosing ${pico.cyan("Phrasey")}!`));
         log.write(
-            `Please answer the below question to initialize the project.`,
+            "Please answer the below question to initialize the project.",
         );
         log.ln();
         const configFile = await inquire<string>({
@@ -226,10 +226,10 @@ export const InitCommand = new Command()
                 );
             } else {
                 log.info(
-                    `Get started by creating a translation file that matches the generated content!`,
+                    "Get started by creating a translation file that matches the generated content!",
                 );
                 log.ln();
-                log.info(`Example of translation file:`);
+                log.info("Example of translation file:");
                 log.write(serializedDemoTranslation);
                 log.ln();
             }
@@ -240,7 +240,7 @@ export const InitCommand = new Command()
             log.logErrors(inputFormatter.error);
             log.ln();
             log.info(
-                `You could try manually creating a translation file using the below generated content.`,
+                "You could try manually creating a translation file using the below generated content.",
             );
             log.write(JSON.stringify(demoTranslation, null, 4));
             log.ln();
@@ -270,7 +270,7 @@ type IsFormatInstalledResult =
     | IsFormatInstalledFailResult;
 
 function isContentFormatInstalled(format: string): IsFormatInstalledResult {
-    let packageName = PhraseyContentFormats.defaultPackages[format] ?? format;
+    const packageName = PhraseyContentFormats.defaultPackages[format] ?? format;
     try {
         PhraseyContentFormats.resolve(packageName);
         return { format, isInstalled: true, packageName };
@@ -282,7 +282,7 @@ function isContentFormatInstalled(format: string): IsFormatInstalledResult {
 function isTranslationStringFormatInstalled(
     format: string,
 ): IsFormatInstalledResult {
-    let packageName = format;
+    const packageName = format;
     try {
         return {
             format,

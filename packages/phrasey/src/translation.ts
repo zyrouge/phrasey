@@ -35,7 +35,9 @@ export type PhraseyTranslationState =
 
 export interface PhraseyTranslationJson {
     locale: PhraseyLocaleType;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     extras: Record<string, any>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     keys: Record<string, any>;
 }
 
@@ -47,6 +49,7 @@ export class PhraseyTranslation {
         public path: string,
         public schema: PhraseySchema,
         public locale: PhraseyLocaleType,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         public extras: Record<string, any>,
         public fallback: string[],
     ) {}
@@ -75,6 +78,7 @@ export class PhraseyTranslation {
     json(
         stringFormatter: PhraseyTranslationStringFormatter,
     ): PhraseyTranslationJson {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const keys: Record<string, any> = {};
         for (const [k, v] of this.keys.entries()) {
             if (v.state === "set" || v.state === "fallback") {

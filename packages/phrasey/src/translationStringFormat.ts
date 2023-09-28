@@ -3,6 +3,7 @@ import { PhraseyZSchemaKeyType } from "./z";
 import { PhraseyTranslationStringParts } from "./translation";
 import { PhraseySafeResolvePackage } from "./utils";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface PhraseyTranslationStringFormatter<T = any> {
     format(
         parts: PhraseyTranslationStringParts,
@@ -38,8 +39,7 @@ export class PhraseyTranslationStringFormats {
                 for (const x of parts) {
                     switch (x.type) {
                         case "parameter":
-                            const index = parameters.indexOf(x.value);
-                            out += `%${index}\$s`;
+                            out += `%${parameters.indexOf(x.value)}$s`;
                             break;
 
                         case "string":
@@ -57,8 +57,7 @@ export class PhraseyTranslationStringFormats {
                 for (const x of parts) {
                     switch (x.type) {
                         case "parameter":
-                            const index = parameters.indexOf(x.value);
-                            out += `%${index + 1}\$s`;
+                            out += `%${parameters.indexOf(x.value) + 1}$s`;
                             break;
 
                         case "string":
@@ -79,6 +78,7 @@ export class PhraseyTranslationStringFormats {
                             break;
 
                         case "string":
+                            // eslint-disable-next-line no-case-declarations
                             let escaped = this.replaceCharacters(x.value, {
                                 "{": "{{",
                                 "}": "}}",

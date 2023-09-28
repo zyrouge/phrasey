@@ -13,11 +13,11 @@ export type PhraseyCldrLocaleNamesScriptsType<Code extends string> =
 
 export class PhraseyCldrLocaleNamesScripts {
     static async parse(
-        code: string
+        code: string,
     ): Promise<PhraseyCldrLocaleNamesScriptsType<string>> {
         return PhraseyCldrJson.parse(
             "cldr-localenames-modern",
-            `main/${code}/scripts.json`
+            `main/${code}/scripts.json`,
         );
     }
 }

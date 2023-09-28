@@ -9,6 +9,7 @@
         "packages/*"
     ],
     "scripts": {
+        "lint": "eslint . && prettier . --check",
         "phrasey-cli": "npx -w phrasey -- tsx ./src/bin/index.ts",
         "docs:base:dev": "vitepress dev docs",
         "docs:base:build": "vitepress build docs",
@@ -17,6 +18,9 @@
         "docs:deploy": "gh workflow run docs.yml"
     },
     "devDependencies": {
+        "@typescript-eslint/eslint-plugin": "^6.7.3",
+        "@typescript-eslint/parser": "^6.7.3",
+        "eslint": "^8.50.0",
         "prettier": "^3.0.2",
         "tsx": "^3.12.10",
         "typedoc": "^0.24.8",

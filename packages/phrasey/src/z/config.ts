@@ -27,7 +27,7 @@ export const PhraseyZConfigHooks = z.object({
         z.union([z.string(), PhraseyZConfigHooksExpanded]).transform((x) => {
             if (typeof x === "string") return { path: x };
             return x;
-        })
+        }),
     ),
 });
 

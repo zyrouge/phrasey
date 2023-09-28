@@ -22,11 +22,11 @@ export type PhraseyCldrMiscLayoutType<Code extends string> =
 
 export class PhraseyCldrMiscLayout {
     static async parse(
-        code: string
+        code: string,
     ): Promise<PhraseyCldrMiscLayoutType<string>> {
         return PhraseyCldrJson.parse(
             "cldr-misc-modern",
-            `main/${code}/layout.json`
+            `main/${code}/layout.json`,
         );
     }
 }

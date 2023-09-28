@@ -22,7 +22,7 @@ export const PhraseySafeRun = <T>(fn: () => T): PhraseyResult<T, Error> => {
 };
 
 export const PhraseySafeRunAsync = async <T>(
-    fn: () => Promise<T>
+    fn: () => Promise<T>,
 ): Promise<PhraseyResult<T, Error>> => {
     try {
         const data = await fn();
@@ -32,7 +32,7 @@ export const PhraseySafeRunAsync = async <T>(
     }
 };
 
-const PhraseyParseRunError = (error: any): PhraseyResultError<Error> => {
+const PhraseyParseRunError = (error: unknown): PhraseyResultError<Error> => {
     if (error instanceof Error) {
         return {
             success: false,

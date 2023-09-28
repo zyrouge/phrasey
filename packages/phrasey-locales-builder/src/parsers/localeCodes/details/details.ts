@@ -7,19 +7,19 @@ import { PhraseyLocaleCodesExtendedTerritory } from "./territory";
 export class PhraseyLocaleCodesDetails {
     static async parse(
         locale: PhraseyRawLocaleCodeType,
-        displayLocaleCode: string
+        displayLocaleCode: string,
     ): Promise<PhraseyLocaleCodeDetailsType> {
         const language = await PhraseyLocaleCodesExtendedLanguage.parse(
             locale,
-            displayLocaleCode
+            displayLocaleCode,
         );
         const territory = await PhraseyLocaleCodesExtendedTerritory.parse(
             locale,
-            displayLocaleCode
+            displayLocaleCode,
         );
         const script = await PhraseyLocaleCodesExtendedScriptCode.parse(
             locale,
-            displayLocaleCode
+            displayLocaleCode,
         );
         return { language, territory, script };
     }

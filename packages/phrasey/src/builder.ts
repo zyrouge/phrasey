@@ -299,7 +299,7 @@ export class PhraseyBuilder {
             return {
                 success: false,
                 error: new PhraseyError(
-                    `Cannot build when "output" is not specified in configuration file`,
+                    'Cannot build when "output" is not specified in configuration file',
                 ),
             };
         }

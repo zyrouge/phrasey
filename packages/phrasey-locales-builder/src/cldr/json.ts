@@ -7,11 +7,11 @@ export type PhraseyCldrModulesType =
     | "cldr-misc-modern";
 
 export class PhraseyCldrJson {
-    static cache = new Map<string, any>();
+    static cache = new Map<string, unknown>();
 
     static async parse<T>(
         module: PhraseyCldrModulesType,
-        subpath: string
+        subpath: string,
     ): Promise<T> {
         // "package.json" to avoid searching entrypoint of the module
         const dir = p.dirname(require.resolve(`${module}/package.json`));

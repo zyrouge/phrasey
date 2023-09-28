@@ -5,7 +5,7 @@ import { PhraseyTreeLike } from "./utils";
 export interface PhraseyLoggerOptions {
     tag?: string;
     write: (text: string) => void;
-    writeError: (error: any) => void;
+    writeError: (error: unknown) => void;
 }
 
 export type PhraseyLogLevel = "success" | "info" | "warn" | "error";
@@ -25,13 +25,13 @@ export class PhraseyLogger {
         this.log("warn", text);
     }
 
-    error(text: string, error?: any) {
+    error(text: string, error?: unknown) {
         this.log("error", text);
         if (!error) return;
         this.logErrors(error);
     }
 
-    logErrors(errors: any | any[]) {
+    logErrors(errors: unknown | unknown[]) {
         const errorsArray = Array.isArray(errors) ? errors : [errors];
         errorsArray.forEach((x) => {
             const raw = inspect(x, {
@@ -69,7 +69,7 @@ export class PhraseyLogger {
         this.options.write(text);
     }
 
-    writeError(error: any) {
+    writeError(error: unknown) {
         this.options.writeError(error);
     }
 
@@ -85,16 +85,16 @@ export class PhraseyLogger {
     _level(level: PhraseyLogLevel) {
         switch (level) {
             case "success":
-                return pico.green(`[success]`);
+                return pico.green("[success]");
 
             case "info":
-                return pico.cyan(`[info]`);
+                return pico.cyan("[info]");
 
             case "warn":
-                return pico.yellow(`[warn]`);
+                return pico.yellow("[warn]");
 
             case "error":
-                return pico.red(`[error]`);
+                return pico.red("[error]");
         }
     }
 

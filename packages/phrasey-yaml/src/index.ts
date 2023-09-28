@@ -3,6 +3,6 @@ import yaml from "yaml";
 
 export const contentFormatter: PhraseyContentFormatter = {
     extension: "yaml",
-    serialize: (content: any) => yaml.stringify(content),
+    serialize: (content: unknown) => yaml.stringify(content),
     deserialize: (content: string) => yaml.parse(content),
 };

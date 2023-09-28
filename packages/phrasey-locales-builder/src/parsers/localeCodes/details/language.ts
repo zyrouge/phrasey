@@ -5,7 +5,7 @@ import { PhraseyRawLocaleCodeType } from "../codes";
 export class PhraseyLocaleCodesExtendedLanguage {
     static async parse(
         { code, language }: PhraseyRawLocaleCodeType,
-        displayLocaleCode: string
+        displayLocaleCode: string,
     ): Promise<PhraseyLocaleCodeDetailsCodeType> {
         const display = await this.parseDisplay(displayLocaleCode, language);
         const native = await this.parseDisplay(code, language);

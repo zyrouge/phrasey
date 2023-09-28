@@ -9,7 +9,7 @@ They implement a formatter (converts `PhraseyTranslationStringParts` to any seri
 interface PhraseyTranslationStringFormatter<T = any> {
     format(
         parts: PhraseyTranslationStringParts,
-        schema: PhraseyZSchemaKeyType
+        schema: PhraseyZSchemaKeyType,
     ): T;
 }
 ```

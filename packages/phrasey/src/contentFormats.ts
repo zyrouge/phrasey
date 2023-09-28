@@ -3,8 +3,8 @@ import { PhraseySafeResolvePackage } from "./utils";
 
 export interface PhraseyContentFormatter {
     extension: string;
-    serialize(content: any): string;
-    deserialize(content: string): any;
+    serialize(content: unknown): string;
+    deserialize(content: string): unknown;
 }
 
 export class PhraseyContentFormats {

@@ -19,6 +19,7 @@ export interface PhraseyCliConfigOptions {
 }
 
 export const parsePhraseyCliConfigOptions = (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     options: any,
 ): PhraseyCliConfigOptions => {
     if (!options.configFile) {

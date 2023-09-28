@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 import p from "path";
 import { ensureFile, writeFile } from "fs-extra";
 import { Command } from "commander";
@@ -62,7 +63,7 @@ export const SummaryCommand = new Command()
                 log.ln();
                 if (outputFile) {
                     log.error(
-                        `Default output format does not support saving to a file.`,
+                        "Default output format does not support saving to a file.",
                     );
                     log.ln();
                     process.exit(1);
@@ -75,7 +76,7 @@ export const SummaryCommand = new Command()
                     serialized = formatter.serialize(data);
                 });
                 if (!serializedResult.success) {
-                    log.error(`Serializing summary failed due to error.`);
+                    log.error("Serializing summary failed due to error.");
                     log.logErrors(serializedResult.error);
                     log.ln();
                     process.exit(1);
