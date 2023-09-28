@@ -1,0 +1,31 @@
+{
+    "name": "phrasey-server",
+    "version": "0.0.1",
+    "description": "",
+    "main": "dist/index.js",
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "rimraf ./dist && tsc"
+    },
+    "keywords": [],
+    "author": "Zyrouge",
+    "license": "MIT",
+    "dependencies": {
+        "@hapi/hapi": "^21.3.2",
+        "fs-extra": "^11.1.1",
+        "socket.io": "^4.7.2",
+        "zod": "^3.22.2"
+    },
+    "peerDependencies": {
+        "phrasey": "2.x"
+    },
+    "devDependencies": {
+        "@types/fs-extra": "^11.0.2",
+        "phrasey": "file:packages/phrasey",
+        "rimraf": "^5.0.1",
+        "tsx": "^3.13.0",
+        "typescript": "^5.2.2"
+    }
+}
