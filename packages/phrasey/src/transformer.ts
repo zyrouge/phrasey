@@ -1,8 +1,8 @@
 import { readFile } from "fs-extra";
 import { ZodTypeDef, z } from "zod";
-import { PhraseyResult, PhraseySafeRun, PhraseySafeRunAsync } from "./result";
 import { PhraseyContentFormatter } from "./contentFormats";
 import { PhraseyValidationError } from "./errors";
+import { PhraseyResult, PhraseySafeRun, PhraseySafeRunAsync } from "./result";
 
 export class PhraseyTransformer {
     static async transform<Output, Def extends ZodTypeDef, Input>(

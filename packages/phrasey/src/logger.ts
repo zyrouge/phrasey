@@ -1,5 +1,5 @@
-import { inspect } from "util";
 import pico from "picocolors";
+import { inspect } from "util";
 import { PhraseyTreeLike } from "./utils";
 
 export interface PhraseyLoggerOptions {

@@ -1,7 +1,7 @@
 /* eslint-disable no-case-declarations */
-import p from "path";
-import { ensureFile, writeFile } from "fs-extra";
 import { Command } from "commander";
+import { ensureFile, writeFile } from "fs-extra";
+import p from "path";
 import {
     PhraseyTreeLike,
     PhraseySummaryJsonTotalStats,

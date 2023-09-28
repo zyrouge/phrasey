@@ -1,13 +1,13 @@
 import p from "path";
-import { PhraseyError } from "./errors";
 import { PhraseyContentFormatter } from "./contentFormats";
+import { PhraseyError } from "./errors";
 import { PhraseyLocaleType, PhraseyLocales } from "./locales";
 import { PhraseyResult } from "./result";
+import { PhraseySchema } from "./schema";
 import { PhraseyTransformer } from "./transformer";
 import { PhraseyTranslationStringFormatter } from "./translationStringFormat";
-import { PhraseySchema } from "./schema";
-import { PhraseyZSchemaKeyType, PhraseyZTranslation } from "./z";
 import { PhraseyUtils } from "./utils";
+import { PhraseyZSchemaKeyType, PhraseyZTranslation } from "./z";
 
 export interface PhraseyTranslationStringPart {
     type: "string" | "parameter";

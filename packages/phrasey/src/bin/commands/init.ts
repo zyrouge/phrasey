@@ -1,7 +1,7 @@
-import p from "path";
-import { writeFile } from "fs-extra";
 import { Command } from "commander";
 import enquirer, { Prompt } from "enquirer";
+import { writeFile } from "fs-extra";
+import p from "path";
 import {
     PhraseyZConfigType,
     PhraseyZSchemaType,

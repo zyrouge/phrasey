@@ -1,5 +1,5 @@
-import p from "path";
 import { writeFile } from "fs/promises";
+import p from "path";
 import { PhraseyHooksHandler, PhraseyContentFormats } from "phrasey";
 import { PhraseyLocaleBuilder } from "./builder";
 

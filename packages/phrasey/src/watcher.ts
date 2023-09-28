@@ -1,10 +1,10 @@
-import fs from "fs-extra";
 import chokidar from "chokidar";
+import fs from "fs-extra";
+import { PhraseyBuilder, PhraseyBuilderOptions } from "./builder";
+import { PhraseyError } from "./errors";
 import { Phrasey, PhraseyOptions } from "./phrasey";
 import { PhraseyState } from "./state";
-import { PhraseyBuilder, PhraseyBuilderOptions } from "./builder";
 import { PhraseyTranslations } from "./translations";
-import { PhraseyError } from "./errors";
 import { PhraseyUtils } from "./utils";
 
 export interface PhraseyWatcherOptions {

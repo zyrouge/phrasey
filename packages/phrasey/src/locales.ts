@@ -1,8 +1,8 @@
 import { PhraseyContentFormats } from "./contentFormats";
-import { PhraseyTransformer } from "./transformer";
-import { PhraseyZLocales, PhraseyZLocalesType } from "./z";
 import { PhraseyResult } from "./result";
+import { PhraseyTransformer } from "./transformer";
 import { PhraseySafeResolvePackage } from "./utils";
+import { PhraseyZLocales, PhraseyZLocalesType } from "./z";
 
 export * from "@zyrouge/phrasey-locales-shared";
 

@@ -1,5 +1,5 @@
-import p from "path";
 import { Option } from "commander";
+import p from "path";
 import { log, pico } from "./log";
 
 export const PhraseyCliConfigOptionFlags = {

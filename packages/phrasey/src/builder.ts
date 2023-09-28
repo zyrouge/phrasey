@@ -1,25 +1,25 @@
 import FastGlob from "fast-glob";
 import { ensureFile, writeFile } from "fs-extra";
-import { PhraseyTranslation } from "./translation";
-import { PhraseyResult, PhraseySafeRun } from "./result";
+import { PhraseyConfig } from "./config";
 import {
     PhraseyContentFormatter,
     PhraseyContentFormats,
 } from "./contentFormats";
 import { PhraseyError } from "./errors";
 import { PhraseyHooks } from "./hooks";
+import { PhraseyLocales } from "./locales";
+import { Phrasey, PhraseyOptions } from "./phrasey";
+import { PhraseyResult, PhraseySafeRun } from "./result";
+import { PhraseySchema } from "./schema";
+import { PhraseyState } from "./state";
+import { PhraseySummary } from "./summary";
+import { PhraseyTranslation } from "./translation";
 import {
     PhraseyTranslationStringFormats,
     PhraseyTranslationStringFormatter,
 } from "./translationStringFormat";
-import { PhraseyConfig } from "./config";
-import { PhraseyBuildablePipeline, PhraseyUtils } from "./utils";
-import { PhraseyLocales } from "./locales";
-import { Phrasey, PhraseyOptions } from "./phrasey";
-import { PhraseyState } from "./state";
-import { PhraseySummary } from "./summary";
-import { PhraseySchema } from "./schema";
 import { PhraseyTranslations } from "./translations";
+import { PhraseyBuildablePipeline, PhraseyUtils } from "./utils";
 
 export interface PhraseyBuilderOptions {
     config: {

@@ -1,5 +1,5 @@
-import p from "path";
 import fs from "fs/promises";
+import p from "path";
 
 export type PhraseyCldrModulesType =
     | "cldr-core"

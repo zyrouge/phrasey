@@ -1,5 +1,5 @@
-import type { PhraseyContentFormatter } from "phrasey";
 import toml from "@iarna/toml";
+import type { PhraseyContentFormatter } from "phrasey";
 
 export const contentFormatter: PhraseyContentFormatter = {
     extension: "toml",

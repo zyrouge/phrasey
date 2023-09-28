@@ -1,10 +1,10 @@
 import { Command } from "commander";
+import { PhraseyWatcher } from "../../";
 import { log } from "../utils/log";
 import {
     PhraseyCliConfigOptionFlags,
     parsePhraseyCliConfigOptions,
 } from "../utils/parseConfigOptions";
-import { PhraseyWatcher } from "../../";
 
 export const WatchCommand = new Command()
     .name("watch")

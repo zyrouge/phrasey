@@ -1,12 +1,12 @@
 import { PhraseyContentFormatter } from "./contentFormats";
 import { PhraseyError } from "./errors";
+import { PhraseyLocales } from "./locales";
 import { PhraseyResult } from "./result";
 import { PhraseySchema } from "./schema";
 import {
     PhraseyTranslation,
     PhraseyTranslationStringValue,
 } from "./translation";
-import { PhraseyLocales } from "./locales";
 
 export class PhraseyTranslations {
     translations = new Map<string, PhraseyTranslation>();

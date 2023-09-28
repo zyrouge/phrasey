@@ -1,7 +1,7 @@
 import { PhraseyError } from "./errors";
-import { PhraseyZSchemaKeyType } from "./z";
 import { PhraseyTranslationStringParts } from "./translation";
 import { PhraseySafeResolvePackage } from "./utils";
+import { PhraseyZSchemaKeyType } from "./z";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface PhraseyTranslationStringFormatter<T = any> {

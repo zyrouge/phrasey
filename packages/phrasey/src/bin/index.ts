@@ -1,5 +1,4 @@
 #! /usr/bin/env node
-
 import { program } from "commander";
 import { PhraseyVersion } from "..";
 import {

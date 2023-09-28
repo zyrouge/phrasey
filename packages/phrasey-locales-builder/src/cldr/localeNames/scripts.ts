@@ -1,5 +1,5 @@
-import { PhraseyCldrLocaleBaseType } from "../localeBase";
 import { PhraseyCldrJson } from "../json";
+import { PhraseyCldrLocaleBaseType } from "../localeBase";
 
 export type PhraseyCldrLocaleNamesScriptsType<Code extends string> =
     PhraseyCldrLocaleBaseType<

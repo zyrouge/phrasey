@@ -9,7 +9,7 @@
         "packages/*"
     ],
     "scripts": {
-        "lint": "eslint . && prettier . --check",
+        "lint": "eslint . && prettier . --config ./.prettierrc --check",
         "phrasey-cli": "npx -w phrasey -- tsx ./src/bin/index.ts",
         "docs:base:dev": "vitepress dev docs",
         "docs:base:build": "vitepress build docs",
@@ -18,6 +18,7 @@
         "docs:deploy": "gh workflow run docs.yml"
     },
     "devDependencies": {
+        "@trivago/prettier-plugin-sort-imports": "^4.2.0",
         "@typescript-eslint/eslint-plugin": "^6.7.3",
         "@typescript-eslint/parser": "^6.7.3",
         "eslint": "^8.50.0",
