@@ -1,0 +1,25 @@
+name: Lint
+
+on:
+    push:
+        branches:
+            - main
+    workflow_dispatch:
+
+jobs:
+    lint:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v3
+
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: 18
+                  cache: npm
+
+            - name: 🚧 Install dependencies
+              run: npm ci
+
+            - name: 🚨 Lint
+              run: npm run lint
