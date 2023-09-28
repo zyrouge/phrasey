@@ -21,6 +21,7 @@ Get started by visiting [What is Phrasey?](https://zyrouge.github.io/phrasey/get
 ## Repository Architecture
 
 -   [pharsey](./packages/phrasey)
+-   [phrasey-server](./packages/phrasey-server/)
 -   [@zyrouge/phrasey-json](./packages/phrasey-json/)
 -   [@zyrouge/phrasey-yaml](./packages/phrasey-yaml/)
 -   [@zyrouge/phrasey-toml](./packages/phrasey-toml/)
