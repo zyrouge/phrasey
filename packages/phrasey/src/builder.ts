@@ -142,6 +142,22 @@ export class PhraseyBuilder {
         return { success: true, data: true };
     }
 
+    getInputFallbackFilePaths() {
+        const paths = PhraseyUtils.parseStringArrayNullable(
+            this.config.z.input.fallback,
+        ).map((x) => this.phrasey.path(x));
+        return paths;
+    }
+
+    getInputFilePaths() {
+        const stream = FastGlob.stream(this.config.z.input.files, {
+            cwd: this.phrasey.cwd,
+            absolute: true,
+            onlyFiles: true,
+        });
+        return stream;
+    }
+
     async loadTranslations(): Promise<PhraseyResult<true, Error | Error[]>> {
         const beforeHookResult = await this.hooks.dispatch(
             "beforeTranslationsParsing",
@@ -154,15 +170,8 @@ export class PhraseyBuilder {
         const formatter = PhraseyContentFormats.resolve(
             this.config.z.input.format,
         );
-        const globalFallback = PhraseyUtils.parseStringArrayNullable(
-            this.config.z.input.fallback,
-        ).map((x) => this.phrasey.path(x));
-        const stream = FastGlob.stream(this.config.z.input.files, {
-            cwd: this.phrasey.cwd,
-            absolute: true,
-            dot: true,
-            onlyFiles: true,
-        });
+        const globalFallback = this.getInputFallbackFilePaths();
+        const stream = this.getInputFilePaths();
         this.state.setTranslations(new PhraseyTranslations(this.schema));
         const errors: Error[] = [];
         for await (const x of stream) {
