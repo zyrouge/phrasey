@@ -8,6 +8,7 @@ A full-blown i18n build system.
 [![npm](https://img.shields.io/npm/dw/phrasey)](https://npmjs.com/package/phrasey)
 [![GitHub](https://img.shields.io/github/license/zyrouge/phrasey)](https://github.com/zyrouge/phrasey)
 [![Documentation](https://github.com/zyrouge/phrasey/actions/workflows/docs.yml/badge.svg)](https://github.com/zyrouge/phrasey/actions/workflows/docs.yml)
+[![Lint](https://github.com/zyrouge/phrasey/actions/workflows/lint.yml/badge.svg)](https://github.com/zyrouge/phrasey/actions/workflows/lint.yml)
 
 Get started by visiting [What is Phrasey?](https://zyrouge.github.io/phrasey/getting-started/) and [Setup](https://zyrouge.github.io/phrasey/getting-started/setup.html).
 
