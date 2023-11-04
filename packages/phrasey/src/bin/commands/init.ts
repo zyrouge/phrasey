@@ -1,4 +1,4 @@
-import { Command, program } from "commander";
+import { Command } from "commander";
 import enquirer, { Prompt } from "enquirer";
 import { writeFile } from "fs-extra";
 import p from "path";
@@ -11,6 +11,24 @@ import {
     PhraseySafeRun,
 } from "../..";
 import { log, pico } from "../utils/log";
+
+interface InitOptions {
+    configFile: string;
+    configFormat: string;
+    inputFiles: string;
+    inputFormat: string;
+    schemaFile: string;
+    schemaFormat: string;
+    outputDir: string;
+    outputFormat: string;
+    outputStringFormat: string;
+}
+
+type InitCommandOptions = Partial<
+    InitOptions & {
+        yes: boolean;
+    }
+>;
 
 export const InitCommand = new Command()
     .name("init")
@@ -25,146 +43,142 @@ export const InitCommand = new Command()
     .option("--output-format <value>", "Format of output file.")
     .option("--output-string-format <value>", "Format of output strings.")
     .option("--y, --yes", "Yes to all.")
-    .action(async () => {
-        const opts = program.opts();
+    .action(async (options: InitCommandOptions) => {
         log.write(pico.bold(`Thank you for choosing ${pico.cyan("Phrasey")}!`));
         log.write(
             "Please answer the below question to initialize the project.",
         );
         log.ln();
-        const configFile =
-            opts["config-file"] ??
-            (await inquire<string>({
-                type: "input",
-                message: "Path to config file (eg. ./phrasey.json)",
-                validate: inquirerNonEmptyStringValidate(
-                    "Please enter a valid path or glob",
-                ),
-            }));
-        const configFormat =
-            opts["config-format"] ??
-            (await inquire<string>({
-                type: "input",
-                message: "Format of config file (eg. json)",
-                validate: inquirerNonEmptyStringValidate(
-                    "Please enter a valid format",
-                ),
-            }));
-        const configFormatCheck = isContentFormatInstalled(configFormat);
+        options.configFile ??= await inquire<string>({
+            type: "input",
+            message: "Path to config file (eg. ./phrasey.json)",
+            validate: inquirerNonEmptyStringValidate(
+                "Please enter a valid path or glob",
+            ),
+        });
+        options.configFormat ??= await inquire<string>({
+            type: "input",
+            message: "Format of config file (eg. json)",
+            validate: inquirerNonEmptyStringValidate(
+                "Please enter a valid format",
+            ),
+        });
+        const configFormatCheck = isContentFormatInstalled(
+            options.configFormat,
+        );
         if (!configFormatCheck.isInstalled) {
             log.ln();
             logUnableToResolveFormat(configFormatCheck);
             log.ln();
             process.exit(1);
         }
-        const inputFiles =
-            opts["input-files"] ??
-            (await inquire<string>({
-                type: "input",
-                message:
-                    "Path to input files (supports glob) (eg. ./i18n/**.json)",
-                validate: inquirerNonEmptyStringValidate(
-                    "Please enter a valid path or glob",
-                ),
-            }));
-        const inputFormat =
-            opts["input-format"] ??
-            (await inquire<string>({
-                type: "input",
-                message: "Format of input files (eg. json)",
-                validate: inquirerNonEmptyStringValidate(
-                    "Please enter a valid format",
-                ),
-            }));
-        const inputFormatCheck = isContentFormatInstalled(inputFormat);
+        options.inputFiles ??= await inquire<string>({
+            type: "input",
+            message: "Path to input files (supports glob) (eg. ./i18n/**.json)",
+            validate: inquirerNonEmptyStringValidate(
+                "Please enter a valid path or glob",
+            ),
+        });
+        options.inputFormat ??= await inquire<string>({
+            type: "input",
+            message: "Format of input files (eg. json)",
+            validate: inquirerNonEmptyStringValidate(
+                "Please enter a valid format",
+            ),
+        });
+        const inputFormatCheck = isContentFormatInstalled(options.inputFormat);
         if (!inputFormatCheck.isInstalled) {
             log.ln();
             logUnableToResolveFormat(inputFormatCheck);
             log.ln();
             process.exit(1);
         }
-        const schemaFile =
-            opts["schema-file"] ??
-            (await inquire<string>({
-                type: "input",
-                message: "Path to schema file (eg. ./phrasey-schema.json)",
-                validate: inquirerNonEmptyStringValidate(
-                    "Please enter a valid path",
-                ),
-            }));
-        const schemaFormat =
-            opts["schema-format"] ??
-            (await inquire<string>({
-                type: "input",
-                message: "Format of schema file (eg. json)",
-                validate: inquirerNonEmptyStringValidate(
-                    "Please enter a valid format",
-                ),
-            }));
-        const schemaFormatCheck = isContentFormatInstalled(schemaFormat);
+        options.schemaFile ??= await inquire<string>({
+            type: "input",
+            message: "Path to schema file (eg. ./phrasey-schema.json)",
+            validate: inquirerNonEmptyStringValidate(
+                "Please enter a valid path",
+            ),
+        });
+        options.schemaFormat ??= await inquire<string>({
+            type: "input",
+            message: "Format of schema file (eg. json)",
+            validate: inquirerNonEmptyStringValidate(
+                "Please enter a valid format",
+            ),
+        });
+        const schemaFormatCheck = isContentFormatInstalled(
+            options.schemaFormat,
+        );
         if (!schemaFormatCheck.isInstalled) {
             log.ln();
             logUnableToResolveFormat(schemaFormatCheck);
             log.ln();
             process.exit(1);
         }
-        const outputDir =
-            opts["output-dir"] ??
-            (await inquire<string>({
-                type: "input",
-                message: "Path to output directory (eg. ./dist-i18n)",
-                validate: inquirerNonEmptyStringValidate(
-                    "Please enter a valid path",
-                ),
-            }));
-        const outputFormat =
-            opts["output-format"] ??
-            (await inquire<string>({
-                type: "input",
-                message: "Format of output files (eg. json)",
-                validate: inquirerNonEmptyStringValidate(
-                    "Please enter a valid format",
-                ),
-            }));
-        const outputFormatCheck = isContentFormatInstalled(outputFormat);
+        options.outputDir ??= await inquire<string>({
+            type: "input",
+            message: "Path to output directory (eg. ./dist-i18n)",
+            validate: inquirerNonEmptyStringValidate(
+                "Please enter a valid path",
+            ),
+        });
+        options.outputFormat ??= await inquire<string>({
+            type: "input",
+            message: "Format of output files (eg. json)",
+            validate: inquirerNonEmptyStringValidate(
+                "Please enter a valid format",
+            ),
+        });
+        const outputFormatCheck = isContentFormatInstalled(
+            options.outputFormat,
+        );
         if (!outputFormatCheck.isInstalled) {
             log.ln();
             logUnableToResolveFormat(outputFormatCheck);
             log.ln();
             process.exit(1);
         }
-        const outputStringFormat =
-            opts["output-string-format"] ??
-            (await inquire<string>({
-                type: "input",
-                message:
-                    "Format of translation strings in output files (eg. format-string)",
-                validate: inquirerNonEmptyStringValidate(
-                    "Please enter a valid format",
-                ),
-            }));
-        const outputStringFormatCheck =
-            isTranslationStringFormatInstalled(outputStringFormat);
+        options.outputStringFormat ??= await inquire<string>({
+            type: "input",
+            message:
+                "Format of translation strings in output files (eg. format-string)",
+            validate: inquirerNonEmptyStringValidate(
+                "Please enter a valid format",
+            ),
+        });
+        const outputStringFormatCheck = isTranslationStringFormatInstalled(
+            options.outputStringFormat,
+        );
         if (!outputStringFormatCheck.isInstalled) {
             log.ln();
             logUnableToResolveFormat(outputStringFormatCheck);
             log.ln();
             process.exit(1);
         }
-        const proceed =
-            opts["yes"] ??
-            (await inquire<boolean>({
-                type: "confirm",
-                message: "Proceed?",
-                initial: false,
-            }));
-        if (!proceed) {
+        options.yes ??= await inquire<boolean>({
+            type: "confirm",
+            message: "Proceed?",
+            initial: false,
+        });
+        if (!options.yes) {
             log.ln();
             log.warn("Exiting...");
             log.ln();
             process.exit(1);
         }
         log.ln();
+        const {
+            configFile,
+            configFormat,
+            inputFiles,
+            inputFormat,
+            schemaFile,
+            schemaFormat,
+            outputDir,
+            outputFormat,
+            outputStringFormat,
+        } = options as InitOptions;
         const config: PhraseyZConfigType = {
             input: {
                 files: [inputFiles],
