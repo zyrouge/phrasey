@@ -3,6 +3,11 @@ import { PhraseyResult } from "./result";
 import { PhraseyTransformer } from "./transformer";
 import { PhraseyZSchema, PhraseyZSchemaKeyType, PhraseyZSchemaType } from "./z";
 
+export interface PhraseySchemaJson {
+    z: PhraseyZSchemaType;
+    keys: Record<string, PhraseyZSchemaKeyType>;
+}
+
 export class PhraseySchema {
     keys = new Map<string, PhraseyZSchemaKeyType>();
 
@@ -20,6 +25,13 @@ export class PhraseySchema {
 
     keysCount() {
         return this.keys.size;
+    }
+
+    json(): PhraseySchemaJson {
+        return {
+            z: this.z,
+            keys: Object.fromEntries(this.keys.entries()),
+        };
     }
 
     static async create(

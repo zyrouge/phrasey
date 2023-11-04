@@ -376,7 +376,7 @@ export class PhraseyBuilder {
         }
         await ensureFile(path);
         const content = PhraseySafeRun(() =>
-            formatter.serialize(translation.json(stringFormatter)),
+            formatter.serialize(translation.serialize(stringFormatter)),
         );
         if (!content.success) {
             return {

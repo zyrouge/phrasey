@@ -1,4 +1,4 @@
-import { Command } from "commander";
+import { Command, program } from "commander";
 import enquirer, { Prompt } from "enquirer";
 import { writeFile } from "fs-extra";
 import p from "path";
@@ -15,26 +15,41 @@ import { log, pico } from "../utils/log";
 export const InitCommand = new Command()
     .name("init")
     .description("Initialize a new project.")
+    .option("--config-file <value>", "Path to config file.")
+    .option("--config-format <value>", "Format of config file.")
+    .option("--input-files <value>", "Path to input files.")
+    .option("--input-format <value>", "Format of input files.")
+    .option("--schema-file <value>", "Path to schema file.")
+    .option("--schema-format <value>", "Format of schema file.")
+    .option("--output-dir <value>", "Path of output folder.")
+    .option("--output-format <value>", "Format of output file.")
+    .option("--output-string-format <value>", "Format of output strings.")
+    .option("--y, --yes", "Yes to all.")
     .action(async () => {
+        const opts = program.opts();
         log.write(pico.bold(`Thank you for choosing ${pico.cyan("Phrasey")}!`));
         log.write(
             "Please answer the below question to initialize the project.",
         );
         log.ln();
-        const configFile = await inquire<string>({
-            type: "input",
-            message: "Path to config file (eg. ./phrasey.json)",
-            validate: inquirerNonEmptyStringValidate(
-                "Please enter a valid path or glob",
-            ),
-        });
-        const configFormat = await inquire<string>({
-            type: "input",
-            message: "Format of config file (eg. json)",
-            validate: inquirerNonEmptyStringValidate(
-                "Please enter a valid format",
-            ),
-        });
+        const configFile =
+            opts["config-file"] ??
+            (await inquire<string>({
+                type: "input",
+                message: "Path to config file (eg. ./phrasey.json)",
+                validate: inquirerNonEmptyStringValidate(
+                    "Please enter a valid path or glob",
+                ),
+            }));
+        const configFormat =
+            opts["config-format"] ??
+            (await inquire<string>({
+                type: "input",
+                message: "Format of config file (eg. json)",
+                validate: inquirerNonEmptyStringValidate(
+                    "Please enter a valid format",
+                ),
+            }));
         const configFormatCheck = isContentFormatInstalled(configFormat);
         if (!configFormatCheck.isInstalled) {
             log.ln();
@@ -42,20 +57,25 @@ export const InitCommand = new Command()
             log.ln();
             process.exit(1);
         }
-        const inputFiles = await inquire<string>({
-            type: "input",
-            message: "Path to input files (supports glob) (eg. ./i18n/**.json)",
-            validate: inquirerNonEmptyStringValidate(
-                "Please enter a valid path or glob",
-            ),
-        });
-        const inputFormat = await inquire<string>({
-            type: "input",
-            message: "Format of input files (eg. json)",
-            validate: inquirerNonEmptyStringValidate(
-                "Please enter a valid format",
-            ),
-        });
+        const inputFiles =
+            opts["input-files"] ??
+            (await inquire<string>({
+                type: "input",
+                message:
+                    "Path to input files (supports glob) (eg. ./i18n/**.json)",
+                validate: inquirerNonEmptyStringValidate(
+                    "Please enter a valid path or glob",
+                ),
+            }));
+        const inputFormat =
+            opts["input-format"] ??
+            (await inquire<string>({
+                type: "input",
+                message: "Format of input files (eg. json)",
+                validate: inquirerNonEmptyStringValidate(
+                    "Please enter a valid format",
+                ),
+            }));
         const inputFormatCheck = isContentFormatInstalled(inputFormat);
         if (!inputFormatCheck.isInstalled) {
             log.ln();
@@ -63,24 +83,24 @@ export const InitCommand = new Command()
             log.ln();
             process.exit(1);
         }
-        const fallbackInputFile = await inquire<string | undefined>({
-            type: "input",
-            message: "Path to fallback input file (eg. ./i18n/en.json)",
-        });
-        const schemaFile = await inquire<string>({
-            type: "input",
-            message: "Path to schema file (eg. ./phrasey-schema.json)",
-            validate: inquirerNonEmptyStringValidate(
-                "Please enter a valid path",
-            ),
-        });
-        const schemaFormat = await inquire<string>({
-            type: "input",
-            message: "Format of schema file (eg. json)",
-            validate: inquirerNonEmptyStringValidate(
-                "Please enter a valid format",
-            ),
-        });
+        const schemaFile =
+            opts["schema-file"] ??
+            (await inquire<string>({
+                type: "input",
+                message: "Path to schema file (eg. ./phrasey-schema.json)",
+                validate: inquirerNonEmptyStringValidate(
+                    "Please enter a valid path",
+                ),
+            }));
+        const schemaFormat =
+            opts["schema-format"] ??
+            (await inquire<string>({
+                type: "input",
+                message: "Format of schema file (eg. json)",
+                validate: inquirerNonEmptyStringValidate(
+                    "Please enter a valid format",
+                ),
+            }));
         const schemaFormatCheck = isContentFormatInstalled(schemaFormat);
         if (!schemaFormatCheck.isInstalled) {
             log.ln();
@@ -88,20 +108,24 @@ export const InitCommand = new Command()
             log.ln();
             process.exit(1);
         }
-        const outputDir = await inquire<string>({
-            type: "input",
-            message: "Path to output directory (eg. ./dist-i18n)",
-            validate: inquirerNonEmptyStringValidate(
-                "Please enter a valid path",
-            ),
-        });
-        const outputFormat = await inquire<string>({
-            type: "input",
-            message: "Format of output files (eg. json)",
-            validate: inquirerNonEmptyStringValidate(
-                "Please enter a valid format",
-            ),
-        });
+        const outputDir =
+            opts["output-dir"] ??
+            (await inquire<string>({
+                type: "input",
+                message: "Path to output directory (eg. ./dist-i18n)",
+                validate: inquirerNonEmptyStringValidate(
+                    "Please enter a valid path",
+                ),
+            }));
+        const outputFormat =
+            opts["output-format"] ??
+            (await inquire<string>({
+                type: "input",
+                message: "Format of output files (eg. json)",
+                validate: inquirerNonEmptyStringValidate(
+                    "Please enter a valid format",
+                ),
+            }));
         const outputFormatCheck = isContentFormatInstalled(outputFormat);
         if (!outputFormatCheck.isInstalled) {
             log.ln();
@@ -109,14 +133,16 @@ export const InitCommand = new Command()
             log.ln();
             process.exit(1);
         }
-        const outputStringFormat = await inquire<string>({
-            type: "input",
-            message:
-                "Format of translation strings in output files (eg. format-string)",
-            validate: inquirerNonEmptyStringValidate(
-                "Please enter a valid format",
-            ),
-        });
+        const outputStringFormat =
+            opts["output-string-format"] ??
+            (await inquire<string>({
+                type: "input",
+                message:
+                    "Format of translation strings in output files (eg. format-string)",
+                validate: inquirerNonEmptyStringValidate(
+                    "Please enter a valid format",
+                ),
+            }));
         const outputStringFormatCheck =
             isTranslationStringFormatInstalled(outputStringFormat);
         if (!outputStringFormatCheck.isInstalled) {
@@ -125,16 +151,25 @@ export const InitCommand = new Command()
             log.ln();
             process.exit(1);
         }
-        const hooksFile = await inquire<string | undefined>({
-            type: "input",
-            message: "Path to hooks file (eg. ./i18n-hooks.js)",
-        });
+        const proceed =
+            opts["yes"] ??
+            (await inquire<boolean>({
+                type: "confirm",
+                message: "Proceed?",
+                initial: false,
+            }));
+        if (!proceed) {
+            log.ln();
+            log.warn("Exiting...");
+            log.ln();
+            process.exit(1);
+        }
         log.ln();
         const config: PhraseyZConfigType = {
             input: {
                 files: [inputFiles],
                 format: inputFormat,
-                fallback: fallbackInputFile,
+                fallback: [],
             },
             schema: {
                 file: schemaFile,
@@ -145,7 +180,9 @@ export const InitCommand = new Command()
                 format: outputFormat,
                 stringFormat: outputStringFormat,
             },
-            hooks: hooksFile ? { files: [{ path: hooksFile }] } : undefined,
+            hooks: {
+                files: [],
+            },
         };
         const configFormatter = PhraseySafeRun(() =>
             PhraseyContentFormats.resolve(configFormat),
@@ -212,27 +249,13 @@ export const InitCommand = new Command()
         if (inputFormatter.success) {
             const serializedDemoTranslation =
                 inputFormatter.data.serialize(demoTranslation);
-            if (fallbackInputFile) {
-                const fallbackInputFilePath = p.resolve(
-                    process.cwd(),
-                    fallbackInputFile,
-                );
-                await writeFile(
-                    fallbackInputFilePath,
-                    serializedDemoTranslation,
-                );
-                log.success(
-                    `Generated fallback translation file at "${fallbackInputFilePath}".`,
-                );
-            } else {
-                log.info(
-                    "Get started by creating a translation file that matches the generated content!",
-                );
-                log.ln();
-                log.info("Example of translation file:");
-                log.write(serializedDemoTranslation);
-                log.ln();
-            }
+            log.info(
+                "Get started by creating a translation file that matches the generated content!",
+            );
+            log.ln();
+            log.info("Example of translation file:");
+            log.write(serializedDemoTranslation);
+            log.ln();
         } else {
             log.error(
                 `Unable to use specified input translation format "${inputFormat}" due to errors.`,

@@ -33,12 +33,19 @@ export type PhraseyTranslationState =
     | PhraseyTranslationStringSet["state"]
     | PhraseyTranslationStringUnset["state"];
 
-export interface PhraseyTranslationJson {
+export interface PhraseyTranslationSerialized {
     locale: PhraseyLocaleType;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     extras: Record<string, any>;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     keys: Record<string, any>;
+}
+
+export interface PhraseyTranslationJson {
+    locale: PhraseyLocaleType;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    extras: Record<string, any>;
+    keys: Record<string, PhraseyTranslationStringValue>;
 }
 
 export class PhraseyTranslation {
@@ -75,9 +82,9 @@ export class PhraseyTranslation {
         return this.keys.size;
     }
 
-    json(
+    serialize(
         stringFormatter: PhraseyTranslationStringFormatter,
-    ): PhraseyTranslationJson {
+    ): PhraseyTranslationSerialized {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const keys: Record<string, any> = {};
         for (const [k, v] of this.keys.entries()) {
@@ -94,6 +101,14 @@ export class PhraseyTranslation {
             }
         }
         return { locale: this.locale, extras: this.extras, keys };
+    }
+
+    json(): PhraseyTranslationJson {
+        return {
+            locale: this.locale,
+            extras: this.extras,
+            keys: Object.fromEntries(this.keys.entries()),
+        };
     }
 
     static async create(

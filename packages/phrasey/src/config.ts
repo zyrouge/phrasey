@@ -3,8 +3,16 @@ import { PhraseyResult } from "./result";
 import { PhraseyTransformer } from "./transformer";
 import { PhraseyZConfig, PhraseyZConfigType } from "./z";
 
+export interface PhraseyConfigJson {
+    z: PhraseyZConfigType;
+}
+
 export class PhraseyConfig {
     constructor(public z: PhraseyZConfigType) {}
+
+    json(): PhraseyConfigJson {
+        return this;
+    }
 
     static async create(
         path: string,

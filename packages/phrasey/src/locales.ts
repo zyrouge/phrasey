@@ -6,8 +6,16 @@ import { PhraseyZLocales, PhraseyZLocalesType } from "./z";
 
 export * from "@zyrouge/phrasey-locales-shared";
 
+export interface PhraseyLocalesJson {
+    all: PhraseyZLocalesType;
+}
+
 export class PhraseyLocales {
     constructor(public all: PhraseyZLocalesType) {}
+
+    json(): PhraseyLocalesJson {
+        return this;
+    }
 
     static async create(
         path: string,
