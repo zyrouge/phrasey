@@ -91,6 +91,30 @@ export class PhraseyTranslationStringFormats {
                 return out;
             },
         }),
+        "python-positional-format-string": this.construct<string>({
+            format: (parts, schema) => {
+                const parameters = schema.parameters ?? [];
+                let out = "";
+                parts.forEach((x) => {
+                    switch (x.type) {
+                        case "parameter":
+                            out += `{${parameters.indexOf(x.value)}}`;
+                            break;
+
+                        case "string":
+                            // eslint-disable-next-line no-case-declarations
+                            let escaped = this.replaceCharacters(x.value, {
+                                "{": "{{",
+                                "}": "}}",
+                            });
+                            escaped = this.replaceCharacter(escaped, "}", "}}");
+                            out += escaped;
+                            break;
+                    }
+                });
+                return out;
+            },
+        }),
     };
 
     static resolve(name: string): PhraseyTranslationStringFormatter {
