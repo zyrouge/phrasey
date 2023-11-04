@@ -266,9 +266,8 @@ export const InitCommand = new Command()
             log.info(
                 "Get started by creating a translation file that matches the generated content!",
             );
-            log.ln();
             log.info("Example of translation file:");
-            log.write(serializedDemoTranslation);
+            log.write(serializedDemoTranslation.trim());
             log.ln();
         } else {
             log.error(
