@@ -102,3 +102,14 @@ Example of output string:
 ```
 Hello, {user}!
 ```
+
+### `python-positional-format-string`
+
+Serializes the parsed string as to a equivalent of Python's `.format()` supported string.
+The output string uses positional argument within keys.
+
+Example of output string:
+
+```
+Hello, {0}!
+```

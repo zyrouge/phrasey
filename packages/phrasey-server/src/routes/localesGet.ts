@@ -3,10 +3,10 @@ import { createPhraseyServerRoute } from "../route";
 export const schemaGetRoute = createPhraseyServerRoute((server) => {
     server.server.route({
         method: "GET",
-        path: "/schema/get",
+        path: "/locales/get",
         handler: async () => {
-            const schema = server.state.getSchema();
-            return { success: true, schema: schema.json() };
+            const locales = server.state.getLocales();
+            return { success: true, locales: locales.json() };
         },
     });
 });

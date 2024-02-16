@@ -38,7 +38,6 @@ export class PhraseyServer implements PhraseyServerProps {
     server: Hapi.Server;
     socket: SocketServer;
     phrasey: Phrasey;
-    state: PhraseyState;
     watcher: PhraseyWatcher;
 
     constructor(props: PhraseyServerProps) {
@@ -47,7 +46,6 @@ export class PhraseyServer implements PhraseyServerProps {
         this.server = props.server;
         this.socket = props.socket;
         this.phrasey = props.phrasey;
-        this.state = props.state;
         this.watcher = props.watcher;
     }
 
@@ -72,10 +70,14 @@ export class PhraseyServer implements PhraseyServerProps {
         });
     }
 
-    initializeWatcher() {
+    async initializeWatcher() {
+        await this.watcher.initialize();
         this.watcher.listen({
             onConfigChange: async () => {
                 emitSocketEvent(this, "config-updated", {});
+            },
+            onLocalesChange: async () => {
+                emitSocketEvent(this, "locales-updated", {});
             },
             onSchemaChange: async () => {
                 emitSocketEvent(this, "schema-updated", {});
@@ -93,6 +95,10 @@ export class PhraseyServer implements PhraseyServerProps {
         );
     }
 
+    get state() {
+        return this.watcher.state;
+    }
+
     get log() {
         return this.phrasey.log;
     }
@@ -101,6 +107,9 @@ export class PhraseyServer implements PhraseyServerProps {
         const server = Hapi.server({
             host: options.server?.host ?? "localhost",
             port: options.server?.port ?? 15324,
+            debug: {
+                request: ["error"],
+            },
         });
         const socket = new SocketServer(server.listener);
         const phrasey = new Phrasey({
@@ -125,9 +134,14 @@ export class PhraseyServer implements PhraseyServerProps {
         };
     }
 
-    static async create(options: PhraseyServerOptions) {
+    static create(options: PhraseyServerOptions) {
         const props = this.createProps(options);
         const server = new PhraseyServer(props);
+        return server;
+    }
+
+    static async start(options: PhraseyServerOptions) {
+        const server = PhraseyServer.create(options);
         await server.initialize();
         await server.start();
         return server;

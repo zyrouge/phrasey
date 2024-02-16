@@ -1,6 +1,5 @@
 const p = require("path");
 const { writeFile } = require("fs-extra");
-const { PhraseyTreeLike } = require("../src");
 
 /**
  * @type {import("../src").PhraseyHooksHandler}

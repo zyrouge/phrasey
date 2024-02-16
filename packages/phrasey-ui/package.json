@@ -1,0 +1,28 @@
+{
+    "name": "phrasey-ui",
+    "version": "0.0.1",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc && vite build",
+        "preview": "vite preview"
+    },
+    "dependencies": {
+        "solid-js": "^1.7.8"
+    },
+    "peerDependencies": {
+        "phrasey": "2.x"
+    },
+    "devDependencies": {
+        "@iconify-icon/solid": "^1.0.8",
+        "autoprefixer": "^10.4.15",
+        "postcss": "^8.4.28",
+        "phrasey": "file:packages/phrasey",
+        "prettier": "^3.0.2",
+        "prettier-plugin-tailwindcss": "^0.5.3",
+        "tailwindcss": "^3.3.3",
+        "typescript": "^5.0.2",
+        "vite": "^4.4.5",
+        "vite-plugin-solid": "^2.7.0"
+    }
+}

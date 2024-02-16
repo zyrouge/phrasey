@@ -7,7 +7,8 @@
         "dist"
     ],
     "scripts": {
-        "build": "rimraf ./dist && tsc"
+        "build": "rimraf ./dist && tsc",
+        "example": "node ./example/index.js"
     },
     "keywords": [],
     "author": "Zyrouge",
@@ -23,6 +24,8 @@
     },
     "devDependencies": {
         "@types/fs-extra": "^11.0.2",
+        "@zyrouge/phrasey-locales": "file:packages/phrasey-locales",
+        "@zyrouge/phrasey-yaml": "file:packages/phrasey-yaml",
         "phrasey": "file:packages/phrasey",
         "rimraf": "^5.0.1",
         "tsx": "^3.13.0",

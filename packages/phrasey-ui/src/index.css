@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    @apply bg-secondary-50 font-sans text-secondary-950 dark:bg-secondary-950 dark:text-secondary-50;
+}
+
+hr {
+    @apply border-secondary-200 dark:border-secondary-800;
+}
+
+.u-flex {
+    @apply flex flex-row items-center justify-center;
+}

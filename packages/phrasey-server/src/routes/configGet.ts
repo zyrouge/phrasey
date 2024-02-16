@@ -6,7 +6,7 @@ export const configGetRoute = createPhraseyServerRoute((server) => {
         path: "/config/get",
         handler: async () => {
             const config = server.state.getConfig();
-            return { success: true, config };
+            return { success: true, config: config.json() };
         },
     });
 });
