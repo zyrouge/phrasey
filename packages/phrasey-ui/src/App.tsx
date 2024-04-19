@@ -7,12 +7,10 @@ function App() {
         <>
             <NavBar />
             <hr />
-            <div class="h-[calc(100vh-3rem)]">
-                <ContentGrid>
-                    <SideBar />
-                    <div>2</div>
-                </ContentGrid>
-            </div>
+            <ContentGrid>
+                <SideBar />
+                <div>2</div>
+            </ContentGrid>
         </>
     );
 }
