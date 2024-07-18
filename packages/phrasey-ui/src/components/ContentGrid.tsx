@@ -1,6 +1,6 @@
 import { Component, JSX } from "solid-js";
 
-const ContentGrid: Component<{
+export const ContentGrid: Component<{
     children: [JSX.Element, JSX.Element];
 }> = (props) => {
     return (
@@ -12,5 +12,3 @@ const ContentGrid: Component<{
         </div>
     );
 };
-
-export default ContentGrid;

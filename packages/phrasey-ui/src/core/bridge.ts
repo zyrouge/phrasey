@@ -3,63 +3,62 @@ import type {
     PhraseySchemaJson,
     PhraseyTranslationJson,
 } from "phrasey";
-import { SetStoreFunction, Store, createStore } from "solid-js/store";
-import { jsonGet } from "./request";
 
 export { PhraseyConfigJson, PhraseySchemaJson, PhraseyTranslationJson };
 
-export interface PhraseyStoreProps {
-    config: PhraseyConfigJson;
-    schema: PhraseySchemaJson;
-    translationFilePaths: string[];
+export interface PhraseyBridgeRequestOptions {
+    method: "GET" | "POST";
+    path: string;
 }
 
-export interface PhraseyBridgeOptions {
-    host: string;
-    port: string;
+export interface PhraseyBridgeSuccessResponse<T> {
+    success: true;
+    data: T;
 }
+
+export interface PhraseyBridgeErrorResponse<E = string> {
+    success: false;
+    error: E;
+}
+
+export type PhraseyBridgeResponse<T, E = string> =
+    | PhraseyBridgeSuccessResponse<T>
+    | PhraseyBridgeErrorResponse<E>;
 
 export class PhraseyBridge {
-    ready = false;
-    store!: Store<PhraseyStoreProps>;
-    setStore!: SetStoreFunction<PhraseyStoreProps>;
-
-    constructor(public options: PhraseyBridgeOptions) {}
-
-    async initialize() {
-        const config = await this.getConfig();
-        const schema = await this.getSchema();
-        const translationFilePaths = await this.getTranslationFilePaths();
-        const [store, setStore] = createStore<PhraseyStoreProps>({
-            config,
-            schema,
-            translationFilePaths,
-        });
-        this.store = store;
-        this.setStore = setStore;
-        this.ready = true;
-        return store;
-    }
+    constructor(public baseUrl: string) {}
 
     async getConfig() {
-        return jsonGet<PhraseyConfigJson>(this.url("/config/get"));
+        return this._request<PhraseyConfigJson>({
+            method: "GET",
+            path: "/config/get",
+        });
     }
 
     async getSchema() {
-        return jsonGet<PhraseySchemaJson>(this.url("/schema/get"));
+        return this._request<PhraseySchemaJson>({
+            method: "GET",
+            path: "/schema/get",
+        });
     }
 
     async getTranslationFilePaths() {
-        return jsonGet<string[]>(this.url("/translation/file-paths"));
+        return this._request<string[]>({
+            method: "GET",
+            path: "/translation/file-paths",
+        });
     }
 
-    url(route: string) {
-        return `http://${this.options.host}:${this.options.port}${route}`;
-    }
-
-    static async create(options: PhraseyBridgeOptions) {
-        const bridge = new PhraseyBridge(options);
-        await bridge.initialize();
-        return bridge;
+    async _request<T = {}, E = string>(options: PhraseyBridgeRequestOptions) {
+        const url = this.baseUrl + options.path;
+        const resp = await fetch(url, {
+            method: options.method,
+        });
+        const body = await resp.json();
+        return body as PhraseyBridgeResponse<T, E>;
     }
 }
+
+export const bridge = new PhraseyBridge(
+    import.meta.env.VITE_PHRASEY_SERVER_URL,
+);

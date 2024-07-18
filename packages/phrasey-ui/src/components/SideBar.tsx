@@ -1,10 +1,11 @@
 import { Component } from "solid-js";
-import ScrollableContent from "./ScrollableContent";
+import { ScrollableContent } from "./ScrollableContent";
 
-const SideBar: Component = () => {
+export const SideBar: Component = () => {
     return (
         <ScrollableContent>
             <div class="px-4 py-2">
+                <a href=""></a>
                 <p>1</p>
                 <p>1</p>
                 <p>1</p>
@@ -39,5 +40,3 @@ const SideBar: Component = () => {
         </ScrollableContent>
     );
 };
-
-export default SideBar;

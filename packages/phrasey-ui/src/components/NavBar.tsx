@@ -2,7 +2,7 @@ import { Icon } from "@iconify-icon/solid";
 import { Component } from "solid-js";
 import { darkMode, ThemeMode } from "../core/theme";
 
-const NavBar: Component = () => {
+export const NavBar: Component = () => {
     return (
         <div class="h-12 mx-2 flex items-center justify-between gap-4">
             <div class="u-flex gap-4">
@@ -31,5 +31,3 @@ const NavBar: Component = () => {
         </div>
     );
 };
-
-export default NavBar;
