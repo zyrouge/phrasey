@@ -17,7 +17,7 @@
     "devDependencies": {
         "@iconify-icon/solid": "^1.0.8",
         "autoprefixer": "^10.4.15",
-        "phrasey": "file:packages/phrasey",
+        "phrasey": "workspace:^",
         "postcss": "^8.4.28",
         "prettier": "^3.0.2",
         "prettier-plugin-tailwindcss": "^0.5.3",

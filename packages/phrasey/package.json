@@ -21,7 +21,7 @@
     "author": "Zyrouge",
     "license": "MIT",
     "dependencies": {
-        "@zyrouge/phrasey-locales-shared": "^1.1.5",
+        "@zyrouge/phrasey-locales-shared": "workspace:^",
         "chokidar": "^3.5.3",
         "commander": "^11.0.0",
         "enquirer": "^2.4.1",
@@ -35,8 +35,8 @@
         "@types/fs-extra": "^11.0.2",
         "@types/inquirer": "^9.0.3",
         "@types/node": "^20.6.3",
-        "@zyrouge/phrasey-json": "file:packages/phrasey-json",
-        "@zyrouge/phrasey-yaml": "file:packages/phrasey-yaml",
+        "@zyrouge/phrasey-json": "workspace:^",
+        "@zyrouge/phrasey-yaml": "workspace:^",
         "rimraf": "^5.0.1",
         "typescript": "^5.2.2"
     }

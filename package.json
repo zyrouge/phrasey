@@ -6,7 +6,12 @@
         "packages/phrasey",
         "packages/phrasey-locales-builder",
         "packages/phrasey-locales",
-        "packages/*"
+        "packages/phrasey-server",
+        "packages/phrasey-ui",
+        "packages/phrasey-json",
+        "packages/phrasey-yaml",
+        "packages/phrasey-toml",
+        "packages/phrasey-xml"
     ],
     "scripts": {
         "lint": "eslint . && prettier . --config ./.prettierrc --check",

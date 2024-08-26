@@ -13,7 +13,7 @@
     "author": "Zyrouge",
     "license": "MIT",
     "dependencies": {
-        "@zyrouge/phrasey-locales-shared": "^1.1.5",
+        "@zyrouge/phrasey-locales-shared": "workspace:^",
         "cldr-core": "^43.1.0",
         "cldr-localenames-modern": "^43.1.0",
         "cldr-misc-modern": "^43.1.0"

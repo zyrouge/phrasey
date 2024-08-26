@@ -24,9 +24,9 @@
     },
     "devDependencies": {
         "@types/fs-extra": "^11.0.2",
-        "@zyrouge/phrasey-locales": "file:packages/phrasey-locales",
-        "@zyrouge/phrasey-yaml": "file:packages/phrasey-yaml",
-        "phrasey": "file:packages/phrasey",
+        "@zyrouge/phrasey-locales": "workspace:^",
+        "@zyrouge/phrasey-yaml": "workspace:^",
+        "phrasey": "workspace:^",
         "rimraf": "^5.0.1",
         "tsx": "^3.13.0",
         "typescript": "^5.2.2"
