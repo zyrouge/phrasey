@@ -350,7 +350,7 @@ export class PhraseyTranslationStats {
         }
         return {
             status: false,
-            reason: "Missing keys",
+            reason: `Missing keys (${PhraseyTranslationStats._generateMissingKeysHint(this.unset)})`,
         } satisfies PhraseyTranslationStatsJsonBuildable;
     }
 
@@ -363,7 +363,7 @@ export class PhraseyTranslationStats {
         }
         return {
             status: false,
-            reason: "Missing keys",
+            reason: `Missing keys (${PhraseyTranslationStats._generateMissingKeysHint(this.fallback, this.unset)})`,
         } satisfies PhraseyTranslationStatsJsonBuildable;
     }
 
@@ -393,5 +393,27 @@ export class PhraseyTranslationStats {
 
     get unsetPercent() {
         return (this.unsetCount / this.total) * 100;
+    }
+
+    static _generateMissingKeysHint(...collection: Set<string>[]) {
+        const keys: string[] = [];
+        for (const x of collection) {
+            for (const y of x) {
+                if (keys.length == 2) {
+                    break;
+                }
+                keys.push(y);
+            }
+            if (keys.length == 2) {
+                break;
+            }
+        }
+        const remaining =
+            collection.reduce((pv, cv) => cv.size + pv, 0) - keys.length;
+        const hint = keys.join(", ");
+        if (remaining === 0) {
+            return hint;
+        }
+        return `${hint} and ${remaining} more`;
     }
 }
