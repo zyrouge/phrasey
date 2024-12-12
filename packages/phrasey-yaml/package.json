@@ -12,10 +12,10 @@
     "author": "Zyrouge",
     "license": "MIT",
     "devDependencies": {
-        "rimraf": "^5.0.1",
-        "typescript": "^5.2.2"
+        "rimraf": "^6.0.1",
+        "typescript": "^5.7.2"
     },
     "dependencies": {
-        "yaml": "^2.3.2"
+        "yaml": "^2.6.1"
     }
 }

@@ -14,13 +14,13 @@
     "license": "MIT",
     "dependencies": {
         "@zyrouge/phrasey-locales-shared": "*",
-        "cldr-core": "^43.1.0",
-        "cldr-localenames-modern": "^43.1.0",
-        "cldr-misc-modern": "^43.1.0"
+        "cldr-core": "^46.0.0",
+        "cldr-localenames-modern": "^45.0.0",
+        "cldr-misc-modern": "^45.0.0"
     },
     "devDependencies": {
-        "rimraf": "^5.0.1",
-        "ts-node": "^10.9.1",
-        "typescript": "^5.2.2"
+        "rimraf": "^6.0.1",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.7.2"
     }
 }

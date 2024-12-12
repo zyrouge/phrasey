@@ -8,22 +8,22 @@
         "preview": "vite preview"
     },
     "dependencies": {
-        "@solidjs/router": "^0.14.1",
-        "solid-js": "^1.7.8"
+        "@solidjs/router": "^0.15.2",
+        "solid-js": "^1.9.3"
     },
     "peerDependencies": {
         "phrasey": "2.x"
     },
     "devDependencies": {
-        "@iconify-icon/solid": "^1.0.8",
-        "autoprefixer": "^10.4.15",
+        "@iconify-icon/solid": "^2.2.0",
+        "autoprefixer": "^10.4.20",
         "phrasey": "*",
-        "postcss": "^8.4.28",
-        "prettier": "^3.0.2",
-        "prettier-plugin-tailwindcss": "^0.5.3",
-        "tailwindcss": "^3.3.3",
-        "typescript": "^5.0.2",
-        "vite": "^4.4.5",
-        "vite-plugin-solid": "^2.7.0"
+        "postcss": "^8.4.49",
+        "prettier": "^3.4.2",
+        "prettier-plugin-tailwindcss": "^0.6.9",
+        "tailwindcss": "^3.4.16",
+        "typescript": "^5.7.2",
+        "vite": "^6.0.3",
+        "vite-plugin-solid": "^2.11.0"
     }
 }
