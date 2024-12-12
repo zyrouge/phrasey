@@ -13,11 +13,15 @@ export class PhraseyTransformer {
         const content = await PhraseySafeRunAsync(
             async () => await readFile(path, { encoding: "utf-8" }),
         );
-        if (!content.success) return content;
+        if (!content.success) {
+            return content;
+        }
         const parsed = PhraseySafeRun(() =>
             formatter.deserialize(content.data),
         );
-        if (!parsed.success) return parsed;
+        if (!parsed.success) {
+            return parsed;
+        }
         const transformed = schema.safeParse(parsed.data);
         if (!transformed.success) {
             return {

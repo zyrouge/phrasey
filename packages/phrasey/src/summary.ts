@@ -13,6 +13,7 @@ export interface PhraseySummaryJsonTotalStats {
     setCount: number;
     fallbackCount: number;
     unsetCount: number;
+    unknownCount: number;
     total: number;
 }
 
@@ -27,6 +28,7 @@ export class PhraseySummary {
         setCount: 0,
         fallbackCount: 0,
         unsetCount: 0,
+        unknownCount: 0,
         total: 0,
     };
     individualStats = new Map<string, PhraseyTranslationStats>();
@@ -40,6 +42,7 @@ export class PhraseySummary {
         this.fullStats.setCount += translation.stats.setCount;
         this.fullStats.fallbackCount += translation.stats.fallbackCount;
         this.fullStats.unsetCount += translation.stats.unsetCount;
+        this.fullStats.unknownCount += translation.stats.unknownCount;
         this.fullStats.total += translation.stats.total;
     }
 

@@ -22,7 +22,7 @@ export interface PhraseyTranslationStringSet {
 }
 
 export interface PhraseyTranslationStringUnset {
-    state: "unset";
+    state: "unset" | "unknown";
 }
 
 export type PhraseyTranslationStringValue =
@@ -150,17 +150,28 @@ export class PhraseyTranslation {
             extras,
             fallback,
         );
+        const keys = new Set(Object.keys(unprocessed.data.keys));
         for (const x of schema.z.keys) {
+            keys.delete(x.name);
             const rawValue = unprocessed.data.keys[x.name];
-            if (!rawValue) continue;
+            if (!rawValue) {
+                continue;
+            }
             const parts = PhraseyTranslation.parseTranslationKeyValue(
                 x,
                 rawValue,
             );
-            if (!parts.success) return parts;
+            if (!parts.success) {
+                return parts;
+            }
             translation.setKey(x.name, {
                 state: "set",
                 parts: parts.data,
+            });
+        }
+        for (const x of keys) {
+            translation.setKey(x, {
+                state: "unknown",
             });
         }
         return {
@@ -243,6 +254,7 @@ export interface PhraseyTranslationStatsJson {
     set: PhraseyTranslationStatsJsonExtendedState;
     fallback: PhraseyTranslationStatsJsonExtendedState;
     unset: PhraseyTranslationStatsJsonExtendedState;
+    unknown: PhraseyTranslationStatsJsonExtendedState;
     total: number;
     isBuildable: PhraseyTranslationStatsJsonBuildable;
     isStandaloneBuildable: PhraseyTranslationStatsJsonBuildable;
@@ -252,6 +264,7 @@ export class PhraseyTranslationStats {
     set = new Set<string>();
     fallback = new Set<string>();
     unset = new Set<string>();
+    unknown = new Set<string>();
     total = 0;
 
     process(key: string, value: PhraseyTranslationStringValue) {
@@ -269,6 +282,10 @@ export class PhraseyTranslationStats {
             case "unset":
                 this.unset.add(key);
                 this.total++;
+                break;
+
+            case "unknown":
+                this.unknown.add(key);
                 break;
         }
     }
@@ -289,6 +306,10 @@ export class PhraseyTranslationStats {
                 this.unset.delete(key);
                 this.total--;
                 break;
+
+            case "unknown":
+                this.unknown.delete(key);
+                break;
         }
     }
 
@@ -308,6 +329,11 @@ export class PhraseyTranslationStats {
                 keys: [...this.unset],
                 count: this.unsetCount,
                 percent: this.unsetPercent,
+            },
+            unknown: {
+                keys: [...this.unknown],
+                count: this.unknownCount,
+                percent: 0,
             },
             total: this.total,
             isBuildable: this.isBuildable,
@@ -351,6 +377,10 @@ export class PhraseyTranslationStats {
 
     get unsetCount() {
         return this.unset.size;
+    }
+
+    get unknownCount() {
+        return this.unknown.size;
     }
 
     get setPercent() {

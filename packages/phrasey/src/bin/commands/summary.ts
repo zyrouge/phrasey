@@ -103,6 +103,7 @@ function printFullStatsTree(stats: PhraseySummaryJsonTotalStats) {
         `Fallback : ${stats.fallbackCount}`,
         `Unset    : ${stats.unsetCount}`,
         `Total    : ${stats.total}`,
+        `Unknown  : ${stats.unknownCount}`,
         `Keys     : ${stats.keysCount}`,
     ];
     const tree = PhraseyTreeLike.build(data, {
@@ -118,6 +119,7 @@ function printIndividualStatsTree(stats: PhraseyTranslationStatsJson) {
         `Fallback : ${stats.fallback.count} (${p(stats.fallback.percent)})`,
         `Unset    : ${stats.unset.count} (${p(stats.unset.percent)})`,
         `Total    : ${stats.total}`,
+        `Unknown  : ${stats.unknown.count}`,
     ];
     const tree = PhraseyTreeLike.build(data, {
         prefix: PhraseyTreeLike.tab(1),
