@@ -235,13 +235,17 @@ export interface PhraseyTranslationStatsJsonExtendedState {
     percent: number;
 }
 
+export type PhraseyTranslationStatsJsonBuildable =
+    | { status: true }
+    | { status: false; reason: string };
+
 export interface PhraseyTranslationStatsJson {
     set: PhraseyTranslationStatsJsonExtendedState;
     fallback: PhraseyTranslationStatsJsonExtendedState;
     unset: PhraseyTranslationStatsJsonExtendedState;
     total: number;
-    isBuildable: boolean;
-    isStandaloneBuildable: boolean;
+    isBuildable: PhraseyTranslationStatsJsonBuildable;
+    isStandaloneBuildable: PhraseyTranslationStatsJsonBuildable;
 }
 
 export class PhraseyTranslationStats {
@@ -312,11 +316,29 @@ export class PhraseyTranslationStats {
     }
 
     get isBuildable() {
-        return this.setCount + this.fallbackCount === this.total;
+        const check = this.setCount + this.fallbackCount === this.total;
+        if (check) {
+            return {
+                status: true,
+            } satisfies PhraseyTranslationStatsJsonBuildable;
+        }
+        return {
+            status: false,
+            reason: "Missing keys",
+        } satisfies PhraseyTranslationStatsJsonBuildable;
     }
 
     get isStandaloneBuildable() {
-        return this.setCount === this.total;
+        const check = this.setCount === this.total;
+        if (check) {
+            return {
+                status: true,
+            } satisfies PhraseyTranslationStatsJsonBuildable;
+        }
+        return {
+            status: false,
+            reason: "Missing keys",
+        } satisfies PhraseyTranslationStatsJsonBuildable;
     }
 
     get setCount() {

@@ -366,11 +366,11 @@ export class PhraseyBuilder {
         if (!beforeHookResult.success) {
             return beforeHookResult;
         }
-        if (!translation.stats.isBuildable) {
+        if (!translation.stats.isBuildable.status) {
             return {
                 success: false,
                 error: new PhraseyError(
-                    `Translation "${localeCode}" is not buildable`,
+                    `Translation "${localeCode}" is not buildable (Reason: ${translation.stats.isBuildable.reason})`,
                 ),
             };
         }
