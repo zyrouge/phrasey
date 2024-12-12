@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/ban-types */
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 import { PhraseyError } from "./errors";
 import { PhraseyLogger } from "./logger";
 import { Phrasey } from "./phrasey";
@@ -73,7 +73,7 @@ export class PhraseyHooks {
         options: Record<string, any>,
     ): PhraseyResult<true, Error> {
         try {
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
             const handler: PhraseyHooksHandler = require(path);
             this.addHandler({ path, options, handler });
             return { success: true, data: true };

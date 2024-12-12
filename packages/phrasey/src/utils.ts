@@ -1,7 +1,7 @@
 import { PhraseyError } from "./errors";
 import { PhraseyResult } from "./result";
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { version } = require("../package.json");
 
 export const PhraseyVersion = version;
@@ -50,8 +50,10 @@ export const PhraseyTreeLike = {
 
 export const PhraseySafeResolvePackage = (packageName: string) => {
     try {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         return require(packageName);
-    } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (_) {
         throw new PhraseyError(
             `Cannot import format package named "${packageName}". Did you install it?`,
         );

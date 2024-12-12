@@ -14,11 +14,11 @@ npx phrasey summary \
 
 ###### Arguments
 
--   `--config-file`, `-p` - Path to configuration file.
--   `--config-format`, `-f` - Format of the configuration file.
--   `--output-file`, `-o` - Path to output file.
--   `--output-format`, `-s` - Format of the output file.
--   `--help`, `-h` - Displays help message.
+- `--config-file`, `-p` - Path to configuration file.
+- `--config-format`, `-f` - Format of the configuration file.
+- `--output-file`, `-o` - Path to output file.
+- `--output-format`, `-s` - Format of the output file.
+- `--help`, `-h` - Displays help message.
 
 ## Example
 

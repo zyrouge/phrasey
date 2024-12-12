@@ -15,7 +15,7 @@
     ],
     "scripts": {
         "lint": "eslint . && prettier . --config ./.prettierrc --check",
-        "phrasey-cli": "npx -w phrasey -- tsx ./src/bin/index.ts",
+        "phrasey-cli": "yarn workspace phrasey tsx ./src/bin/index.ts",
         "docs:base:dev": "vitepress dev docs",
         "docs:base:build": "vitepress build docs",
         "docs:api:build": "typedoc",
@@ -23,13 +23,15 @@
         "docs:deploy": "gh workflow run docs.yml"
     },
     "devDependencies": {
-        "@trivago/prettier-plugin-sort-imports": "^4.2.0",
-        "@typescript-eslint/eslint-plugin": "^6.7.5",
-        "@typescript-eslint/parser": "^6.7.5",
-        "eslint": "^8.51.0",
-        "prettier": "^3.0.3",
-        "tsx": "^3.13.0",
-        "typedoc": "^0.25.2",
-        "vitepress": "^1.0.0-rc.21"
+        "@trivago/prettier-plugin-sort-imports": "^5.2.0",
+        "eslint": "^9.16.0",
+        "prettier": "^3.4.2",
+        "tsx": "^4.19.2",
+        "typedoc": "^0.27.4",
+        "vitepress": "^1.5.0"
+    },
+    "dependencies": {
+        "@eslint/js": "^9.16.0",
+        "typescript-eslint": "^8.18.0"
     }
 }

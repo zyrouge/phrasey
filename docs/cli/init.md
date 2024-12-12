@@ -18,7 +18,7 @@ npx phrasey init
 
 ###### Arguments
 
--   `--help`, `-h` - Displays help message.
+- `--help`, `-h` - Displays help message.
 
 ## Example
 

@@ -49,7 +49,7 @@ export class PhraseyBridge {
         });
     }
 
-    async _request<T = {}, E = string>(options: PhraseyBridgeRequestOptions) {
+    async _request<T, E = string>(options: PhraseyBridgeRequestOptions) {
         const url = this.baseUrl + options.path;
         const resp = await fetch(url, {
             method: options.method,

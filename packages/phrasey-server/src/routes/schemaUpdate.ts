@@ -33,7 +33,8 @@ export const schemaUpdateRoute = createPhraseyServerRoute((server) => {
                 const serialized = formatter.serialize(payload.data);
                 await fs.writeFile(schemaPath, serialized);
                 return { success: true };
-            } catch (error) {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            } catch (_) {
                 return res
                     .response({
                         success: false,

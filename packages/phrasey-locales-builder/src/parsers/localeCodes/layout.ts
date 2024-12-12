@@ -6,6 +6,7 @@ import { PhraseyLocaleDirectionType } from "../../locale";
 import { PhraseyRawLocaleCodeType } from "./codes";
 
 export class PhraseyLocaleCodeLayout {
+    /* eslint-disable indent */
     static cldrMiscLayoutCharacterOrderMap: Record<
         PhraseyCldrMiscLayoutCharacterOrderType,
         PhraseyLocaleDirectionType
@@ -13,6 +14,7 @@ export class PhraseyLocaleCodeLayout {
         "left-to-right": "ltr",
         "right-to-left": "rtl",
     };
+    /* eslint-enable indent */
 
     static async parse({ code }: PhraseyRawLocaleCodeType) {
         const layout = await PhraseyCldrMiscLayout.parse(code);

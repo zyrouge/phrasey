@@ -15,9 +15,9 @@ npx phrasey watch \
 
 ###### Arguments
 
--   `--config-file`, `-p` - Path to configuration file.
--   `--config-format`, `-f` - Format of the configuration file.
--   `--help`, `-h` - Displays help message.
+- `--config-file`, `-p` - Path to configuration file.
+- `--config-format`, `-f` - Format of the configuration file.
+- `--help`, `-h` - Displays help message.
 
 ## Example
 
