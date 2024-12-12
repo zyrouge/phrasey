@@ -2,30 +2,23 @@
     "name": "@zyrouge/phrasey",
     "private": true,
     "workspaces": [
-        "packages/phrasey-locales-shared",
-        "packages/phrasey",
-        "packages/phrasey-locales-builder",
-        "packages/phrasey-locales",
-        "packages/phrasey-server",
-        "packages/phrasey-ui",
-        "packages/phrasey-json",
-        "packages/phrasey-yaml",
-        "packages/phrasey-toml",
-        "packages/phrasey-xml"
+        "packages/*"
     ],
     "scripts": {
+        "build": "yarn workspaces foreach -A run build",
         "lint": "eslint . && prettier . --config ./.prettierrc --check",
         "phrasey-cli": "yarn workspace phrasey tsx ./src/bin/index.ts",
         "docs:base:dev": "vitepress dev docs",
         "docs:base:build": "vitepress build docs",
         "docs:api:build": "typedoc",
-        "docs:build": "rimraf ./docs-dist && npm run docs:base:build && npm run docs:api:build",
+        "docs:build": "rimraf ./docs-dist && yarn docs:base:build && yarn docs:api:build",
         "docs:deploy": "gh workflow run docs.yml"
     },
     "devDependencies": {
         "@trivago/prettier-plugin-sort-imports": "^5.2.0",
         "eslint": "^9.16.0",
         "prettier": "^3.4.2",
+        "rimraf": "^6.0.1",
         "tsx": "^4.19.2",
         "typedoc": "^0.27.4",
         "vitepress": "^1.5.0"
