@@ -3,3 +3,4 @@ dist
 docs-dist
 example/output-i18n
 docs/.vitepress/cache
+.yarn
